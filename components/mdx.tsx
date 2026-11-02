@@ -1,6 +1,7 @@
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypePrettyCode from "rehype-pretty-code";
+import { Pre } from "@/components/copy-code";
 
 const prettyCodeOptions = {
   theme: "github-dark-dimmed",
@@ -13,6 +14,7 @@ export function Mdx({ source }: { source: string }) {
     <div className="mdx">
       <MDXRemote
         source={source}
+        components={{ pre: Pre }}
         options={{
           mdxOptions: {
             remarkPlugins: [remarkGfm],

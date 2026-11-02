@@ -1,0 +1,267 @@
+{
+  "domain": "www.teachable.com",
+  "favicons": [
+    {
+      "type": "png",
+      "rel": "shortcut icon",
+      "url": "https://cdn.prod.website-files.com/687904fb2b26c434698c47e9/68f25a556b13e5a2618da909_Favicon.png",
+      "sizes": null
+    },
+    {
+      "type": "png",
+      "rel": "apple-touch-icon",
+      "url": "https://cdn.prod.website-files.com/687904fb2b26c434698c47e9/68f25a572e5e73f1b13d70cf_Webclip.png",
+      "sizes": null
+    },
+    {
+      "type": "ico",
+      "rel": "fallback",
+      "url": "https://www.teachable.com/favicon.ico",
+      "sizes": null
+    }
+  ],
+  "colors": [
+    {
+      "hex": "#ffffff",
+      "rgb": "255, 255, 255",
+      "hsl": "0, 0%, 100%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#000000",
+      "rgb": "0, 0, 0",
+      "hsl": "0, 0%, 0%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#222222",
+      "rgb": "34, 34, 34",
+      "hsl": "0, 0%, 13%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#f8f8f8",
+      "rgb": "248, 248, 248",
+      "hsl": "0, 0%, 97%",
+      "role": "background",
+      "source": "CSS variable --_apps---colors--muted"
+    },
+    {
+      "hex": "#dddddd",
+      "rgb": "221, 221, 221",
+      "hsl": "0, 0%, 87%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#333333",
+      "rgb": "51, 51, 51",
+      "hsl": "0, 0%, 20%",
+      "role": "accent",
+      "source": "color"
+    },
+    {
+      "hex": "#758696",
+      "rgb": "117, 134, 150",
+      "hsl": "209, 14%, 52%",
+      "role": "border",
+      "source": "border-color"
+    },
+    {
+      "hex": "#182a44",
+      "rgb": "24, 42, 68",
+      "hsl": "215, 48%, 18%",
+      "role": "accent",
+      "source": "CSS variable --enterprise-colors--dark-navy"
+    },
+    {
+      "hex": "#444444",
+      "rgb": "68, 68, 68",
+      "hsl": "0, 0%, 27%",
+      "role": "accent",
+      "source": "CSS variable --neutral--neutral-dark"
+    },
+    {
+      "hex": "#fae6b6",
+      "rgb": "250, 230, 182",
+      "hsl": "42, 87%, 85%",
+      "role": "primary",
+      "source": "CSS variable --brand--orange-light"
+    },
+    {
+      "hex": "#e7fc7b",
+      "rgb": "231, 252, 123",
+      "hsl": "70, 96%, 74%",
+      "role": "background",
+      "source": "CSS variable --_apps---colors--ring"
+    },
+    {
+      "hex": "#a0a0a0",
+      "rgb": "160, 160, 160",
+      "hsl": "0, 0%, 63%",
+      "role": "accent",
+      "source": "color"
+    },
+    {
+      "hex": "#fafafa",
+      "rgb": "250, 250, 250",
+      "hsl": "0, 0%, 98%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#c8c8c8",
+      "rgb": "200, 200, 200",
+      "hsl": "0, 0%, 78%",
+      "role": "background",
+      "source": "background"
+    },
+    {
+      "hex": "#f6f2ee",
+      "rgb": "246, 242, 238",
+      "hsl": "30, 31%, 95%",
+      "role": "background",
+      "source": "CSS variable --cool-beige"
+    },
+    {
+      "hex": "#060606",
+      "rgb": "6, 6, 6",
+      "hsl": "0, 0%, 2%",
+      "role": "text",
+      "source": "CSS variable --_apps---colors--card-foreground"
+    },
+    {
+      "hex": "#0b402b",
+      "rgb": "11, 64, 43",
+      "hsl": "156, 71%, 15%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#3898ec",
+      "rgb": "56, 152, 236",
+      "hsl": "208, 83%, 57%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#999999",
+      "rgb": "153, 153, 153",
+      "hsl": "0, 0%, 60%",
+      "role": "accent",
+      "source": "color"
+    },
+    {
+      "hex": "#eeeeee",
+      "rgb": "238, 238, 238",
+      "hsl": "0, 0%, 93%",
+      "role": "background",
+      "source": "background-color"
+    },
+    {
+      "hex": "#5d6c7b",
+      "rgb": "93, 108, 123",
+      "hsl": "210, 14%, 42%",
+      "role": "border",
+      "source": "border-color"
+    },
+    {
+      "hex": "#0082f3",
+      "rgb": "0, 130, 243",
+      "hsl": "208, 100%, 48%",
+      "role": "accent",
+      "source": "color"
+    },
+    {
+      "hex": "#e6ff32",
+      "rgb": "230, 255, 50",
+      "hsl": "67, 100%, 60%",
+      "role": "primary",
+      "source": "CSS variable --brand--yellow"
+    },
+    {
+      "hex": "#292929",
+      "rgb": "41, 41, 41",
+      "hsl": "0, 0%, 16%",
+      "role": "primary",
+      "source": "CSS variable --_apps---colors--accent-dark"
+    },
+    {
+      "hex": "#a7bc00",
+      "rgb": "167, 188, 0",
+      "hsl": "67, 100%, 37%",
+      "role": "primary",
+      "source": "CSS variable --_apps---colors--primary"
+    },
+    {
+      "hex": "#0d0e05",
+      "rgb": "13, 14, 5",
+      "hsl": "67, 47%, 4%",
+      "role": "primary",
+      "source": "CSS variable --_apps---colors--primary-foreground"
+    },
+    {
+      "hex": "#e4e4e4",
+      "rgb": "228, 228, 228",
+      "hsl": "0, 0%, 89%",
+      "role": "primary",
+      "source": "CSS variable --_apps---colors--accent"
+    },
+    {
+      "hex": "#0d0d0d",
+      "rgb": "13, 13, 13",
+      "hsl": "0, 0%, 5%",
+      "role": "primary",
+      "source": "CSS variable --_apps---colors--accent-foreground"
+    },
+    {
+      "hex": "#141414",
+      "rgb": "20, 20, 20",
+      "hsl": "0, 0%, 8%",
+      "role": "text",
+      "source": "CSS variable --_apps---colors--card-dark"
+    },
+    {
+      "hex": "#050601",
+      "rgb": "5, 6, 1",
+      "hsl": "72, 71%, 1%",
+      "role": "primary",
+      "source": "CSS variable --_apps---colors--primary-foreground-dark"
+    }
+  ],
+  "fonts": [
+    {
+      "name": "webflow-icons",
+      "source": "self-hosted",
+      "url": "data:application/x-font-ttf;charset=utf-8;base64,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",
+      "usage": []
+    },
+    {
+      "name": "Ivyprestoheadline",
+      "source": "self-hosted",
+      "url": "https://cdn.prod.website-files.com/687904fb2b26c434698c47e9/68e7d8dc76d80d682b7d1745_IvyprestoHeadline-Regular.woff2",
+      "usage": []
+    },
+    {
+      "name": "Peridotpenormvf",
+      "source": "self-hosted",
+      "url": "https://cdn.prod.website-files.com/687904fb2b26c434698c47e9/68e7d92793f6b8ba82401492_PeridotPENormVF.woff2",
+      "usage": []
+    },
+    {
+      "name": "Ubuntu",
+      "source": "system",
+      "url": null,
+      "usage": []
+    }
+  ],
+  "meta": {
+    "title": "Teachable — Build & Sell Online Courses, Coaching, Memberships & More",
+    "themeColor": null,
+    "ogImage": "https://cdn.prod.website-files.com/687904fb2b26c434698c47e9/68f7dd90eed5bf0a9cb37cd1_teachable-og-main.webp"
+  },
+  "fetchTime": 675
+}

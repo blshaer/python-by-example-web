@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { Mdx } from "@/components/mdx";
 import { getProject, getProjects } from "@/lib/content";
+import { pageContainerClass } from "@/lib/layout";
+import { cn } from "@/lib/utils";
 
 type Params = { slug: string };
 
@@ -24,7 +26,7 @@ export default async function ProjectPage({
   if (!project) notFound();
 
   return (
-    <article className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-8" data-pagefind-body>
+    <article className={cn(pageContainerClass, "py-10")} data-pagefind-body>
       <Mdx source={project.body} />
     </article>
   );

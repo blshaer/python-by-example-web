@@ -1,0 +1,67 @@
+/* Theme tokens from design.json (Teachable brand colors). */
+
+:root {
+  color-scheme: light;
+
+  --background: #f6f2ee; /* cool-beige */
+  --foreground: #060606; /* card-foreground */
+  --card: #ffffff;
+  --card-foreground: #060606;
+  --primary: #e6ff32; /* brand--yellow */
+  --primary-foreground: #0d0e05; /* primary-foreground */
+  --secondary: #fae6b6; /* brand--orange-light */
+  --secondary-foreground: #0d0d0d;
+  --muted: #f8f8f8; /* muted */
+  --muted-foreground: #5d6c7b;
+  --accent: #e7fc7b; /* ring lime */
+  --accent-foreground: #0d0d0d;
+  --border: #dddddd;
+  --input: #c8c8c8;
+  --ring: #a7bc00; /* apps primary */
+  --code: #141414; /* card-dark */
+  --code-foreground: #e4e4e4; /* accent */
+  --navy: #182a44; /* dark-navy */
+  --link: #182a44; /* dark-navy */
+  --radius: 0.75rem;
+  --scrollbar-thumb: color-mix(in srgb, var(--navy) 56%, transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--navy) 78%, transparent);
+  --scrollbar-thumb-active: var(--navy);
+  --scrollbar-thumb-on-code: color-mix(in srgb, var(--code-foreground) 50%, transparent);
+  --scrollbar-thumb-on-code-hover: color-mix(in srgb, var(--code-foreground) 78%, transparent);
+  --scrollbar-thumb-on-code-active: var(--primary);
+}
+
+.dark {
+  color-scheme: dark;
+
+  --background: #0d0d0d; /* accent-foreground */
+  --foreground: #f6f2ee; /* cool-beige */
+  --card: #141414; /* card-dark */
+  --card-foreground: #fafafa;
+  --primary: #e6ff32; /* brand--yellow */
+  --primary-foreground: #050601; /* primary-foreground-dark */
+  --secondary: #182a44; /* dark-navy */
+  --secondary-foreground: #f6f2ee;
+  --muted: #222222;
+  --muted-foreground: #a0a0a0;
+  --accent: #292929; /* accent-dark */
+  --accent-foreground: #e7fc7b;
+  --border: #333333;
+  --input: #444444; /* neutral-dark */
+  --ring: #e6ff32;
+  --code: #050601;
+  --code-foreground: #e4e4e4;
+  --navy: #182a44;
+  --link: #e6ff32; /* brand--yellow */
+  --scrollbar-thumb: color-mix(in srgb, var(--foreground) 42%, transparent);
+  --scrollbar-thumb-hover: color-mix(in srgb, var(--foreground) 68%, transparent);
+  --scrollbar-thumb-active: var(--primary);
+  --scrollbar-thumb-on-code: color-mix(in srgb, var(--code-foreground) 50%, transparent);
+  --scrollbar-thumb-on-code-hover: color-mix(in srgb, var(--primary) 72%, transparent);
+  --scrollbar-thumb-on-code-active: var(--primary);
+}
+
+::selection {
+  background: var(--primary);
+  color: var(--primary-foreground);
+}

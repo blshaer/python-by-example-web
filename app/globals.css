@@ -1,23 +1,7 @@
 @import "tailwindcss";
+@import "./theme.css";
 
-:root {
-  --background: #f6f1e8;
-  --foreground: #1b1916;
-  --card: #fffaf3;
-  --card-foreground: #1b1916;
-  --primary: #306998;
-  --primary-foreground: #f8fbff;
-  --secondary: #ffe873;
-  --secondary-foreground: #1b1916;
-  --muted: #ece4d6;
-  --muted-foreground: #5f574c;
-  --accent: #ffd43b;
-  --accent-foreground: #1b1916;
-  --border: #e0d4c2;
-  --input: #e0d4c2;
-  --ring: #306998;
-  --radius: 0.75rem;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --color-background: var(--background);
@@ -35,6 +19,10 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
+  --color-navy: var(--navy);
+  --color-link: var(--link);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-md: var(--radius);
@@ -48,6 +36,78 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* Thin pill thumb. Touch devices keep the native overlay scrollbar. */
+@media (hover: hover) and (pointer: fine) {
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background-clip: padding-box;
+    transition:
+      background-color 160ms ease,
+      border-width 160ms ease;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
+  *::-webkit-scrollbar-thumb:active {
+    background-color: var(--scrollbar-thumb-active);
+    border-width: 2px;
+  }
+
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  .mdx pre {
+    scrollbar-color: var(--scrollbar-thumb-on-code) transparent;
+  }
+
+  .mdx pre::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-on-code);
+  }
+
+  .mdx pre::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-on-code-hover);
+  }
+
+  .mdx pre::-webkit-scrollbar-thumb:active {
+    background-color: var(--scrollbar-thumb-on-code-active);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *::-webkit-scrollbar-thumb {
+    transition: none;
+  }
 }
 
 .mdx {
@@ -100,9 +160,14 @@ body {
 }
 
 .mdx a {
-  color: var(--primary);
+  color: var(--link);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+.mdx .code-block {
+  position: relative;
+  margin: 1.25rem 0;
 }
 
 .mdx pre {
@@ -110,10 +175,14 @@ body {
   border-radius: 0.9rem;
   padding: 1rem 1.1rem;
   margin: 1.25rem 0;
-  background: #22272e;
-  color: #adbac7;
+  background: var(--code);
+  color: var(--code-foreground);
   font-size: 0.85rem;
   line-height: 1.65;
+}
+
+.mdx .code-block pre {
+  margin: 0;
 }
 
 .mdx code {

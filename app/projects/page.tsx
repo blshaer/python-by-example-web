@@ -1,5 +1,7 @@
-import Link from "next/link";
 import { getProjects } from "@/lib/content";
+import { pageContainerClass } from "@/lib/layout";
+import { cn } from "@/lib/utils";
+import { ProjectCard } from "@/components/project-card";
 
 export const metadata = {
   title: "Projects",
@@ -9,22 +11,14 @@ export default function ProjectsPage() {
   const projects = getProjects();
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6">
+    <main className={cn(pageContainerClass, "py-12")}>
       <h1 className="text-3xl font-semibold tracking-tight">Projects</h1>
       <p className="mt-3 max-w-2xl text-muted-foreground">
-        Build these yourself from the challenge README, then compare with the
-        included solution.
+        Four builds, in order. Try each one yourself, then open the solution.
       </p>
-      <div className="mt-8 grid gap-4">
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
         {projects.map((project) => (
-          <Link
-            key={project.slug}
-            href={`/projects/${project.slug}`}
-            className="rounded-2xl border border-border bg-card p-5 hover:bg-muted/40"
-          >
-            <h2 className="text-lg font-medium">{project.title}</h2>
-            <p className="mt-2 text-sm text-muted-foreground">{project.sourceDir}</p>
-          </Link>
+          <ProjectCard key={project.slug} project={project} titleAs="h2" />
         ))}
       </div>
     </main>

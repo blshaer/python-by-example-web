@@ -8,6 +8,8 @@ import {
   getLesson,
   getSections,
 } from "@/lib/content";
+import { pageContainerClass } from "@/lib/layout";
+import { cn } from "@/lib/utils";
 
 type Params = { section: string; slug: string };
 
@@ -40,12 +42,9 @@ export default async function LessonPage({
   const { previous, next } = getAdjacentLessons(section, slug);
 
   return (
-    <>
+    <div className={cn(pageContainerClass, "flex flex-1 flex-col lg:flex-row")}>
       <Sidebar activeSection={section} activeSlug={slug} />
-      <article
-        className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-8"
-        data-pagefind-body
-      >
+      <article className="w-full min-w-0 max-w-3xl pt-4 pb-10 lg:py-10 lg:pl-6" data-pagefind-body>
         <p className="text-sm text-muted-foreground">{lesson.section}</p>
         <h1
           className="mt-2 text-3xl font-semibold tracking-tight"
@@ -80,6 +79,6 @@ export default async function LessonPage({
           ) : null}
         </nav>
       </article>
-    </>
+    </div>
   );
 }
