@@ -3,7 +3,7 @@ import re
 
 FENCE = chr(96) * 3
 SRC = Path(r"c:\Users\Baraa\python-by-example")
-DST = Path(r"C:\Users\Baraa\Desktop\python-by-example-web\content")
+DST = Path(r"C:\Users\Baraa\Desktop\python-by-example-web\curriculum")
 
 SECTIONS = [
     ("01_basics", "Basics", "Print, comments, variables, and data types."),

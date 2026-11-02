@@ -1,26 +1,155 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f6f1e8;
+  --foreground: #1b1916;
+  --card: #fffaf3;
+  --card-foreground: #1b1916;
+  --primary: #306998;
+  --primary-foreground: #f8fbff;
+  --secondary: #ffe873;
+  --secondary-foreground: #1b1916;
+  --muted: #ece4d6;
+  --muted-foreground: #5f574c;
+  --accent: #ffd43b;
+  --accent-foreground: #1b1916;
+  --border: #e0d4c2;
+  --input: #e0d4c2;
+  --ring: #306998;
+  --radius: 0.75rem;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --radius-md: var(--radius);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--border);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+.mdx {
+  max-width: 48rem;
+}
+
+.mdx h1,
+.mdx h2,
+.mdx h3 {
+  letter-spacing: -0.02em;
+  font-weight: 600;
+}
+
+.mdx h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.mdx h2 {
+  font-size: 1.35rem;
+  margin: 2rem 0 0.75rem;
+}
+
+.mdx h3 {
+  font-size: 1.1rem;
+  margin: 1.5rem 0 0.5rem;
+}
+
+.mdx p,
+.mdx li {
+  line-height: 1.7;
+  color: var(--muted-foreground);
+}
+
+.mdx p {
+  margin: 0.85rem 0;
+}
+
+.mdx ul,
+.mdx ol {
+  margin: 0.75rem 0 0.75rem 1.25rem;
+}
+
+.mdx ul {
+  list-style: disc;
+}
+
+.mdx ol {
+  list-style: decimal;
+}
+
+.mdx a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.mdx pre {
+  overflow-x: auto;
+  border-radius: 0.9rem;
+  padding: 1rem 1.1rem;
+  margin: 1.25rem 0;
+  background: #22272e;
+  color: #adbac7;
+  font-size: 0.85rem;
+  line-height: 1.65;
+}
+
+.mdx code {
+  font-family: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
+}
+
+.mdx :not(pre) > code {
+  background: var(--muted);
+  color: var(--foreground);
+  border-radius: 0.35rem;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.9em;
+}
+
+.mdx table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  font-size: 0.9rem;
+}
+
+.mdx th,
+.mdx td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.7rem;
+  text-align: left;
+}
+
+.pagefind-ui {
+  --pagefind-ui-scale: 0.9;
+  --pagefind-ui-primary: var(--primary);
+  --pagefind-ui-text: var(--foreground);
+  --pagefind-ui-background: var(--card);
+  --pagefind-ui-border: var(--border);
+  --pagefind-ui-tag: var(--muted);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 0.7rem;
+  --pagefind-ui-font: inherit;
 }
