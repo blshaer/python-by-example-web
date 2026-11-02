@@ -1,0 +1,402 @@
+---
+title: "Classes and Objects in Python"
+section: "Object-Oriented Programming"
+sectionSlug: oop
+sectionSummary: "Classes, inheritance, and polymorphism."
+order: 1
+sourceFile: 08_oop/01_classes_objects.py
+---
+
+This file introduces Object-Oriented Programming (OOP) in Python, focusing on classes and objects. Classes are blueprints for creating objects, which bundle data (attributes) and functionality (methods) together.
+
+```python
+"""
+================================================================================
+File: 01_classes_objects.py
+Topic: Classes and Objects in Python
+================================================================================
+
+This file introduces Object-Oriented Programming (OOP) in Python, focusing on
+classes and objects. Classes are blueprints for creating objects, which bundle
+data (attributes) and functionality (methods) together.
+
+Key Concepts:
+- Defining classes
+- Creating objects (instances)
+- Instance attributes and methods
+- Class attributes
+- The self parameter
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. What is a Class?
+# -----------------------------------------------------------------------------
+# A class is a blueprint for creating objects
+
+print("--- What is a Class? ---")
+
+# Simple class definition
+class Dog:
+    """A simple class representing a dog."""
+    pass  # Empty class (for now)
+
+# Creating objects (instances) from the class
+dog1 = Dog()
+dog2 = Dog()
+
+print(f"dog1 is a: {type(dog1)}")
+print(f"dog1 and dog2 are different objects: {dog1 is not dog2}")
+
+# -----------------------------------------------------------------------------
+# 2. Instance Attributes
+# -----------------------------------------------------------------------------
+# Each object can have its own data
+
+print("\n--- Instance Attributes ---")
+
+class Person:
+    """A class representing a person."""
+    
+    def __init__(self, name, age):
+        """Initialize person with name and age."""
+        # self refers to the instance being created
+        self.name = name
+        self.age = age
+
+# Creating instances with attributes
+person1 = Person("Alice", 25)
+person2 = Person("Bob", 30)
+
+print(f"Person 1: {person1.name}, age {person1.age}")
+print(f"Person 2: {person2.name}, age {person2.age}")
+
+# Modifying attributes
+person1.age = 26
+print(f"After birthday: {person1.name} is now {person1.age}")
+
+# Adding new attributes to instance
+person1.email = "alice@example.com"
+print(f"Added email: {person1.email}")
+
+# -----------------------------------------------------------------------------
+# 3. Instance Methods
+# -----------------------------------------------------------------------------
+# Functions defined inside a class that operate on instances
+
+print("\n--- Instance Methods ---")
+
+class Rectangle:
+    """A class representing a rectangle."""
+    
+    def __init__(self, width, height):
+        """Initialize rectangle dimensions."""
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        """Calculate the area of the rectangle."""
+        return self.width * self.height
+    
+    def perimeter(self):
+        """Calculate the perimeter of the rectangle."""
+        return 2 * (self.width + self.height)
+    
+    def describe(self):
+        """Return a description of the rectangle."""
+        return f"Rectangle {self.width}x{self.height}"
+
+# Using methods
+rect = Rectangle(5, 3)
+print(f"Rectangle: {rect.describe()}")
+print(f"Area: {rect.area()}")
+print(f"Perimeter: {rect.perimeter()}")
+
+# -----------------------------------------------------------------------------
+# 4. The self Parameter
+# -----------------------------------------------------------------------------
+# self refers to the current instance
+
+print("\n--- Understanding self ---")
+
+class Counter:
+    """A class demonstrating self."""
+    
+    def __init__(self):
+        """Initialize counter to 0."""
+        self.count = 0
+    
+    def increment(self):
+        """Increase count by 1."""
+        self.count += 1  # self.count refers to this instance's count
+        return self
+    
+    def decrement(self):
+        """Decrease count by 1."""
+        self.count -= 1
+        return self
+    
+    def reset(self):
+        """Reset count to 0."""
+        self.count = 0
+        return self
+    
+    def get_count(self):
+        """Return current count."""
+        return self.count
+
+counter1 = Counter()
+counter2 = Counter()
+
+counter1.increment()
+counter1.increment()
+counter1.increment()
+
+counter2.increment()
+
+print(f"Counter 1: {counter1.get_count()}")  # 3
+print(f"Counter 2: {counter2.get_count()}")  # 1 - separate instance!
+
+# Method chaining (returning self)
+counter1.reset().increment().increment()
+print(f"After chaining: {counter1.get_count()}")
+
+# -----------------------------------------------------------------------------
+# 5. Class Attributes
+# -----------------------------------------------------------------------------
+# Attributes shared by all instances of a class
+
+print("\n--- Class Attributes ---")
+
+class Car:
+    """A class with class attributes."""
+    
+    # Class attribute - shared by all instances
+    wheels = 4
+    count = 0  # Track number of cars created
+    
+    def __init__(self, brand, model):
+        """Initialize car with brand and model."""
+        self.brand = brand  # Instance attribute
+        self.model = model  # Instance attribute
+        Car.count += 1  # Increment class attribute
+    
+    def describe(self):
+        """Describe the car."""
+        return f"{self.brand} {self.model} ({Car.wheels} wheels)"
+
+# Creating cars
+car1 = Car("Toyota", "Camry")
+car2 = Car("Honda", "Civic")
+car3 = Car("Ford", "Mustang")
+
+print(f"Car 1: {car1.describe()}")
+print(f"Car 2: {car2.describe()}")
+print(f"Total cars created: {Car.count}")
+
+# Accessing class attribute from class or instance
+print(f"Car.wheels: {Car.wheels}")
+print(f"car1.wheels: {car1.wheels}")
+
+# Modifying class attribute
+Car.wheels = 6  # Now all cars have 6 wheels
+print(f"After modification - car1.wheels: {car1.wheels}")
+print(f"After modification - car2.wheels: {car2.wheels}")
+
+# -----------------------------------------------------------------------------
+# 6. Private Attributes (Convention)
+# -----------------------------------------------------------------------------
+# Python uses naming conventions for privacy
+
+print("\n--- Private Attributes ---")
+
+class BankAccount:
+    """A class demonstrating private attributes."""
+    
+    def __init__(self, owner, balance=0):
+        """Initialize bank account."""
+        self.owner = owner          # Public
+        self._balance = balance     # Protected (convention)
+        self.__id = id(self)        # Private (name mangling)
+    
+    def deposit(self, amount):
+        """Deposit money into account."""
+        if amount > 0:
+            self._balance += amount
+            return True
+        return False
+    
+    def withdraw(self, amount):
+        """Withdraw money from account."""
+        if 0 < amount <= self._balance:
+            self._balance -= amount
+            return True
+        return False
+    
+    def get_balance(self):
+        """Get current balance."""
+        return self._balance
+
+account = BankAccount("Alice", 1000)
+account.deposit(500)
+account.withdraw(200)
+print(f"Account owner: {account.owner}")
+print(f"Balance: {account.get_balance()}")
+
+# Can still access protected (but shouldn't)
+print(f"Protected _balance: {account._balance}")
+
+# Mangled name for private
+print(f"Mangled private __id: {account._BankAccount__id}")
+
+# -----------------------------------------------------------------------------
+# 7. Methods that Return New Objects
+# -----------------------------------------------------------------------------
+
+print("\n--- Returning Objects ---")
+
+class Point:
+    """A class representing a 2D point."""
+    
+    def __init__(self, x, y):
+        """Initialize point coordinates."""
+        self.x = x
+        self.y = y
+    
+    def move(self, dx, dy):
+        """Return a new point moved by (dx, dy)."""
+        return Point(self.x + dx, self.y + dy)
+    
+    def distance_to(self, other):
+        """Calculate distance to another point."""
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+    
+    def __str__(self):
+        """String representation."""
+        return f"Point({self.x}, {self.y})"
+
+p1 = Point(0, 0)
+p2 = p1.move(3, 4)
+print(f"Original point: {p1}")
+print(f"New point: {p2}")
+print(f"Distance: {p1.distance_to(p2)}")
+
+# -----------------------------------------------------------------------------
+# 8. Special Methods (Dunder Methods)
+# -----------------------------------------------------------------------------
+# Methods with double underscores have special meanings
+
+print("\n--- Special Methods ---")
+
+class Vector:
+    """A class demonstrating special methods."""
+    
+    def __init__(self, x, y):
+        """Initialize vector."""
+        self.x = x
+        self.y = y
+    
+    def __str__(self):
+        """Human-readable string representation."""
+        return f"Vector({self.x}, {self.y})"
+    
+    def __repr__(self):
+        """Developer representation (for debugging)."""
+        return f"Vector(x={self.x}, y={self.y})"
+    
+    def __len__(self):
+        """Length (in this case, magnitude as int)."""
+        return int((self.x ** 2 + self.y ** 2) ** 0.5)
+    
+    def __add__(self, other):
+        """Add two vectors."""
+        return Vector(self.x + other.x, self.y + other.y)
+    
+    def __eq__(self, other):
+        """Check equality."""
+        return self.x == other.x and self.y == other.y
+
+v1 = Vector(3, 4)
+v2 = Vector(1, 2)
+v3 = v1 + v2  # Uses __add__
+
+print(f"v1: {v1}")           # Uses __str__
+print(f"v1 + v2 = {v3}")     # Uses __add__ and __str__
+print(f"len(v1): {len(v1)}") # Uses __len__
+print(f"v1 == Vector(3, 4): {v1 == Vector(3, 4)}")  # Uses __eq__
+
+# -----------------------------------------------------------------------------
+# 9. Practical Example: Student Class
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Example: Student ---")
+
+class Student:
+    """A class representing a student."""
+    
+    school_name = "Python Academy"  # Class attribute
+    
+    def __init__(self, name, student_id):
+        """Initialize student."""
+        self.name = name
+        self.student_id = student_id
+        self.grades = []
+    
+    def add_grade(self, grade):
+        """Add a grade (0-100)."""
+        if 0 <= grade <= 100:
+            self.grades.append(grade)
+            return True
+        return False
+    
+    def get_average(self):
+        """Calculate grade average."""
+        if not self.grades:
+            return 0
+        return sum(self.grades) / len(self.grades)
+    
+    def get_letter_grade(self):
+        """Get letter grade based on average."""
+        avg = self.get_average()
+        if avg >= 90: return 'A'
+        if avg >= 80: return 'B'
+        if avg >= 70: return 'C'
+        if avg >= 60: return 'D'
+        return 'F'
+    
+    def __str__(self):
+        """String representation."""
+        return f"{self.name} (ID: {self.student_id}) - {self.school_name}"
+
+# Using the Student class
+student = Student("Baraa", "S12345")
+student.add_grade(85)
+student.add_grade(90)
+student.add_grade(78)
+
+print(student)
+print(f"Grades: {student.grades}")
+print(f"Average: {student.get_average():.1f}")
+print(f"Letter Grade: {student.get_letter_grade()}")
+
+# -----------------------------------------------------------------------------
+# 10. Summary
+# -----------------------------------------------------------------------------
+
+print("\n--- Summary ---")
+
+summary = """
+Key OOP concepts:
+  - Class: Blueprint for objects
+  - Object: Instance of a class
+  - self: Reference to current instance
+  - __init__: Constructor method
+  - Instance attributes: Unique to each object
+  - Class attributes: Shared by all instances
+  - Methods: Functions that belong to a class
+  - Special methods: __str__, __repr__, __add__, etc.
+"""
+
+print(summary)
+```

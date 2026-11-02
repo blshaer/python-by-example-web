@@ -1,0 +1,226 @@
+---
+title: "Multiple Conditions with elif"
+section: "Control Flow"
+sectionSlug: control-flow
+sectionSummary: "Conditionals, elif, and match/case."
+order: 2
+sourceFile: 02_control_flow/02_elif.py
+---
+
+This file demonstrates how to handle multiple conditions using 'elif' (else if). When you have more than two possible outcomes, elif allows you to check multiple conditions in sequence.
+
+```python
+"""
+================================================================================
+File: 02_elif.py
+Topic: Multiple Conditions with elif
+================================================================================
+
+This file demonstrates how to handle multiple conditions using 'elif' (else if).
+When you have more than two possible outcomes, elif allows you to check
+multiple conditions in sequence.
+
+Key Concepts:
+- elif chains for multiple conditions
+- Order matters - first True condition wins
+- Default case with else
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic elif Structure
+# -----------------------------------------------------------------------------
+# Check multiple conditions in sequence
+
+score = 85
+
+print("--- Grade Calculator ---")
+
+if score >= 90:
+    grade = "A"
+    print("Excellent work!")
+elif score >= 80:
+    grade = "B"
+    print("Good job!")
+elif score >= 70:
+    grade = "C"
+    print("Satisfactory.")
+elif score >= 60:
+    grade = "D"
+    print("You passed, but need improvement.")
+else:
+    grade = "F"
+    print("You need to study harder.")
+
+print(f"Your grade: {grade}")
+
+# -----------------------------------------------------------------------------
+# 2. Order Matters in elif
+# -----------------------------------------------------------------------------
+# The first condition that evaluates to True will be executed
+
+print("\n--- Order Matters Example ---")
+
+number = 15
+
+# Correct order (most specific first)
+if number > 20:
+    print("Greater than 20")
+elif number > 10:
+    print("Greater than 10")  # This will execute
+elif number > 5:
+    print("Greater than 5")
+else:
+    print("5 or less")
+
+# -----------------------------------------------------------------------------
+# 3. Day of the Week Example
+# -----------------------------------------------------------------------------
+# Classic example showing multiple discrete options
+
+print("\n--- Day of the Week ---")
+
+day = 3  # 1=Monday, 2=Tuesday, etc.
+
+if day == 1:
+    day_name = "Monday"
+elif day == 2:
+    day_name = "Tuesday"
+elif day == 3:
+    day_name = "Wednesday"
+elif day == 4:
+    day_name = "Thursday"
+elif day == 5:
+    day_name = "Friday"
+elif day == 6:
+    day_name = "Saturday"
+elif day == 7:
+    day_name = "Sunday"
+else:
+    day_name = "Invalid day"
+
+print(f"Day {day} is {day_name}")
+
+# -----------------------------------------------------------------------------
+# 4. Temperature Categories
+# -----------------------------------------------------------------------------
+# Real-world example with ranges
+
+print("\n--- Temperature Categories ---")
+
+celsius = 22
+
+if celsius < 0:
+    category = "Freezing"
+    advice = "Stay indoors if possible!"
+elif celsius < 10:
+    category = "Cold"
+    advice = "Wear a warm jacket."
+elif celsius < 20:
+    category = "Cool"
+    advice = "A light jacket is recommended."
+elif celsius < 30:
+    category = "Warm"
+    advice = "Perfect weather for outdoor activities."
+else:
+    category = "Hot"
+    advice = "Stay hydrated!"
+
+print(f"Temperature: {celsius}°C")
+print(f"Category: {category}")
+print(f"Advice: {advice}")
+
+# -----------------------------------------------------------------------------
+# 5. BMI Calculator Example
+# -----------------------------------------------------------------------------
+# Practical health-related example
+
+print("\n--- BMI Calculator ---")
+
+weight = 70  # kg
+height = 1.75  # meters
+
+bmi = weight / (height ** 2)
+
+if bmi < 18.5:
+    category = "Underweight"
+elif bmi < 25:
+    category = "Normal weight"
+elif bmi < 30:
+    category = "Overweight"
+else:
+    category = "Obese"
+
+print(f"BMI: {bmi:.1f}")
+print(f"Category: {category}")
+
+# -----------------------------------------------------------------------------
+# 6. Age Group Classification
+# -----------------------------------------------------------------------------
+# Using elif for demographic categories
+
+print("\n--- Age Group Classification ---")
+
+age = 25
+
+if age < 0:
+    group = "Invalid age"
+elif age < 13:
+    group = "Child"
+elif age < 20:
+    group = "Teenager"
+elif age < 30:
+    group = "Young Adult"
+elif age < 60:
+    group = "Adult"
+else:
+    group = "Senior"
+
+print(f"Age {age} belongs to: {group}")
+
+# -----------------------------------------------------------------------------
+# 7. Combined Conditions with elif
+# -----------------------------------------------------------------------------
+# Using logical operators within elif
+
+print("\n--- Combined Conditions ---")
+
+hour = 14  # 24-hour format
+is_weekend = False
+
+if hour < 6:
+    greeting = "It's very early!"
+elif hour < 12 and not is_weekend:
+    greeting = "Good morning, time to work!"
+elif hour < 12 and is_weekend:
+    greeting = "Good morning, enjoy your day off!"
+elif hour < 18:
+    greeting = "Good afternoon!"
+elif hour < 22:
+    greeting = "Good evening!"
+else:
+    greeting = "Good night!"
+
+print(f"Hour: {hour}:00 - {greeting}")
+
+# -----------------------------------------------------------------------------
+# 8. Handling User Input Example
+# -----------------------------------------------------------------------------
+
+print("\n--- Menu Selection Example ---")
+
+# Simulating user choice (in real code, you'd use input())
+choice = "B"
+
+if choice == "A" or choice == "a":
+    print("You selected: Start Game")
+elif choice == "B" or choice == "b":
+    print("You selected: Load Game")
+elif choice == "C" or choice == "c":
+    print("You selected: Settings")
+elif choice == "Q" or choice == "q":
+    print("Goodbye!")
+else:
+    print("Invalid choice. Please try again.")
+```

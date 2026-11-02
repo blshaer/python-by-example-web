@@ -1,0 +1,286 @@
+---
+title: "Importing Modules and Packages in Python"
+section: "Modules and Packages"
+sectionSlug: modules-packages
+sectionSummary: "Imports and custom modules."
+order: 1
+sourceFile: 06_modules_packages/01_imports.py
+---
+
+This file demonstrates how to import and use modules in Python. Modules are files containing Python code that can be reused across different programs. Python's extensive standard library and third-party packages make imports essential for productive development.
+
+```python
+"""
+================================================================================
+File: 01_imports.py
+Topic: Importing Modules and Packages in Python
+================================================================================
+
+This file demonstrates how to import and use modules in Python. Modules are
+files containing Python code that can be reused across different programs.
+Python's extensive standard library and third-party packages make imports
+essential for productive development.
+
+Key Concepts:
+- import statement
+- from ... import ...
+- Aliasing with 'as'
+- Built-in and standard library modules
+- Relative imports
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic Import Statement
+# -----------------------------------------------------------------------------
+# Import entire module
+
+print("--- Basic Import ---")
+
+import math
+
+# Access functions using module.function
+print(f"math.pi = {math.pi}")
+print(f"math.sqrt(16) = {math.sqrt(16)}")
+print(f"math.ceil(3.2) = {math.ceil(3.2)}")
+print(f"math.floor(3.8) = {math.floor(3.8)}")
+
+# -----------------------------------------------------------------------------
+# 2. Import Specific Items
+# -----------------------------------------------------------------------------
+# Import only what you need
+
+print("\n--- From Import ---")
+
+from math import pi, sqrt, pow
+
+# Use directly without module prefix
+print(f"pi = {pi}")
+print(f"sqrt(25) = {sqrt(25)}")
+print(f"pow(2, 8) = {pow(2, 8)}")
+
+# Import multiple items
+from datetime import date, time, datetime
+
+today = date.today()
+print(f"\nToday's date: {today}")
+
+now = datetime.now()
+print(f"Current datetime: {now}")
+
+# -----------------------------------------------------------------------------
+# 3. Import with Alias
+# -----------------------------------------------------------------------------
+# Rename modules or items for convenience
+
+print("\n--- Import with Alias ---")
+
+# Module alias
+import random as rnd
+
+print(f"Random number: {rnd.randint(1, 100)}")
+print(f"Random choice: {rnd.choice(['apple', 'banana', 'cherry'])}")
+
+# Common conventions
+import collections as col
+import json as json  # Usually kept as is
+import os as os      # Usually kept as is
+
+# Item alias
+from math import factorial as fact
+print(f"\nfact(5) = {fact(5)}")
+
+# -----------------------------------------------------------------------------
+# 4. Import All (Use Sparingly)
+# -----------------------------------------------------------------------------
+# Import everything from a module
+
+print("\n--- Import All (Not Recommended) ---")
+
+# from math import *  
+# This imports everything, but:
+# - Can cause naming conflicts
+# - Makes it unclear where functions come from
+# - Only use in interactive sessions if at all
+
+# Better to be explicit about what you import
+
+# -----------------------------------------------------------------------------
+# 5. Useful Standard Library Modules
+# -----------------------------------------------------------------------------
+
+print("\n--- Standard Library Examples ---")
+
+# os - Operating system interface
+import os
+print(f"Current directory: {os.getcwd()}")
+print(f"Directory separator: {os.sep}")
+
+# sys - System-specific parameters
+import sys
+print(f"\nPython version: {sys.version_info.major}.{sys.version_info.minor}")
+
+# collections - Specialized containers
+from collections import Counter, defaultdict
+
+word_counts = Counter("mississippi")
+print(f"\nCharacter counts: {dict(word_counts)}")
+
+# Default dictionary
+dd = defaultdict(list)
+dd["fruits"].append("apple")
+dd["fruits"].append("banana")
+dd["vegetables"].append("carrot")
+print(f"defaultdict: {dict(dd)}")
+
+# json - JSON encoding/decoding
+import json
+
+data = {"name": "Alice", "age": 30}
+json_string = json.dumps(data, indent=2)
+print(f"\nJSON string:\n{json_string}")
+
+# re - Regular expressions
+import re
+
+text = "Contact: john@email.com or jane@company.org"
+emails = re.findall(r'\b[\w.-]+@[\w.-]+\.\w+\b', text)
+print(f"Found emails: {emails}")
+
+# itertools - Iteration utilities
+from itertools import combinations, permutations
+
+items = ['A', 'B', 'C']
+print(f"\nCombinations of 2: {list(combinations(items, 2))}")
+print(f"Permutations of 2: {list(permutations(items, 2))}")
+
+# functools - Higher-order functions
+from functools import lru_cache
+
+@lru_cache(maxsize=100)
+def fibonacci(n):
+    """Cached fibonacci for performance."""
+    if n < 2:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(f"\nFibonacci(30): {fibonacci(30)}")
+print(f"Cache info: {fibonacci.cache_info()}")
+
+# -----------------------------------------------------------------------------
+# 6. Checking Module Attributes
+# -----------------------------------------------------------------------------
+
+print("\n--- Module Attributes ---")
+
+import math
+
+# List all attributes/functions in a module
+print("Math module functions (first 10):")
+for name in dir(math)[:10]:
+    print(f"  {name}")
+
+# Module docstring
+print(f"\nMath module doc: {math.__doc__[:50]}...")
+
+# Module file location
+print(f"Math module file: {math.__file__}")
+
+# -----------------------------------------------------------------------------
+# 7. Conditional Imports
+# -----------------------------------------------------------------------------
+
+print("\n--- Conditional Imports ---")
+
+# Try to import, use fallback if not available
+try:
+    import numpy as np
+    HAS_NUMPY = True
+    print("NumPy is available")
+except ImportError:
+    HAS_NUMPY = False
+    print("NumPy is NOT available")
+
+# Another pattern
+import sys
+if sys.version_info >= (3, 9):
+    from typing import Annotated  # Python 3.9+
+else:
+    print("Annotated not available (Python < 3.9)")
+
+# -----------------------------------------------------------------------------
+# 8. Module Search Path
+# -----------------------------------------------------------------------------
+
+print("\n--- Module Search Path ---")
+
+import sys
+
+print("Python searches for modules in:")
+for i, path in enumerate(sys.path[:5]):  # First 5 paths
+    print(f"  {i+1}. {path}")
+print(f"  ... and {len(sys.path) - 5} more locations")
+
+# Adding custom path (temporarily)
+# sys.path.append('/my/custom/modules')
+
+# -----------------------------------------------------------------------------
+# 9. Import Patterns in Projects
+# -----------------------------------------------------------------------------
+
+print("\n--- Import Best Practices ---")
+
+# Standard order for imports:
+# 1. Standard library imports
+# 2. Third-party imports
+# 3. Local/project imports
+
+# Example of well-organized imports:
+"""
+# Standard library
+import os
+import sys
+from datetime import datetime
+from typing import List, Dict
+
+# Third-party (installed via pip)
+import requests
+import numpy as np
+import pandas as pd
+
+# Local/project modules
+from myproject.utils import helper
+from myproject.models import User
+"""
+
+print("Import order: Standard -> Third-party -> Local")
+print("Group imports with blank lines between groups")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Example: Building a Utility
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Example ---")
+
+# Using multiple modules together
+import os
+import json
+from datetime import datetime
+from pathlib import Path
+
+def get_system_info():
+    """Gather system information using various modules."""
+    return {
+        "python_version": f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
+        "platform": sys.platform,
+        "cwd": os.getcwd(),
+        "home_dir": str(Path.home()),
+        "timestamp": datetime.now().isoformat(),
+        "path_separator": os.sep
+    }
+
+info = get_system_info()
+print("System Info:")
+print(json.dumps(info, indent=2))
+```

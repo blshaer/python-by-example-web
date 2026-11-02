@@ -1,0 +1,348 @@
+---
+title: "Exception Handling with try-except"
+section: "Error Handling"
+sectionSlug: error-handling
+sectionSummary: "try/except and custom exceptions."
+order: 1
+sourceFile: 07_error_handling/01_try_except.py
+---
+
+This file demonstrates error handling in Python using try-except blocks. Proper error handling makes your code more robust and user-friendly by gracefully managing unexpected situations.
+
+```python
+"""
+================================================================================
+File: 01_try_except.py
+Topic: Exception Handling with try-except
+================================================================================
+
+This file demonstrates error handling in Python using try-except blocks.
+Proper error handling makes your code more robust and user-friendly by
+gracefully managing unexpected situations.
+
+Key Concepts:
+- try, except, else, finally blocks
+- Catching specific exceptions
+- Exception hierarchy
+- Raising exceptions
+- Getting exception information
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic try-except
+# -----------------------------------------------------------------------------
+# Catch and handle errors that would otherwise crash your program
+
+print("--- Basic try-except ---")
+
+# Without error handling - this would crash:
+# result = 10 / 0  # ZeroDivisionError!
+
+# With error handling:
+try:
+    result = 10 / 0
+except:
+    print("An error occurred!")
+
+# Better - catch specific exception:
+try:
+    result = 10 / 0
+except ZeroDivisionError:
+    print("Cannot divide by zero!")
+    result = 0
+
+print(f"Result: {result}")
+
+# -----------------------------------------------------------------------------
+# 2. Catching Specific Exceptions
+# -----------------------------------------------------------------------------
+# Different errors need different handling
+
+print("\n--- Catching Specific Exceptions ---")
+
+def safe_divide(a, b):
+    """Divide with specific error handling."""
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        print("  Error: Cannot divide by zero")
+        return None
+    except TypeError:
+        print("  Error: Invalid types for division")
+        return None
+    return result
+
+print(f"10 / 2 = {safe_divide(10, 2)}")
+print(f"10 / 0 = {safe_divide(10, 0)}")
+print(f"10 / 'a' = {safe_divide(10, 'a')}")
+
+# -----------------------------------------------------------------------------
+# 3. Catching Multiple Exceptions
+# -----------------------------------------------------------------------------
+
+print("\n--- Multiple Exceptions ---")
+
+# Catch multiple in one line
+def process_number(value):
+    """Process a number with multiple exception handlers."""
+    try:
+        # This might raise ValueError or TypeError
+        number = int(value)
+        result = 100 / number
+        return result
+    except (ValueError, TypeError) as e:
+        print(f"  Conversion error: {e}")
+        return None
+    except ZeroDivisionError:
+        print("  Cannot divide by zero")
+        return None
+
+print(f"process_number('5'): {process_number('5')}")
+print(f"process_number('abc'): {process_number('abc')}")
+print(f"process_number('0'): {process_number('0')}")
+
+# -----------------------------------------------------------------------------
+# 4. The else Clause
+# -----------------------------------------------------------------------------
+# Runs only if no exception occurred
+
+print("\n--- The else Clause ---")
+
+def divide_with_else(a, b):
+    """Division with else clause for success logging."""
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        print("  Division failed: Cannot divide by zero")
+        return None
+    else:
+        # Only runs if try block succeeded
+        print(f"  Division successful: {a} / {b} = {result}")
+        return result
+
+divide_with_else(10, 2)
+divide_with_else(10, 0)
+
+# -----------------------------------------------------------------------------
+# 5. The finally Clause
+# -----------------------------------------------------------------------------
+# Always runs, regardless of whether an exception occurred
+
+print("\n--- The finally Clause ---")
+
+def read_file_example(filename):
+    """Demonstrate finally for cleanup."""
+    file = None
+    try:
+        print(f"  Attempting to open '{filename}'...")
+        # Simulating file operation
+        if filename == "missing.txt":
+            raise FileNotFoundError("File not found")
+        print("  File opened successfully!")
+        return "File content"
+    except FileNotFoundError as e:
+        print(f"  Error: {e}")
+        return None
+    finally:
+        # This ALWAYS runs
+        print("  Cleanup: Closing file (if open)")
+
+read_file_example("data.txt")
+print()
+read_file_example("missing.txt")
+
+# Real-world pattern with file
+print("\n--- Real file handling ---")
+
+# Best practice: use 'with' statement (handles cleanup automatically)
+# But for learning, here's the try-finally pattern:
+"""
+file = None
+try:
+    file = open("data.txt", "r")
+    content = file.read()
+finally:
+    if file:
+        file.close()  # Always closes, even if error occurred
+"""
+
+# -----------------------------------------------------------------------------
+# 6. Complete try-except-else-finally
+# -----------------------------------------------------------------------------
+
+print("\n--- Complete Pattern ---")
+
+def complete_example(value):
+    """Show all four clauses in action."""
+    print(f"\n  Processing: {value}")
+    try:
+        number = int(value)
+        result = 100 / number
+    except ValueError:
+        print("  EXCEPT: Not a valid integer")
+        result = None
+    except ZeroDivisionError:
+        print("  EXCEPT: Division by zero")
+        result = None
+    else:
+        print(f"  ELSE: Success! Result = {result}")
+    finally:
+        print("  FINALLY: This always runs")
+    
+    return result
+
+complete_example("10")
+complete_example("abc")
+complete_example("0")
+
+# -----------------------------------------------------------------------------
+# 7. Getting Exception Information
+# -----------------------------------------------------------------------------
+
+print("\n--- Exception Information ---")
+
+try:
+    numbers = [1, 2, 3]
+    print(numbers[10])
+except IndexError as e:
+    print(f"Exception type: {type(e).__name__}")
+    print(f"Exception message: {e}")
+    print(f"Exception args: {e.args}")
+
+# Getting full traceback
+import traceback
+
+try:
+    result = 1 / 0
+except ZeroDivisionError:
+    print("\nFull traceback:")
+    traceback.print_exc()
+
+# -----------------------------------------------------------------------------
+# 8. Common Built-in Exceptions
+# -----------------------------------------------------------------------------
+
+print("\n--- Common Exceptions ---")
+
+exceptions_demo = [
+    ("ValueError", "int('abc')"),
+    ("TypeError", "'2' + 2"),
+    ("IndexError", "[1,2,3][10]"),
+    ("KeyError", "{}['missing']"),
+    ("AttributeError", "'string'.missing_method()"),
+    ("FileNotFoundError", "open('nonexistent.txt')"),
+    ("ZeroDivisionError", "1/0"),
+    ("ImportError", "import nonexistent_module"),
+    ("NameError", "undefined_variable"),
+]
+
+print("Common exception types:")
+for name, example in exceptions_demo:
+    print(f"  {name}: {example}")
+
+# -----------------------------------------------------------------------------
+# 9. Exception Hierarchy
+# -----------------------------------------------------------------------------
+
+print("\n--- Exception Hierarchy ---")
+
+# All exceptions inherit from BaseException
+# Most use Exception as base
+
+hierarchy = """
+BaseException
+├── SystemExit
+├── KeyboardInterrupt
+├── GeneratorExit
+└── Exception
+    ├── StopIteration
+    ├── ArithmeticError
+    │   ├── ZeroDivisionError
+    │   ├── FloatingPointError
+    │   └── OverflowError
+    ├── LookupError
+    │   ├── IndexError
+    │   └── KeyError
+    ├── ValueError
+    ├── TypeError
+    ├── AttributeError
+    ├── OSError
+    │   ├── FileNotFoundError
+    │   └── PermissionError
+    └── RuntimeError
+"""
+
+print("Exception hierarchy (simplified):")
+print(hierarchy)
+
+# Catching parent catches all children
+try:
+    result = 1 / 0
+except ArithmeticError:  # Catches ZeroDivisionError too!
+    print("Caught an arithmetic error (parent class)")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# Example 1: User input validation
+def get_positive_number(prompt):
+    """Get a positive number from user (simulated)."""
+    test_inputs = ["abc", "-5", "0", "10"]
+    
+    for user_input in test_inputs:
+        print(f"  Input: '{user_input}'", end=" → ")
+        try:
+            number = float(user_input)
+            if number <= 0:
+                raise ValueError("Number must be positive")
+            print(f"Valid! ({number})")
+            return number
+        except ValueError as e:
+            print(f"Invalid: {e}")
+    return None
+
+print("User input validation:")
+get_positive_number("Enter a positive number: ")
+
+# Example 2: Safe dictionary access
+def safe_get(dictionary, *keys, default=None):
+    """Safely navigate nested dictionary."""
+    current = dictionary
+    try:
+        for key in keys:
+            current = current[key]
+        return current
+    except (KeyError, TypeError):
+        return default
+
+data = {"user": {"profile": {"name": "Alice"}}}
+print(f"\nNested access: {safe_get(data, 'user', 'profile', 'name')}")
+print(f"Missing key: {safe_get(data, 'user', 'missing', 'name', default='N/A')}")
+
+# Example 3: Retry pattern
+def fetch_with_retry(max_retries=3):
+    """Simulate fetching with retry on failure."""
+    import random
+    
+    for attempt in range(1, max_retries + 1):
+        try:
+            print(f"  Attempt {attempt}...", end=" ")
+            # Simulate random failure
+            if random.random() < 0.7:  # 70% chance of failure
+                raise ConnectionError("Network error")
+            print("Success!")
+            return "Data"
+        except ConnectionError as e:
+            print(f"Failed: {e}")
+            if attempt == max_retries:
+                print("  All retries exhausted!")
+                return None
+
+print("\nRetry pattern:")
+fetch_with_retry()
+```

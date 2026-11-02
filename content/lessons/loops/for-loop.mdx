@@ -1,0 +1,241 @@
+---
+title: "For Loops in Python"
+section: "Loops"
+sectionSlug: loops
+sectionSummary: "for, while, break, and continue."
+order: 1
+sourceFile: 03_loops/01_for_loop.py
+---
+
+This file demonstrates the 'for' loop in Python, which is used to iterate over sequences (lists, tuples, strings, ranges, etc.) or any iterable object.
+
+```python
+"""
+================================================================================
+File: 01_for_loop.py
+Topic: For Loops in Python
+================================================================================
+
+This file demonstrates the 'for' loop in Python, which is used to iterate
+over sequences (lists, tuples, strings, ranges, etc.) or any iterable object.
+
+Key Concepts:
+- Basic for loop syntax
+- range() function for numeric iterations
+- Iterating over different data types
+- enumerate() for index and value
+- zip() for parallel iteration
+- Nested for loops
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic For Loop
+# -----------------------------------------------------------------------------
+# Iterate over items in a sequence
+
+print("--- Basic For Loop ---")
+
+fruits = ["apple", "banana", "cherry", "date"]
+
+for fruit in fruits:
+    print(f"I like {fruit}")
+
+# -----------------------------------------------------------------------------
+# 2. Using range() Function
+# -----------------------------------------------------------------------------
+# range(start, stop, step) - generates numbers from start to stop-1
+
+print("\n--- Using range() ---")
+
+# range(5) generates 0, 1, 2, 3, 4
+print("range(5):")
+for i in range(5):
+    print(i, end=" ")
+print()
+
+# range(2, 8) generates 2, 3, 4, 5, 6, 7
+print("\nrange(2, 8):")
+for i in range(2, 8):
+    print(i, end=" ")
+print()
+
+# range(0, 10, 2) generates 0, 2, 4, 6, 8 (step of 2)
+print("\nrange(0, 10, 2):")
+for i in range(0, 10, 2):
+    print(i, end=" ")
+print()
+
+# Counting backwards: range(10, 0, -1)
+print("\nrange(10, 0, -1) - Countdown:")
+for i in range(10, 0, -1):
+    print(i, end=" ")
+print("Blastoff!")
+
+# -----------------------------------------------------------------------------
+# 3. Iterating Over Strings
+# -----------------------------------------------------------------------------
+# Each character in a string is an item
+
+print("\n--- Iterating Over Strings ---")
+
+word = "Python"
+print(f"Characters in '{word}':")
+
+for char in word:
+    print(f"  {char}")
+
+# -----------------------------------------------------------------------------
+# 4. Using enumerate() - Get Index and Value
+# -----------------------------------------------------------------------------
+# enumerate() provides both the index and the item
+
+print("\n--- Using enumerate() ---")
+
+languages = ["Python", "JavaScript", "C++", "Rust"]
+
+for index, language in enumerate(languages):
+    print(f"{index + 1}. {language}")
+
+# Start from a custom number
+print("\nWith custom start:")
+for rank, language in enumerate(languages, start=1):
+    print(f"Rank {rank}: {language}")
+
+# -----------------------------------------------------------------------------
+# 5. Using zip() - Parallel Iteration
+# -----------------------------------------------------------------------------
+# zip() combines multiple iterables and iterates over them together
+
+print("\n--- Using zip() ---")
+
+names = ["Alice", "Bob", "Charlie"]
+ages = [25, 30, 35]
+cities = ["New York", "London", "Tokyo"]
+
+# Iterate over multiple lists simultaneously
+for name, age, city in zip(names, ages, cities):
+    print(f"{name} is {age} years old and lives in {city}")
+
+# -----------------------------------------------------------------------------
+# 6. Iterating Over Dictionaries
+# -----------------------------------------------------------------------------
+# Different ways to loop through dictionary data
+
+print("\n--- Iterating Over Dictionaries ---")
+
+person = {
+    "name": "Baraa",
+    "age": 25,
+    "city": "Gaza",
+    "profession": "Developer"
+}
+
+# Keys only (default)
+print("Keys:")
+for key in person:
+    print(f"  {key}")
+
+# Values only
+print("\nValues:")
+for value in person.values():
+    print(f"  {value}")
+
+# Both keys and values
+print("\nKey-Value pairs:")
+for key, value in person.items():
+    print(f"  {key}: {value}")
+
+# -----------------------------------------------------------------------------
+# 7. Nested For Loops
+# -----------------------------------------------------------------------------
+# A loop inside another loop
+
+print("\n--- Nested For Loops ---")
+
+# Multiplication table
+print("Multiplication Table (1-5):")
+for i in range(1, 6):
+    for j in range(1, 6):
+        print(f"{i * j:3}", end=" ")
+    print()  # New line after each row
+
+# Working with 2D lists (matrices)
+print("\n2D Matrix:")
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+for row in matrix:
+    for cell in row:
+        print(f"{cell}", end=" ")
+    print()
+
+# -----------------------------------------------------------------------------
+# 8. Else Clause in For Loop
+# -----------------------------------------------------------------------------
+# The else block executes when the loop completes without break
+
+print("\n--- For-Else Clause ---")
+
+# Search for a number
+numbers = [1, 3, 5, 7, 9]
+search_for = 5
+
+for num in numbers:
+    if num == search_for:
+        print(f"Found {search_for}!")
+        break
+else:
+    print(f"{search_for} was not found.")
+
+# -----------------------------------------------------------------------------
+# 9. List Comprehension (Related to For Loops)
+# -----------------------------------------------------------------------------
+# A concise way to create lists using for loops
+
+print("\n--- List Comprehension Preview ---")
+
+# Traditional way
+squares_traditional = []
+for x in range(1, 6):
+    squares_traditional.append(x ** 2)
+print(f"Traditional: {squares_traditional}")
+
+# List comprehension way
+squares_comprehension = [x ** 2 for x in range(1, 6)]
+print(f"Comprehension: {squares_comprehension}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# Sum of numbers
+numbers = [10, 20, 30, 40, 50]
+total = 0
+for num in numbers:
+    total += num
+print(f"Sum of {numbers} = {total}")
+
+# Finding maximum
+values = [23, 45, 12, 78, 34]
+maximum = values[0]
+for value in values:
+    if value > maximum:
+        maximum = value
+print(f"Maximum in {values} = {maximum}")
+
+# Counting vowels in a string
+text = "Hello, World!"
+vowels = "aeiouAEIOU"
+vowel_count = 0
+for char in text:
+    if char in vowels:
+        vowel_count += 1
+print(f"Vowels in '{text}': {vowel_count}")
+```

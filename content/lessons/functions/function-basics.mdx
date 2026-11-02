@@ -1,0 +1,350 @@
+---
+title: "Python Functions - Basic Concepts"
+section: "Functions"
+sectionSlug: functions
+sectionSummary: "Arguments, returns, and lambdas."
+order: 1
+sourceFile: 05_functions/01_function_basics.py
+---
+
+This file demonstrates the fundamentals of functions in Python. Functions are reusable blocks of code that perform specific tasks, making your code more organized, readable, and maintainable.
+
+```python
+"""
+================================================================================
+File: 01_function_basics.py
+Topic: Python Functions - Basic Concepts
+================================================================================
+
+This file demonstrates the fundamentals of functions in Python. Functions
+are reusable blocks of code that perform specific tasks, making your code
+more organized, readable, and maintainable.
+
+Key Concepts:
+- Defining functions with def
+- Calling functions
+- Function documentation (docstrings)
+- Variable scope (local vs global)
+- Basic parameters
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Defining and Calling Functions
+# -----------------------------------------------------------------------------
+# Use 'def' keyword to define a function
+
+print("--- Defining and Calling Functions ---")
+
+# Simple function with no parameters
+def greet():
+    """Print a greeting message."""
+    print("Hello, World!")
+
+# Call the function
+greet()
+
+# Function with a parameter
+def greet_person(name):
+    """Greet a specific person."""
+    print(f"Hello, {name}!")
+
+greet_person("Baraa")
+greet_person("Sara")
+
+# -----------------------------------------------------------------------------
+# 2. Function with Multiple Parameters
+# -----------------------------------------------------------------------------
+
+print("\n--- Multiple Parameters ---")
+
+def introduce(name, age, city):
+    """Introduce a person with their details."""
+    print(f"My name is {name}, I am {age} years old, and I live in {city}.")
+
+introduce("Ali", 25, "Cairo")
+
+# -----------------------------------------------------------------------------
+# 3. Return Values
+# -----------------------------------------------------------------------------
+# Functions can return values using 'return'
+
+print("\n--- Return Values ---")
+
+def add(a, b):
+    """Add two numbers and return the result."""
+    return a + b
+
+result = add(5, 3)
+print(f"5 + 3 = {result}")
+
+# Using returned value in expressions
+total = add(10, 20) + add(5, 5)
+print(f"(10+20) + (5+5) = {total}")
+
+# Function without explicit return returns None
+def print_message(msg):
+    print(msg)
+
+result = print_message("Hello")
+print(f"Function without return: {result}")  # None
+
+# Early return
+def get_grade(score):
+    """Return letter grade based on score."""
+    if score >= 90:
+        return "A"
+    if score >= 80:
+        return "B"
+    if score >= 70:
+        return "C"
+    if score >= 60:
+        return "D"
+    return "F"
+
+print(f"\nScore 85 → Grade {get_grade(85)}")
+
+# -----------------------------------------------------------------------------
+# 4. Docstrings - Function Documentation
+# -----------------------------------------------------------------------------
+# Use triple quotes to document what a function does
+
+print("\n--- Docstrings ---")
+
+def calculate_area(length, width):
+    """
+    Calculate the area of a rectangle.
+    
+    Args:
+        length: The length of the rectangle (positive number)
+        width: The width of the rectangle (positive number)
+    
+    Returns:
+        The area of the rectangle (length * width)
+    
+    Example:
+        >>> calculate_area(5, 3)
+        15
+    """
+    return length * width
+
+# Access docstring
+print(f"Function docstring:\n{calculate_area.__doc__}")
+
+# Using help()
+# help(calculate_area)  # Uncomment to see full help
+
+# -----------------------------------------------------------------------------
+# 5. Variable Scope - Local vs Global
+# -----------------------------------------------------------------------------
+# Variables inside functions are local by default
+
+print("\n--- Variable Scope ---")
+
+global_var = "I am global"
+
+def demonstrate_scope():
+    """Demonstrate variable scope."""
+    local_var = "I am local"
+    print(f"  Inside function - global_var: {global_var}")
+    print(f"  Inside function - local_var: {local_var}")
+
+demonstrate_scope()
+print(f"Outside function - global_var: {global_var}")
+# print(local_var)  # This would cause an error!
+
+# Modifying global variables inside functions
+counter = 0
+
+def increment_counter():
+    """Increment the global counter."""
+    global counter  # Declare we want to modify global variable
+    counter += 1
+    print(f"  Counter inside function: {counter}")
+
+print(f"\nCounter before: {counter}")
+increment_counter()
+increment_counter()
+print(f"Counter after: {counter}")
+
+# Local variable shadows global
+value = 100
+
+def shadow_example():
+    """Local variable shadows global."""
+    value = 200  # This is a new local variable, not the global one
+    print(f"  Inside function: {value}")
+
+print(f"\nGlobal value: {value}")
+shadow_example()
+print(f"Global value unchanged: {value}")
+
+# -----------------------------------------------------------------------------
+# 6. Multiple Return Values
+# -----------------------------------------------------------------------------
+# Functions can return multiple values as a tuple
+
+print("\n--- Multiple Return Values ---")
+
+def get_min_max(numbers):
+    """Return both minimum and maximum of a list."""
+    return min(numbers), max(numbers)
+
+data = [5, 2, 8, 1, 9, 3]
+minimum, maximum = get_min_max(data)
+print(f"List: {data}")
+print(f"Min: {minimum}, Max: {maximum}")
+
+# Return multiple named values using dictionary
+def analyze_text(text):
+    """Analyze text and return statistics."""
+    return {
+        "length": len(text),
+        "words": len(text.split()),
+        "uppercase": sum(1 for c in text if c.isupper())
+    }
+
+stats = analyze_text("Hello World! How Are You?")
+print(f"\nText stats: {stats}")
+
+# -----------------------------------------------------------------------------
+# 7. Pass Statement - Placeholder Functions
+# -----------------------------------------------------------------------------
+# Use pass to create empty function bodies
+
+print("\n--- Placeholder Functions ---")
+
+def future_feature():
+    """This will be implemented later."""
+    pass  # Placeholder - does nothing
+
+def another_placeholder():
+    """Placeholder with ellipsis (also valid)."""
+    ...  # Alternative to pass
+
+future_feature()  # Can be called, just does nothing
+print("Placeholder functions work!")
+
+# -----------------------------------------------------------------------------
+# 8. Nested Functions
+# -----------------------------------------------------------------------------
+# Functions can be defined inside other functions
+
+print("\n--- Nested Functions ---")
+
+def outer_function(message):
+    """Outer function that contains an inner function."""
+    
+    def inner_function():
+        """Inner function that uses outer's variable."""
+        print(f"  Inner says: {message}")
+    
+    print("Outer function called")
+    inner_function()
+
+outer_function("Hello from outer!")
+
+# Inner function not accessible outside
+# inner_function()  # This would cause an error!
+
+# Practical example: Helper function
+def calculate_statistics(numbers):
+    """Calculate various statistics using helper functions."""
+    
+    def mean(nums):
+        return sum(nums) / len(nums)
+    
+    def variance(nums):
+        avg = mean(nums)
+        return sum((x - avg) ** 2 for x in nums) / len(nums)
+    
+    return {
+        "mean": mean(numbers),
+        "variance": variance(numbers),
+        "std_dev": variance(numbers) ** 0.5
+    }
+
+data = [2, 4, 4, 4, 5, 5, 7, 9]
+stats = calculate_statistics(data)
+print(f"\nStatistics for {data}:")
+for key, value in stats.items():
+    print(f"  {key}: {value:.2f}")
+
+# -----------------------------------------------------------------------------
+# 9. Functions as Objects
+# -----------------------------------------------------------------------------
+# In Python, functions are first-class objects
+
+print("\n--- Functions as Objects ---")
+
+def say_hello(name):
+    """Just say hello."""
+    return f"Hello, {name}!"
+
+# Assign function to variable
+greeting_func = say_hello
+print(greeting_func("World"))
+
+# Store functions in a list
+def add_one(x): return x + 1
+def double(x): return x * 2
+def square(x): return x * x
+
+operations = [add_one, double, square]
+value = 5
+
+print(f"\nApplying operations to {value}:")
+for func in operations:
+    print(f"  {func.__name__}({value}) = {func(value)}")
+
+# Pass function as argument
+def apply_operation(func, value):
+    """Apply a function to a value."""
+    return func(value)
+
+print(f"\napply_operation(double, 10) = {apply_operation(double, 10)}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# Temperature converter
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit."""
+    return (celsius * 9/5) + 32
+
+def fahrenheit_to_celsius(fahrenheit):
+    """Convert Fahrenheit to Celsius."""
+    return (fahrenheit - 32) * 5/9
+
+print(f"20°C = {celsius_to_fahrenheit(20):.1f}°F")
+print(f"68°F = {fahrenheit_to_celsius(68):.1f}°C")
+
+# Password validator
+def is_valid_password(password):
+    """
+    Check if password meets requirements:
+    - At least 8 characters
+    - Contains uppercase letter
+    - Contains lowercase letter
+    - Contains digit
+    """
+    if len(password) < 8:
+        return False, "Too short"
+    if not any(c.isupper() for c in password):
+        return False, "No uppercase letter"
+    if not any(c.islower() for c in password):
+        return False, "No lowercase letter"
+    if not any(c.isdigit() for c in password):
+        return False, "No digit"
+    return True, "Valid password"
+
+test_passwords = ["short", "alllowercase", "ALLUPPERCASE", "ValidPass123"]
+print("\nPassword validation:")
+for pwd in test_passwords:
+    is_valid, message = is_valid_password(pwd)
+    print(f"  '{pwd}': {message}")
+```

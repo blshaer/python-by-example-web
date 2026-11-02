@@ -1,0 +1,347 @@
+---
+title: "PEP 8 - Python Style Guide"
+section: "Best Practices"
+sectionSlug: best-practices
+sectionSummary: "PEP 8, type hints, and virtual environments."
+order: 1
+sourceFile: 10_best_practices/01_pep8.py
+---
+
+This file demonstrates PEP 8, the official Python style guide. Following PEP 8 makes your code more readable, consistent, and professional. These are conventions, not strict rules, but following them is highly recommended.
+
+```python
+"""
+================================================================================
+File: 01_pep8.py
+Topic: PEP 8 - Python Style Guide
+================================================================================
+
+This file demonstrates PEP 8, the official Python style guide. Following PEP 8
+makes your code more readable, consistent, and professional. These are
+conventions, not strict rules, but following them is highly recommended.
+
+Key Concepts:
+- Indentation and whitespace
+- Naming conventions
+- Line length and wrapping
+- Imports organization
+- Comments and docstrings
+
+Reference: https://peps.python.org/pep-0008/
+
+================================================================================
+"""
+
+# =============================================================================
+# 1. INDENTATION
+# =============================================================================
+# Use 4 spaces per indentation level. Never mix tabs and spaces.
+
+# GOOD
+def function_with_proper_indentation():
+    if True:
+        for i in range(10):
+            print(i)
+
+# Aligned with opening delimiter
+foo = long_function_name(var_one, var_two,
+                         var_three, var_four)
+
+# Hanging indent (add a level)
+def long_function_name(
+        var_one, var_two, var_three,
+        var_four):
+    print(var_one)
+
+# =============================================================================
+# 2. LINE LENGTH
+# =============================================================================
+# Limit lines to 79 characters (72 for docstrings/comments)
+
+# GOOD - Use implicit line continuation
+total = (first_variable
+         + second_variable
+         + third_variable)
+
+# GOOD - Use backslash when necessary
+with open('/very/long/path/to/file.txt') as file_one, \
+     open('/another/long/path/to/file.txt') as file_two:
+    pass
+
+# =============================================================================
+# 3. BLANK LINES
+# =============================================================================
+# - 2 blank lines around top-level functions and classes
+# - 1 blank line between methods in a class
+
+
+class FirstClass:
+    """First class."""
+    pass
+
+
+class SecondClass:
+    """Second class."""
+    
+    def method_one(self):
+        """First method."""
+        pass
+    
+    def method_two(self):
+        """Second method."""
+        pass
+
+
+def top_level_function():
+    """A top-level function."""
+    pass
+
+
+# =============================================================================
+# 4. IMPORTS
+# =============================================================================
+# - One import per line
+# - Group in order: standard library, third-party, local
+# - Use absolute imports
+
+# GOOD
+import os
+import sys
+from typing import List, Optional
+
+# Third party imports (after blank line)
+# import numpy as np
+# import pandas as pd
+
+# Local imports (after blank line)
+# from mypackage import mymodule
+
+# BAD - Multiple imports on one line
+# import os, sys
+
+# =============================================================================
+# 5. WHITESPACE
+# =============================================================================
+
+# GOOD - No extra whitespace inside brackets
+spam = [1, 2, 3]
+ham = {"key": "value"}
+eggs = (1,)
+
+# BAD
+# spam = [ 1, 2, 3 ]
+# ham = { 'key': 'value' }
+
+# GOOD - One space around operators
+x = 1
+y = 2
+z = x + y
+
+# BAD - No space around = in keyword arguments
+# def function(x, y = 5):
+def function(x, y=5):
+    pass
+
+# GOOD - Space after comma
+some_list = [1, 2, 3]
+
+# GOOD - No space before colon in slices
+some_list[1:3]
+some_list[::2]
+
+# =============================================================================
+# 6. NAMING CONVENTIONS
+# =============================================================================
+
+# Variables and functions: lowercase_with_underscores (snake_case)
+user_name = "John"
+total_count = 42
+
+def calculate_average(numbers):
+    return sum(numbers) / len(numbers)
+
+# Constants: UPPERCASE_WITH_UNDERSCORES
+MAX_BUFFER_SIZE = 4096
+DEFAULT_TIMEOUT = 30
+PI = 3.14159
+
+# Classes: CapitalizedWords (PascalCase)
+class UserAccount:
+    pass
+
+class HttpConnection:
+    pass
+
+# Private: prefix with underscore
+_internal_variable = "private"
+def _internal_function():
+    pass
+
+class MyClass:
+    def _protected_method(self):
+        """Single underscore = protected (convention)."""
+        pass
+    
+    def __private_method(self):
+        """Double underscore = name mangling (truly private)."""
+        pass
+
+# =============================================================================
+# 7. COMMENTS
+# =============================================================================
+
+# GOOD - Inline comments have at least 2 spaces before #
+x = 5  # This is an inline comment
+
+# Block comments precede the code they describe
+# This is a block comment that explains
+# the following piece of code.
+complex_calculation = 1 + 2 + 3
+
+# Don't state the obvious
+# BAD: x = 5  # Assign 5 to x
+# GOOD: x = 5  # Default timeout in seconds
+
+# =============================================================================
+# 8. DOCSTRINGS
+# =============================================================================
+
+def example_function(param1, param2):
+    """
+    Brief description of the function.
+    
+    Longer description if needed. Explain what the function
+    does, not how it does it.
+    
+    Args:
+        param1: Description of first parameter
+        param2: Description of second parameter
+    
+    Returns:
+        Description of what is returned
+    
+    Raises:
+        ValueError: When param1 is negative
+    
+    Example:
+        >>> example_function(1, 2)
+        3
+    """
+    return param1 + param2
+
+
+class ExampleClass:
+    """Brief description of the class.
+    
+    Longer description of the class including its purpose
+    and usage patterns.
+    
+    Attributes:
+        attr1: Description of first attribute
+        attr2: Description of second attribute
+    """
+    
+    def __init__(self, attr1, attr2):
+        """Initialize ExampleClass."""
+        self.attr1 = attr1
+        self.attr2 = attr2
+
+# =============================================================================
+# 9. COMPARISON AND BOOLEAN
+# =============================================================================
+
+# Use 'is' and 'is not' for None comparisons
+# GOOD
+x = None
+if x is None:
+    pass
+
+# BAD
+# if x == None:
+
+# Use 'is not' instead of 'not ... is'
+# GOOD
+if x is not None:
+    pass
+
+# BAD
+# if not x is None:
+
+# Don't compare boolean values with == or !=
+# GOOD
+flag = True
+if flag:
+    pass
+
+# BAD
+# if flag == True:
+# if flag is True:  # Only use when testing identity
+
+# =============================================================================
+# 10. EXCEPTION HANDLING
+# =============================================================================
+
+# Catch specific exceptions
+# GOOD
+try:
+    value = int(user_input)
+except ValueError:
+    print("Invalid input")
+
+# BAD - Too broad
+# try:
+#     value = int(user_input)
+# except:  # or except Exception:
+#     print("Error")
+
+# Use 'raise' to re-raise exception
+try:
+    process_data()
+except ValueError:
+    logger.error("Bad value")
+    raise
+
+# =============================================================================
+# 11. FUNCTION ANNOTATIONS (Type Hints)
+# =============================================================================
+
+def greeting(name: str) -> str:
+    """Return a greeting."""
+    return f"Hello, {name}!"
+
+# Complex types
+from typing import List, Dict, Optional
+
+def process_items(
+    items: List[str],
+    config: Dict[str, int],
+    default: Optional[str] = None
+) -> bool:
+    """Process items with configuration."""
+    return True
+
+# =============================================================================
+# 12. SUMMARY: KEY RULES
+# =============================================================================
+
+print("PEP 8 Summary - Key Rules:")
+print("""
+1. Use 4 spaces for indentation
+2. Limit lines to 79 characters
+3. Use blank lines to separate functions and classes
+4. Organize imports: standard lib, third-party, local
+5. Use snake_case for functions and variables
+6. Use PascalCase for classes
+7. Use UPPER_CASE for constants
+8. Use spaces around operators and after commas
+9. Write docstrings for all public modules, functions, classes
+10. Compare with 'is' for None, use bool directly
+""")
+
+# Use flake8 or black to automatically check/format code
+print("Tools to help with PEP 8:")
+print("  - flake8: Check for PEP 8 violations")
+print("  - black: Automatic code formatting")
+print("  - isort: Sort imports automatically")
+print("  - pylint: Comprehensive code analysis")
+```

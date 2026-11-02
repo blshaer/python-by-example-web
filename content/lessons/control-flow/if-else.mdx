@@ -1,0 +1,158 @@
+---
+title: "Conditional Statements - if/else"
+section: "Control Flow"
+sectionSlug: control-flow
+sectionSummary: "Conditionals, elif, and match/case."
+order: 1
+sourceFile: 02_control_flow/01_if_else.py
+---
+
+This file demonstrates the fundamentals of conditional statements in Python. Conditional statements allow your program to make decisions and execute different code blocks based on whether conditions are True or False.
+
+```python
+"""
+================================================================================
+File: 01_if_else.py
+Topic: Conditional Statements - if/else
+================================================================================
+
+This file demonstrates the fundamentals of conditional statements in Python.
+Conditional statements allow your program to make decisions and execute
+different code blocks based on whether conditions are True or False.
+
+Key Concepts:
+- if statement: Executes code block if condition is True
+- else statement: Executes code block if condition is False
+- Comparison operators: ==, !=, <, >, <=, >=
+- Logical operators: and, or, not
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Simple if Statement
+# -----------------------------------------------------------------------------
+# The most basic form - executes code only if condition is True
+
+age = 18
+
+if age >= 18:
+    print("You are an adult.")
+
+# -----------------------------------------------------------------------------
+# 2. if-else Statement
+# -----------------------------------------------------------------------------
+# Provides an alternative when the condition is False
+
+temperature = 15
+
+if temperature > 25:
+    print("It's a hot day!")
+else:
+    print("It's not that hot today.")
+
+# -----------------------------------------------------------------------------
+# 3. Comparison Operators
+# -----------------------------------------------------------------------------
+# Used to compare values and return True or False
+
+x = 10
+y = 20
+
+print("\n--- Comparison Operators ---")
+print(f"x == y: {x == y}")   # Equal to
+print(f"x != y: {x != y}")   # Not equal to
+print(f"x < y: {x < y}")     # Less than
+print(f"x > y: {x > y}")     # Greater than
+print(f"x <= y: {x <= y}")   # Less than or equal to
+print(f"x >= y: {x >= y}")   # Greater than or equal to
+
+# -----------------------------------------------------------------------------
+# 4. Logical Operators (and, or, not)
+# -----------------------------------------------------------------------------
+# Combine multiple conditions
+
+age = 25
+has_license = True
+
+print("\n--- Logical Operators ---")
+
+# 'and' - Both conditions must be True
+if age >= 18 and has_license:
+    print("You can drive a car.")
+
+# 'or' - At least one condition must be True
+is_weekend = True
+is_holiday = False
+
+if is_weekend or is_holiday:
+    print("You can relax today!")
+
+# 'not' - Reverses the boolean value
+is_raining = False
+
+if not is_raining:
+    print("You don't need an umbrella.")
+
+# -----------------------------------------------------------------------------
+# 5. Nested if Statements
+# -----------------------------------------------------------------------------
+# You can place if statements inside other if statements
+
+print("\n--- Nested if Statements ---")
+
+score = 85
+attendance = 90
+
+if score >= 60:
+    print("You passed the exam!")
+    if attendance >= 80:
+        print("And you have excellent attendance!")
+    else:
+        print("But try to improve your attendance.")
+else:
+    print("You need to study harder.")
+
+# -----------------------------------------------------------------------------
+# 6. Truthy and Falsy Values
+# -----------------------------------------------------------------------------
+# In Python, some values are considered False: 0, "", [], {}, None, False
+# Everything else is considered True
+
+print("\n--- Truthy and Falsy Values ---")
+
+empty_list = []
+full_list = [1, 2, 3]
+
+if full_list:
+    print("The list has items.")
+
+if not empty_list:
+    print("The list is empty.")
+
+# -----------------------------------------------------------------------------
+# 7. Ternary Operator (One-line if-else)
+# -----------------------------------------------------------------------------
+# A compact way to write simple if-else statements
+
+age = 20
+status = "adult" if age >= 18 else "minor"
+print(f"\nTernary result: You are an {status}.")
+
+# -----------------------------------------------------------------------------
+# 8. Practical Example: Simple Login Check
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Example: Login Check ---")
+
+username = "admin"
+password = "secret123"
+
+input_user = "admin"
+input_pass = "secret123"
+
+if input_user == username and input_pass == password:
+    print("Login successful! Welcome back.")
+else:
+    print("Invalid username or password.")
+```

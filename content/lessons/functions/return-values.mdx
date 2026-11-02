@@ -1,0 +1,412 @@
+---
+title: "Function Return Values in Python"
+section: "Functions"
+sectionSlug: functions
+sectionSummary: "Arguments, returns, and lambdas."
+order: 3
+sourceFile: 05_functions/03_return_values.py
+---
+
+This file demonstrates various ways functions can return values in Python, including returning multiple values, early returns, and more advanced patterns.
+
+```python
+"""
+================================================================================
+File: 03_return_values.py
+Topic: Function Return Values in Python
+================================================================================
+
+This file demonstrates various ways functions can return values in Python,
+including returning multiple values, early returns, and more advanced patterns.
+
+Key Concepts:
+- Returning single and multiple values
+- Returning None (explicit and implicit)
+- Early returns for cleaner code
+- Returning functions (closures)
+- Return type annotations
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic Return Values
+# -----------------------------------------------------------------------------
+# Use 'return' to send a value back to the caller
+
+print("--- Basic Return Values ---")
+
+def square(n):
+    """Return the square of a number."""
+    return n * n
+
+def add(a, b):
+    """Return the sum of two numbers."""
+    return a + b
+
+result = square(5)
+print(f"square(5) = {result}")
+
+# Using return value directly
+print(f"add(3, 4) = {add(3, 4)}")
+
+# Chaining function calls
+print(f"square(add(2, 3)) = {square(add(2, 3))}")
+
+# -----------------------------------------------------------------------------
+# 2. Returning None
+# -----------------------------------------------------------------------------
+# Functions without explicit return (or with 'return' alone) return None
+
+print("\n--- Returning None ---")
+
+# Implicit None return
+def greet(name):
+    """Print a greeting - no explicit return."""
+    print(f"  Hello, {name}!")
+
+result = greet("Alice")
+print(f"Return value: {result}")
+
+# Explicit None return
+def try_parse_int(value):
+    """Try to parse string as int, return None on failure."""
+    try:
+        return int(value)
+    except ValueError:
+        return None  # Explicit None
+
+print(f"\ntry_parse_int('42'): {try_parse_int('42')}")
+print(f"try_parse_int('abc'): {try_parse_int('abc')}")
+
+# Using None as sentinel value
+def find_item(items, target):
+    """Find item in list, return index or None."""
+    for i, item in enumerate(items):
+        if item == target:
+            return i
+    return None  # Not found
+
+fruits = ["apple", "banana", "cherry"]
+index = find_item(fruits, "banana")
+if index is not None:
+    print(f"\nFound 'banana' at index {index}")
+
+# -----------------------------------------------------------------------------
+# 3. Returning Multiple Values
+# -----------------------------------------------------------------------------
+# Python functions can return multiple values as tuples
+
+print("\n--- Returning Multiple Values ---")
+
+# Return as tuple (implicit)
+def get_name_parts(full_name):
+    """Split full name into first and last."""
+    parts = full_name.split()
+    return parts[0], parts[-1]  # Returns tuple
+
+first, last = get_name_parts("John William Doe")
+print(f"First: {first}, Last: {last}")
+
+# Return as tuple (explicit)
+def min_max(numbers):
+    """Return minimum and maximum as explicit tuple."""
+    return (min(numbers), max(numbers))
+
+result = min_max([3, 1, 4, 1, 5, 9])
+print(f"min_max result: {result}")
+print(f"Type: {type(result)}")
+
+# Return as dictionary (named values)
+def analyze_string(text):
+    """Analyze string and return statistics as dict."""
+    return {
+        "length": len(text),
+        "words": len(text.split()),
+        "chars_no_space": len(text.replace(" ", "")),
+        "upper_count": sum(1 for c in text if c.isupper()),
+        "lower_count": sum(1 for c in text if c.islower())
+    }
+
+stats = analyze_string("Hello World")
+print(f"\nString analysis: {stats}")
+
+# Return as named tuple (best of both worlds)
+from collections import namedtuple
+
+Point = namedtuple("Point", ["x", "y", "z"])
+
+def create_point(x, y, z):
+    """Create a 3D point."""
+    return Point(x, y, z)
+
+p = create_point(10, 20, 30)
+print(f"\nNamed tuple: {p}")
+print(f"Access by name: x={p.x}, y={p.y}, z={p.z}")
+
+# -----------------------------------------------------------------------------
+# 4. Early Returns (Guard Clauses)
+# -----------------------------------------------------------------------------
+# Return early to handle edge cases and improve readability
+
+print("\n--- Early Returns ---")
+
+# Without early returns (nested, harder to read)
+def get_grade_nested(score):
+    if score >= 0 and score <= 100:
+        if score >= 90:
+            return "A"
+        else:
+            if score >= 80:
+                return "B"
+            else:
+                if score >= 70:
+                    return "C"
+                else:
+                    if score >= 60:
+                        return "D"
+                    else:
+                        return "F"
+    else:
+        return "Invalid"
+
+# With early returns (flat, easier to read)
+def get_grade_early(score):
+    """Get grade using early returns (guard clauses)."""
+    if score < 0 or score > 100:
+        return "Invalid"
+    if score >= 90:
+        return "A"
+    if score >= 80:
+        return "B"
+    if score >= 70:
+        return "C"
+    if score >= 60:
+        return "D"
+    return "F"
+
+print(f"get_grade_early(85) = {get_grade_early(85)}")
+print(f"get_grade_early(150) = {get_grade_early(150)}")
+
+# Practical example: Input validation with early returns
+def process_user_data(data):
+    """Process user data with validation."""
+    # Guard clauses
+    if data is None:
+        return {"error": "No data provided"}
+    
+    if not isinstance(data, dict):
+        return {"error": "Data must be a dictionary"}
+    
+    if "name" not in data:
+        return {"error": "Name is required"}
+    
+    if "age" not in data:
+        return {"error": "Age is required"}
+    
+    if data["age"] < 0:
+        return {"error": "Age must be positive"}
+    
+    # Main logic (only runs if all validations pass)
+    return {
+        "success": True,
+        "message": f"Processed user {data['name']}, age {data['age']}"
+    }
+
+print("\nData validation examples:")
+print(f"  None: {process_user_data(None)}")
+print(f"  Empty dict: {process_user_data({})}")
+print(f"  Valid: {process_user_data({'name': 'Alice', 'age': 25})}")
+
+# -----------------------------------------------------------------------------
+# 5. Returning Functions (Closures)
+# -----------------------------------------------------------------------------
+# Functions can return other functions
+
+print("\n--- Returning Functions ---")
+
+def make_multiplier(factor):
+    """Return a function that multiplies by factor."""
+    def multiplier(x):
+        return x * factor
+    return multiplier
+
+double = make_multiplier(2)
+triple = make_multiplier(3)
+
+print(f"double(5) = {double(5)}")
+print(f"triple(5) = {triple(5)}")
+
+# Practical: Create custom validators
+def make_range_validator(min_val, max_val):
+    """Create a validator for a specific range."""
+    def validate(value):
+        return min_val <= value <= max_val
+    return validate
+
+age_validator = make_range_validator(0, 120)
+percentage_validator = make_range_validator(0, 100)
+
+print(f"\nage_validator(25) = {age_validator(25)}")
+print(f"age_validator(150) = {age_validator(150)}")
+print(f"percentage_validator(85.5) = {percentage_validator(85.5)}")
+
+# -----------------------------------------------------------------------------
+# 6. Return Type Annotations
+# -----------------------------------------------------------------------------
+# Add type hints for return values
+
+print("\n--- Return Type Annotations ---")
+
+from typing import List, Optional, Tuple, Dict, Union
+
+def get_greeting(name: str) -> str:
+    """Return a greeting string."""
+    return f"Hello, {name}!"
+
+def divide(a: float, b: float) -> Optional[float]:
+    """Divide a by b, return None if b is zero."""
+    if b == 0:
+        return None
+    return a / b
+
+def get_user_info(user_id: int) -> Dict[str, Union[str, int]]:
+    """Return user info as dictionary."""
+    return {"id": user_id, "name": "Test User", "age": 25}
+
+def process_numbers(nums: List[int]) -> Tuple[int, int, float]:
+    """Return min, max, and average."""
+    return min(nums), max(nums), sum(nums) / len(nums)
+
+print(f"get_greeting('World'): {get_greeting('World')}")
+print(f"divide(10, 3): {divide(10, 3)}")
+print(f"divide(10, 0): {divide(10, 0)}")
+print(f"get_user_info(1): {get_user_info(1)}")
+print(f"process_numbers([1,2,3,4,5]): {process_numbers([1,2,3,4,5])}")
+
+# -----------------------------------------------------------------------------
+# 7. Generator Functions (yield vs return)
+# -----------------------------------------------------------------------------
+# Functions that yield values instead of returning
+
+print("\n--- Generators (yield) ---")
+
+# Regular function - returns all at once
+def get_squares_list(n):
+    """Return list of squares."""
+    return [i ** 2 for i in range(n)]
+
+# Generator function - yields one at a time
+def get_squares_generator(n):
+    """Generate squares one at a time."""
+    for i in range(n):
+        yield i ** 2
+
+# Generator is memory-efficient for large sequences
+squares_list = get_squares_list(5)
+squares_gen = get_squares_generator(5)
+
+print(f"List: {squares_list}")
+print(f"Generator: {squares_gen}")
+print(f"From generator: {list(squares_gen)}")
+
+# Practical: Generator for large files (conceptual)
+def read_large_file_lines(filename):
+    """Yield lines one at a time (memory efficient)."""
+    # In real code: open(filename) and yield line by line
+    # This is just a demonstration
+    for i in range(5):
+        yield f"Line {i + 1} from {filename}"
+
+print("\nGenerator example:")
+for line in read_large_file_lines("data.txt"):
+    print(f"  {line}")
+
+# -----------------------------------------------------------------------------
+# 8. Conditional Returns
+# -----------------------------------------------------------------------------
+# Return different types or values based on conditions
+
+print("\n--- Conditional Returns ---")
+
+# Ternary return
+def absolute_value(n):
+    """Return absolute value using ternary."""
+    return n if n >= 0 else -n
+
+print(f"absolute_value(-5) = {absolute_value(-5)}")
+print(f"absolute_value(5) = {absolute_value(5)}")
+
+# Short-circuit return with 'or'
+def get_username(user):
+    """Get username or default."""
+    return user.get("username") or "anonymous"
+
+print(f"get_username({{}}): {get_username({})}")
+print(f"get_username({{'username': 'john'}}): {get_username({'username': 'john'})}")
+
+# Return type based on input
+def smart_divide(a, b, as_float=True):
+    """Return float or int based on parameter."""
+    if b == 0:
+        return None
+    return a / b if as_float else a // b
+
+print(f"\nsmart_divide(10, 3, True): {smart_divide(10, 3, True)}")
+print(f"smart_divide(10, 3, False): {smart_divide(10, 3, False)}")
+
+# -----------------------------------------------------------------------------
+# 9. Return vs Print
+# -----------------------------------------------------------------------------
+# Important distinction for beginners
+
+print("\n--- Return vs Print ---")
+
+def print_double(n):
+    """Print double (returns None)."""
+    print(n * 2)
+
+def return_double(n):
+    """Return double."""
+    return n * 2
+
+# print_double can't be used in expressions
+result1 = print_double(5)  # Prints 10
+print(f"print_double(5) returns: {result1}")
+
+# return_double can be used in expressions
+result2 = return_double(5)  # Returns 10
+print(f"return_double(5) returns: {result2}")
+print(f"return_double(5) + 1 = {return_double(5) + 1}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# API-style response
+def api_response(success, data=None, error=None):
+    """Create standardized API response."""
+    return {
+        "success": success,
+        "data": data,
+        "error": error
+    }
+
+print("API responses:")
+print(f"  Success: {api_response(True, {'user': 'john', 'id': 1})}")
+print(f"  Error: {api_response(False, error='User not found')}")
+
+# Chain-able operations
+def chain_operation(value, operations):
+    """Apply a chain of operations to a value."""
+    result = value
+    for op in operations:
+        result = op(result)
+    return result
+
+ops = [lambda x: x + 10, lambda x: x * 2, lambda x: x - 5]
+print(f"\nChained operations on 5: {chain_operation(5, ops)}")
+# (5 + 10) * 2 - 5 = 25
+```

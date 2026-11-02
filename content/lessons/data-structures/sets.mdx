@@ -1,0 +1,312 @@
+---
+title: "Python Sets - Unordered Collections of Unique Elements"
+section: "Data Structures"
+sectionSlug: data-structures
+sectionSummary: "Lists, tuples, sets, and dictionaries."
+order: 3
+sourceFile: 04_data_structures/03_sets.py
+---
+
+This file demonstrates Python sets, which are unordered collections that store only unique elements. Sets are highly optimized for membership testing and mathematical set operations.
+
+```python
+"""
+================================================================================
+File: 03_sets.py
+Topic: Python Sets - Unordered Collections of Unique Elements
+================================================================================
+
+This file demonstrates Python sets, which are unordered collections that
+store only unique elements. Sets are highly optimized for membership testing
+and mathematical set operations.
+
+Key Concepts:
+- Creating sets
+- Adding and removing elements
+- Set operations (union, intersection, difference)
+- Frozen sets (immutable sets)
+- Use cases for sets
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Creating Sets
+# -----------------------------------------------------------------------------
+# Sets are created with curly braces {} or set()
+
+print("--- Creating Sets ---")
+
+# Using curly braces
+fruits = {"apple", "banana", "cherry"}
+print(f"Fruits set: {fruits}")
+
+# Duplicates are automatically removed
+numbers = {1, 2, 2, 3, 3, 3, 4}
+print(f"Numbers (duplicates removed): {numbers}")
+
+# Empty set - must use set(), not {}
+empty_set = set()  # {} creates an empty dictionary!
+print(f"Empty set: {empty_set}, type: {type(empty_set)}")
+print(f"Empty dict: {{}}, type: {type({})}")
+
+# From other iterables
+from_list = set([1, 2, 3, 4, 5])
+from_string = set("hello")  # Unique characters
+from_tuple = set((10, 20, 30))
+print(f"\nFrom list: {from_list}")
+print(f"From string 'hello': {from_string}")
+print(f"From tuple: {from_tuple}")
+
+# -----------------------------------------------------------------------------
+# 2. Set Characteristics
+# -----------------------------------------------------------------------------
+# Unordered, no duplicates, no indexing
+
+print("\n--- Set Characteristics ---")
+
+colors = {"red", "green", "blue"}
+
+# Sets are unordered - no indexing
+# colors[0]  # This would raise an error!
+
+# Check membership (very fast - O(1))
+print(f"'red' in colors: {'red' in colors}")
+print(f"'yellow' in colors: {'yellow' in colors}")
+
+# Length
+print(f"Number of colors: {len(colors)}")
+
+# Sets can only contain immutable (hashable) elements
+valid_set = {1, "hello", (1, 2), 3.14}  # OK
+# invalid_set = {1, [2, 3]}  # Error! Lists are not hashable
+
+# -----------------------------------------------------------------------------
+# 3. Adding and Removing Elements
+# -----------------------------------------------------------------------------
+
+print("\n--- Adding and Removing Elements ---")
+
+languages = {"Python", "Java"}
+print(f"Initial: {languages}")
+
+# add() - Add single element
+languages.add("JavaScript")
+print(f"After add('JavaScript'): {languages}")
+
+# Adding duplicate has no effect
+languages.add("Python")
+print(f"After add('Python'): {languages}")
+
+# update() - Add multiple elements
+languages.update(["C++", "Rust"])
+print(f"After update(['C++', 'Rust']): {languages}")
+
+# remove() - Remove element (raises error if not found)
+languages.remove("Java")
+print(f"After remove('Java'): {languages}")
+
+# discard() - Remove element (no error if not found)
+languages.discard("Go")  # No error even though "Go" isn't in set
+print(f"After discard('Go'): {languages}")
+
+# pop() - Remove and return an arbitrary element
+popped = languages.pop()
+print(f"Popped: {popped}, Remaining: {languages}")
+
+# clear() - Remove all elements
+temp_set = {1, 2, 3}
+temp_set.clear()
+print(f"After clear(): {temp_set}")
+
+# -----------------------------------------------------------------------------
+# 4. Set Operations - Mathematical Operations
+# -----------------------------------------------------------------------------
+
+print("\n--- Set Operations ---")
+
+a = {1, 2, 3, 4, 5}
+b = {4, 5, 6, 7, 8}
+
+print(f"Set A: {a}")
+print(f"Set B: {b}")
+
+# Union - Elements in A or B or both
+union = a | b  # or a.union(b)
+print(f"\nUnion (A | B): {union}")
+
+# Intersection - Elements in both A and B
+intersection = a & b  # or a.intersection(b)
+print(f"Intersection (A & B): {intersection}")
+
+# Difference - Elements in A but not in B
+difference = a - b  # or a.difference(b)
+print(f"Difference (A - B): {difference}")
+
+difference_ba = b - a
+print(f"Difference (B - A): {difference_ba}")
+
+# Symmetric Difference - Elements in A or B but not both
+sym_diff = a ^ b  # or a.symmetric_difference(b)
+print(f"Symmetric Difference (A ^ B): {sym_diff}")
+
+# -----------------------------------------------------------------------------
+# 5. Set Comparison Operations
+# -----------------------------------------------------------------------------
+
+print("\n--- Set Comparisons ---")
+
+numbers = {1, 2, 3, 4, 5}
+subset = {2, 3}
+same = {1, 2, 3, 4, 5}
+different = {6, 7, 8}
+
+print(f"numbers: {numbers}")
+print(f"subset: {subset}")
+
+# issubset() - Is subset contained in numbers?
+print(f"\nsubset.issubset(numbers): {subset.issubset(numbers)}")
+print(f"subset <= numbers: {subset <= numbers}")
+
+# issuperset() - Does numbers contain subset?
+print(f"numbers.issuperset(subset): {numbers.issuperset(subset)}")
+print(f"numbers >= subset: {numbers >= subset}")
+
+# isdisjoint() - Do they share any elements?
+print(f"\nnumbers.isdisjoint(different): {numbers.isdisjoint(different)}")
+print(f"numbers.isdisjoint(subset): {numbers.isdisjoint(subset)}")
+
+# Equality
+print(f"\nnumbers == same: {numbers == same}")
+print(f"numbers == subset: {numbers == subset}")
+
+# -----------------------------------------------------------------------------
+# 6. Update Operations (Modify in Place)
+# -----------------------------------------------------------------------------
+
+print("\n--- Update Operations ---")
+
+# These modify the set in place instead of creating new ones
+
+x = {1, 2, 3}
+y = {3, 4, 5}
+
+# update() - Union in place (|=)
+x_copy = x.copy()
+x_copy.update(y)  # or x_copy |= y
+print(f"After update (union): {x_copy}")
+
+# intersection_update() - Intersection in place (&=)
+x_copy = x.copy()
+x_copy.intersection_update(y)  # or x_copy &= y
+print(f"After intersection_update: {x_copy}")
+
+# difference_update() - Difference in place (-=)
+x_copy = x.copy()
+x_copy.difference_update(y)  # or x_copy -= y
+print(f"After difference_update: {x_copy}")
+
+# symmetric_difference_update() - Symmetric difference in place (^=)
+x_copy = x.copy()
+x_copy.symmetric_difference_update(y)  # or x_copy ^= y
+print(f"After symmetric_difference_update: {x_copy}")
+
+# -----------------------------------------------------------------------------
+# 7. Frozen Sets (Immutable Sets)
+# -----------------------------------------------------------------------------
+
+print("\n--- Frozen Sets ---")
+
+# Frozen sets are immutable versions of sets
+frozen = frozenset([1, 2, 3, 4, 5])
+print(f"Frozen set: {frozen}")
+
+# Can perform operations but not modify
+print(f"3 in frozen: {3 in frozen}")
+print(f"len(frozen): {len(frozen)}")
+
+# These would raise errors:
+# frozen.add(6)
+# frozen.remove(1)
+
+# Frozen sets can be used as dictionary keys or set elements
+nested = {frozenset([1, 2]), frozenset([3, 4])}
+print(f"Set of frozensets: {nested}")
+
+# -----------------------------------------------------------------------------
+# 8. Set Comprehensions
+# -----------------------------------------------------------------------------
+
+print("\n--- Set Comprehensions ---")
+
+# Basic set comprehension
+squares = {x**2 for x in range(1, 6)}
+print(f"Squares: {squares}")
+
+# With condition
+even_squares = {x**2 for x in range(1, 11) if x % 2 == 0}
+print(f"Even squares: {even_squares}")
+
+# From string - unique vowels
+text = "Hello, World!"
+vowels = {char.lower() for char in text if char.lower() in "aeiou"}
+print(f"Unique vowels in '{text}': {vowels}")
+
+# -----------------------------------------------------------------------------
+# 9. Practical Use Cases
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Use Cases ---")
+
+# 1. Remove duplicates from a list
+my_list = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+unique_list = list(set(my_list))
+print(f"Remove duplicates: {my_list} → {unique_list}")
+
+# 2. Find common elements
+list1 = [1, 2, 3, 4, 5]
+list2 = [4, 5, 6, 7, 8]
+common = set(list1) & set(list2)
+print(f"Common elements: {common}")
+
+# 3. Find unique elements across lists
+all_elements = set(list1) | set(list2)
+print(f"All unique elements: {all_elements}")
+
+# 4. Check if all required items exist
+required_skills = {"Python", "SQL", "Git"}
+candidate_skills = {"Python", "SQL", "Git", "Docker", "AWS"}
+has_all_required = required_skills.issubset(candidate_skills)
+print(f"\nCandidate has all required skills: {has_all_required}")
+
+# 5. Find missing items
+available_items = {"apple", "banana", "orange"}
+shopping_list = {"apple", "milk", "bread", "banana"}
+need_to_buy = shopping_list - available_items
+print(f"Need to buy: {need_to_buy}")
+
+# 6. Count unique words
+text = "the quick brown fox jumps over the lazy dog"
+unique_words = set(text.split())
+print(f"\nUnique words in text: {len(unique_words)}")
+print(f"Words: {unique_words}")
+
+# -----------------------------------------------------------------------------
+# 10. Performance: Sets vs Lists for Membership Testing
+# -----------------------------------------------------------------------------
+
+print("\n--- Performance Note ---")
+
+# Sets use hash tables - O(1) lookup
+# Lists use linear search - O(n) lookup
+
+big_list = list(range(10000))
+big_set = set(range(10000))
+
+# For membership testing:
+# 9999 in big_list  # Slow - checks up to 10000 elements
+# 9999 in big_set   # Fast - direct hash lookup
+
+print("For membership testing, sets are MUCH faster than lists!")
+print("Use sets when you frequently check if items exist in a collection.")
+```

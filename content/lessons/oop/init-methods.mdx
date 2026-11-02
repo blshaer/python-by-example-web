@@ -1,0 +1,459 @@
+---
+title: "Constructors and Initialization in Python"
+section: "Object-Oriented Programming"
+sectionSlug: oop
+sectionSummary: "Classes, inheritance, and polymorphism."
+order: 2
+sourceFile: 08_oop/02_init_methods.py
+---
+
+This file explores the __init__ method and other initialization patterns in Python classes. The __init__ method is called when creating new objects and sets up the initial state of the instance.
+
+```python
+"""
+================================================================================
+File: 02_init_methods.py
+Topic: Constructors and Initialization in Python
+================================================================================
+
+This file explores the __init__ method and other initialization patterns
+in Python classes. The __init__ method is called when creating new objects
+and sets up the initial state of the instance.
+
+Key Concepts:
+- The __init__ constructor
+- Required vs optional parameters
+- Default values
+- Property decorators
+- Alternative constructors (classmethod)
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic __init__ Method
+# -----------------------------------------------------------------------------
+# __init__ initializes newly created objects
+
+print("--- Basic __init__ ---")
+
+class Book:
+    """A class representing a book."""
+    
+    def __init__(self, title, author):
+        """
+        Initialize a new book.
+        
+        Args:
+            title: The book's title
+            author: The book's author
+        """
+        self.title = title
+        self.author = author
+
+# Creating instances calls __init__ automatically
+book = Book("1984", "George Orwell")
+print(f"Book: '{book.title}' by {book.author}")
+
+# Without proper arguments, you get an error:
+# book = Book()  # TypeError: missing 2 required positional arguments
+
+# -----------------------------------------------------------------------------
+# 2. Default Parameter Values
+# -----------------------------------------------------------------------------
+# Make some parameters optional
+
+print("\n--- Default Values ---")
+
+class User:
+    """A class with default parameter values."""
+    
+    def __init__(self, username, email=None, role="user", active=True):
+        """
+        Initialize a new user.
+        
+        Args:
+            username: Required username
+            email: Optional email address
+            role: User role (default: "user")
+            active: Is user active (default: True)
+        """
+        self.username = username
+        self.email = email
+        self.role = role
+        self.active = active
+    
+    def __str__(self):
+        email = self.email or "No email"
+        status = "Active" if self.active else "Inactive"
+        return f"{self.username} ({self.role}) - {email} - {status}"
+
+# Various ways to create users
+user1 = User("alice")
+user2 = User("bob", "bob@example.com")
+user3 = User("charlie", "charlie@example.com", "admin")
+user4 = User("dave", active=False)
+
+print(user1)
+print(user2)
+print(user3)
+print(user4)
+
+# -----------------------------------------------------------------------------
+# 3. Validation in __init__
+# -----------------------------------------------------------------------------
+# Validate and process data during initialization
+
+print("\n--- Validation in __init__ ---")
+
+class Temperature:
+    """A class with validation in __init__."""
+    
+    def __init__(self, celsius):
+        """
+        Initialize temperature in Celsius.
+        
+        Args:
+            celsius: Temperature in Celsius
+            
+        Raises:
+            ValueError: If temperature is below absolute zero
+        """
+        if celsius < -273.15:
+            raise ValueError("Temperature cannot be below absolute zero!")
+        self._celsius = celsius
+    
+    @property
+    def celsius(self):
+        """Get temperature in Celsius."""
+        return self._celsius
+    
+    @property
+    def fahrenheit(self):
+        """Get temperature in Fahrenheit."""
+        return (self._celsius * 9/5) + 32
+    
+    @property
+    def kelvin(self):
+        """Get temperature in Kelvin."""
+        return self._celsius + 273.15
+
+temp = Temperature(25)
+print(f"Temperature: {temp.celsius}°C = {temp.fahrenheit}°F = {temp.kelvin}K")
+
+# Validation in action
+try:
+    invalid_temp = Temperature(-300)
+except ValueError as e:
+    print(f"Validation error: {e}")
+
+# -----------------------------------------------------------------------------
+# 4. Mutable Default Arguments Warning
+# -----------------------------------------------------------------------------
+# Never use mutable objects as default arguments!
+
+print("\n--- Mutable Defaults Warning ---")
+
+# BAD - mutable default argument
+class BadStudent:
+    def __init__(self, name, grades=[]):  # DON'T DO THIS!
+        self.name = name
+        self.grades = grades
+
+s1 = BadStudent("Alice")
+s1.grades.append(90)
+
+s2 = BadStudent("Bob")
+print(f"Bob's grades (should be empty): {s2.grades}")  # Contains 90!
+
+# GOOD - use None and create new list
+class GoodStudent:
+    def __init__(self, name, grades=None):
+        self.name = name
+        self.grades = grades if grades is not None else []
+
+g1 = GoodStudent("Carol")
+g1.grades.append(85)
+
+g2 = GoodStudent("Dan")
+print(f"Dan's grades (correctly empty): {g2.grades}")
+
+# -----------------------------------------------------------------------------
+# 5. Property Decorators
+# -----------------------------------------------------------------------------
+# Control attribute access with getters and setters
+
+print("\n--- Property Decorators ---")
+
+class Circle:
+    """A circle with property decorators."""
+    
+    def __init__(self, radius):
+        """Initialize circle with radius."""
+        self._radius = radius  # Protected attribute
+    
+    @property
+    def radius(self):
+        """Get the radius."""
+        return self._radius
+    
+    @radius.setter
+    def radius(self, value):
+        """Set the radius with validation."""
+        if value <= 0:
+            raise ValueError("Radius must be positive")
+        self._radius = value
+    
+    @property
+    def diameter(self):
+        """Get the diameter (read-only computed property)."""
+        return self._radius * 2
+    
+    @property
+    def area(self):
+        """Get the area (read-only computed property)."""
+        import math
+        return math.pi * self._radius ** 2
+
+circle = Circle(5)
+print(f"Radius: {circle.radius}")
+print(f"Diameter: {circle.diameter}")
+print(f"Area: {circle.area:.2f}")
+
+# Using setter
+circle.radius = 10
+print(f"New radius: {circle.radius}")
+print(f"New area: {circle.area:.2f}")
+
+# Validation in setter
+try:
+    circle.radius = -5
+except ValueError as e:
+    print(f"Setter validation: {e}")
+
+# -----------------------------------------------------------------------------
+# 6. Alternative Constructors with @classmethod
+# -----------------------------------------------------------------------------
+# Create objects in different ways
+
+print("\n--- Alternative Constructors ---")
+
+class Person:
+    """A class with alternative constructors."""
+    
+    def __init__(self, first_name, last_name, age):
+        """Standard constructor."""
+        self.first_name = first_name
+        self.last_name = last_name
+        self.age = age
+    
+    @classmethod
+    def from_birth_year(cls, first_name, last_name, birth_year):
+        """Create person from birth year instead of age."""
+        import datetime
+        age = datetime.datetime.now().year - birth_year
+        return cls(first_name, last_name, age)
+    
+    @classmethod
+    def from_full_name(cls, full_name, age):
+        """Create person from full name string."""
+        parts = full_name.split()
+        first_name = parts[0]
+        last_name = parts[-1] if len(parts) > 1 else ""
+        return cls(first_name, last_name, age)
+    
+    @classmethod
+    def from_dict(cls, data):
+        """Create person from dictionary."""
+        return cls(
+            data.get('first_name', ''),
+            data.get('last_name', ''),
+            data.get('age', 0)
+        )
+    
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}, age {self.age}"
+
+# Using different constructors
+p1 = Person("John", "Doe", 30)
+p2 = Person.from_birth_year("Jane", "Smith", 1995)
+p3 = Person.from_full_name("Bob Johnson", 25)
+p4 = Person.from_dict({"first_name": "Alice", "last_name": "Williams", "age": 28})
+
+print("Created using different constructors:")
+print(f"  Standard: {p1}")
+print(f"  From birth year: {p2}")
+print(f"  From full name: {p3}")
+print(f"  From dict: {p4}")
+
+# -----------------------------------------------------------------------------
+# 7. __new__ vs __init__
+# -----------------------------------------------------------------------------
+# __new__ creates the instance, __init__ initializes it
+
+print("\n--- __new__ vs __init__ ---")
+
+class Singleton:
+    """A singleton class using __new__."""
+    
+    _instance = None
+    
+    def __new__(cls):
+        """Create instance only if one doesn't exist."""
+        if cls._instance is None:
+            print("  Creating new instance...")
+            cls._instance = super().__new__(cls)
+        else:
+            print("  Returning existing instance...")
+        return cls._instance
+    
+    def __init__(self):
+        """Initialize (called every time)."""
+        pass
+
+# Both variables point to the same instance
+print("Creating s1:")
+s1 = Singleton()
+print("Creating s2:")
+s2 = Singleton()
+print(f"Same instance? {s1 is s2}")
+
+# -----------------------------------------------------------------------------
+# 8. Initialization with Inheritance
+# -----------------------------------------------------------------------------
+
+print("\n--- Initialization with Inheritance ---")
+
+class Animal:
+    """Base class for animals."""
+    
+    def __init__(self, name, species):
+        """Initialize animal."""
+        self.name = name
+        self.species = species
+    
+    def speak(self):
+        """Make a sound."""
+        return "Some sound"
+
+class Dog(Animal):
+    """Dog class inheriting from Animal."""
+    
+    def __init__(self, name, breed):
+        """Initialize dog with name and breed."""
+        # Call parent's __init__
+        super().__init__(name, species="Canis familiaris")
+        self.breed = breed
+    
+    def speak(self):
+        """Dogs bark."""
+        return "Woof!"
+
+class Cat(Animal):
+    """Cat class inheriting from Animal."""
+    
+    def __init__(self, name, indoor=True):
+        """Initialize cat."""
+        super().__init__(name, species="Felis catus")
+        self.indoor = indoor
+    
+    def speak(self):
+        """Cats meow."""
+        return "Meow!"
+
+dog = Dog("Buddy", "Golden Retriever")
+cat = Cat("Whiskers", indoor=True)
+
+print(f"Dog: {dog.name} ({dog.breed}) says {dog.speak()}")
+print(f"Cat: {cat.name} (Indoor: {cat.indoor}) says {cat.speak()}")
+
+# -----------------------------------------------------------------------------
+# 9. Complex Initialization Example
+# -----------------------------------------------------------------------------
+
+print("\n--- Complex Initialization ---")
+
+from datetime import datetime
+
+class Order:
+    """A class with complex initialization."""
+    
+    _order_counter = 0
+    
+    def __init__(self, customer_name, items=None, discount=0):
+        """
+        Initialize an order.
+        
+        Args:
+            customer_name: Name of the customer
+            items: List of (item_name, price, quantity) tuples
+            discount: Discount percentage (0-100)
+        """
+        # Auto-generate order ID
+        Order._order_counter += 1
+        self.order_id = f"ORD-{Order._order_counter:04d}"
+        
+        # Set basic attributes
+        self.customer_name = customer_name
+        self.items = items or []
+        self.discount = max(0, min(100, discount))  # Clamp to 0-100
+        
+        # Auto-generated attributes
+        self.created_at = datetime.now()
+        self._subtotal = None  # Cached calculation
+    
+    def add_item(self, name, price, quantity=1):
+        """Add an item to the order."""
+        self.items.append((name, price, quantity))
+        self._subtotal = None  # Invalidate cache
+    
+    @property
+    def subtotal(self):
+        """Calculate subtotal."""
+        if self._subtotal is None:
+            self._subtotal = sum(price * qty for _, price, qty in self.items)
+        return self._subtotal
+    
+    @property
+    def total(self):
+        """Calculate total with discount."""
+        return self.subtotal * (1 - self.discount / 100)
+    
+    def __str__(self):
+        return f"Order {self.order_id} for {self.customer_name}: ${self.total:.2f}"
+
+# Create orders
+order1 = Order("Alice")
+order1.add_item("Widget", 9.99, 2)
+order1.add_item("Gadget", 14.99, 1)
+
+order2 = Order("Bob", discount=10)
+order2.add_item("Premium Widget", 29.99, 1)
+
+print(order1)
+print(f"  Subtotal: ${order1.subtotal:.2f}")
+print(f"  Total: ${order1.total:.2f}")
+
+print(order2)
+print(f"  Subtotal: ${order2.subtotal:.2f}")
+print(f"  Total (10% off): ${order2.total:.2f}")
+
+# -----------------------------------------------------------------------------
+# 10. Summary
+# -----------------------------------------------------------------------------
+
+print("\n--- Summary ---")
+
+summary = """
+Initialization patterns:
+  - __init__: Main constructor, initializes attributes
+  - Default values: Make parameters optional
+  - Validation: Raise errors for invalid input
+  - Properties: Computed/validated attributes
+  - @classmethod: Alternative constructors
+  - __new__: Instance creation (before __init__)
+  - super().__init__(): Call parent constructor
+"""
+
+print(summary)
+```

@@ -1,0 +1,356 @@
+---
+title: "Comments in Python"
+section: "Basics"
+sectionSlug: basics
+sectionSummary: "Print, comments, variables, and data types."
+order: 2
+sourceFile: 01_basics/02_comments.py
+---
+
+This file demonstrates how to write comments in Python. Comments are essential for code documentation, making your code readable, and helping others (and your future self) understand what the code does.
+
+```python
+"""
+================================================================================
+File: 02_comments.py
+Topic: Comments in Python
+================================================================================
+
+This file demonstrates how to write comments in Python. Comments are essential
+for code documentation, making your code readable, and helping others (and
+your future self) understand what the code does.
+
+Key Concepts:
+- Single-line comments
+- Multi-line comments
+- Docstrings
+- Best practices for commenting
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Single-Line Comments
+# -----------------------------------------------------------------------------
+# Use the hash symbol (#) to create single-line comments
+
+print("--- Single-Line Comments ---")
+
+# This is a single-line comment
+print("Hello, World!")  # This is an inline comment
+
+# Comments can explain complex logic
+x = 10  # Store the initial value
+y = 20  # Store the second value
+result = x + y  # Calculate the sum
+
+# Comments can be used to organize sections of code
+# ---- Configuration ----
+debug_mode = True
+max_retries = 3
+
+# ---- Main Logic ----
+print(f"Debug mode is: {debug_mode}")
+
+# -----------------------------------------------------------------------------
+# 2. Multi-Line Comments
+# -----------------------------------------------------------------------------
+# Python doesn't have true multi-line comments, but there are two approaches
+
+print("\n--- Multi-Line Comments ---")
+
+# Approach 1: Multiple single-line comments (preferred)
+# This is a multi-line comment
+# that spans across multiple lines.
+# Each line starts with a hash symbol.
+
+# Approach 2: Triple-quoted strings (not recommended for comments)
+# These are actually string literals, not true comments
+"""
+This looks like a multi-line comment, but it's actually
+a string literal. If not assigned to a variable,
+Python will ignore it, but it's still stored in memory.
+Use this approach only for docstrings.
+"""
+
+print("Multi-line comments explained above!")
+
+# -----------------------------------------------------------------------------
+# 3. Docstrings (Documentation Strings)
+# -----------------------------------------------------------------------------
+# Docstrings are special strings used to document modules, functions, classes
+
+print("\n--- Docstrings ---")
+
+
+def greet(name):
+    """
+    Greet a person by their name.
+    
+    This function takes a person's name and prints a friendly
+    greeting message to the console.
+    
+    Args:
+        name (str): The name of the person to greet.
+    
+    Returns:
+        str: A greeting message.
+    
+    Examples:
+        >>> greet("Baraa")
+        'Hello, Baraa! Welcome!'
+    """
+    return f"Hello, {name}! Welcome!"
+
+
+# Access the docstring
+print(greet("Baraa"))
+print(f"Function docstring: {greet.__doc__[:50]}...")
+
+
+def calculate_area(length, width):
+    """
+    Calculate the area of a rectangle.
+    
+    Args:
+        length (float): The length of the rectangle.
+        width (float): The width of the rectangle.
+    
+    Returns:
+        float: The area of the rectangle.
+    
+    Raises:
+        ValueError: If length or width is negative.
+    """
+    if length < 0 or width < 0:
+        raise ValueError("Length and width must be non-negative")
+    return length * width
+
+
+print(f"Area: {calculate_area(5, 3)}")
+
+# -----------------------------------------------------------------------------
+# 4. Class Docstrings
+# -----------------------------------------------------------------------------
+
+print("\n--- Class Docstrings ---")
+
+
+class Rectangle:
+    """
+    A class to represent a rectangle.
+    
+    This class provides methods to calculate the area and perimeter
+    of a rectangle, as well as other utility methods.
+    
+    Attributes:
+        length (float): The length of the rectangle.
+        width (float): The width of the rectangle.
+    
+    Methods:
+        area(): Returns the area of the rectangle.
+        perimeter(): Returns the perimeter of the rectangle.
+    """
+    
+    def __init__(self, length, width):
+        """
+        Initialize a Rectangle instance.
+        
+        Args:
+            length (float): The length of the rectangle.
+            width (float): The width of the rectangle.
+        """
+        self.length = length
+        self.width = width
+    
+    def area(self):
+        """Calculate and return the area of the rectangle."""
+        return self.length * self.width
+    
+    def perimeter(self):
+        """Calculate and return the perimeter of the rectangle."""
+        return 2 * (self.length + self.width)
+
+
+rect = Rectangle(10, 5)
+print(f"Rectangle area: {rect.area()}")
+print(f"Rectangle perimeter: {rect.perimeter()}")
+
+# -----------------------------------------------------------------------------
+# 5. Comment Best Practices
+# -----------------------------------------------------------------------------
+
+print("\n--- Comment Best Practices ---")
+
+# ✅ GOOD: Explain WHY, not WHAT
+# Calculate discount for loyalty members (15% off for 2+ years)
+years_as_member = 3
+discount = 0.15 if years_as_member >= 2 else 0
+
+# ❌ BAD: Explains what the code obviously does
+# x = x + 1  # Add 1 to x
+
+# ✅ GOOD: Document complex algorithms
+# Using binary search for O(log n) time complexity
+# instead of linear search O(n) for performance
+
+# ✅ GOOD: Mark TODO items for future work
+# TODO: Implement caching for better performance
+# FIXME: Handle edge case when input is empty
+# NOTE: This function requires Python 3.8+
+# HACK: Temporary workaround for API limitation
+
+# ✅ GOOD: Use comments for code sections
+# ============================================
+# DATABASE CONNECTION SETUP
+# ============================================
+
+# ============================================
+# USER AUTHENTICATION
+# ============================================
+
+print("Best practices demonstrated!")
+
+# -----------------------------------------------------------------------------
+# 6. Commenting Out Code
+# -----------------------------------------------------------------------------
+
+print("\n--- Commenting Out Code ---")
+
+# You can temporarily disable code by commenting it out
+# print("This line won't execute")
+# old_function()
+# deprecated_code()
+
+# Useful during debugging
+value = 100
+# value = 200  # Uncomment to test with different value
+print(f"Current value: {value}")
+
+# Multiple lines can be commented at once
+# line_1 = "first"
+# line_2 = "second"
+# line_3 = "third"
+
+# -----------------------------------------------------------------------------
+# 7. Module-Level Docstrings
+# -----------------------------------------------------------------------------
+
+print("\n--- Module-Level Docstrings ---")
+
+# At the top of a Python file, you can include a module docstring
+# (like the one at the top of this file)
+
+# Access a module's docstring
+print("This module's docstring starts with:")
+print(__doc__[:100] + "...")
+
+# -----------------------------------------------------------------------------
+# 8. Type Hints with Comments
+# -----------------------------------------------------------------------------
+
+print("\n--- Type Hints with Comments ---")
+
+
+def process_data(
+    data: list,      # The input data to process
+    threshold: float = 0.5,  # Minimum value to include (default: 0.5)
+    verbose: bool = False    # Print progress if True
+) -> list:
+    """
+    Process a list of numerical data.
+    
+    Args:
+        data: List of numbers to process.
+        threshold: Minimum value to include in results.
+        verbose: Whether to print processing details.
+    
+    Returns:
+        Filtered list containing only values above threshold.
+    """
+    if verbose:
+        print(f"Processing {len(data)} items...")
+    return [x for x in data if x > threshold]
+
+
+result = process_data([0.1, 0.6, 0.3, 0.8, 0.4], threshold=0.5)
+print(f"Filtered data: {result}")
+
+# -----------------------------------------------------------------------------
+# 9. Practical Example: Well-Commented Code
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Example ---")
+
+
+def calculate_shipping_cost(weight, distance, express=False):
+    """
+    Calculate the shipping cost based on weight and distance.
+    
+    The cost is calculated using a base rate plus additional charges
+    for weight and distance. Express shipping doubles the final cost.
+    
+    Args:
+        weight (float): Package weight in kilograms.
+        distance (float): Shipping distance in kilometers.
+        express (bool): Whether to use express shipping.
+    
+    Returns:
+        float: Total shipping cost in dollars.
+    
+    Example:
+        >>> calculate_shipping_cost(2.5, 100)
+        17.0
+        >>> calculate_shipping_cost(2.5, 100, express=True)
+        34.0
+    """
+    # Base shipping rate
+    BASE_RATE = 5.00
+    
+    # Rate per kilogram of weight
+    WEIGHT_RATE = 2.00
+    
+    # Rate per 100 kilometers
+    DISTANCE_RATE = 0.05
+    
+    # Calculate component costs
+    weight_cost = weight * WEIGHT_RATE
+    distance_cost = distance * DISTANCE_RATE
+    
+    # Sum up total cost
+    total = BASE_RATE + weight_cost + distance_cost
+    
+    # Apply express multiplier if applicable
+    if express:
+        total *= 2  # Express shipping is 2x the normal rate
+    
+    return round(total, 2)
+
+
+# Example usage
+package_weight = 3.5  # kg
+shipping_distance = 250  # km
+
+standard_cost = calculate_shipping_cost(package_weight, shipping_distance)
+express_cost = calculate_shipping_cost(package_weight, shipping_distance, express=True)
+
+print(f"Standard shipping: ${standard_cost}")
+print(f"Express shipping: ${express_cost}")
+
+# -----------------------------------------------------------------------------
+# Summary
+# -----------------------------------------------------------------------------
+
+print("\n" + "=" * 60)
+print("COMMENTS SUMMARY")
+print("=" * 60)
+print("""
+1. Single-line: Use # for short comments
+2. Multi-line: Use multiple # lines
+3. Docstrings: Use triple quotes for documentation
+4. Explain WHY, not WHAT
+5. Keep comments up-to-date with code changes
+6. Use TODO, FIXME, NOTE for special markers
+7. Don't over-comment obvious code
+""")
+```

@@ -1,0 +1,317 @@
+---
+title: "List Comprehensions and Other Comprehensions"
+section: "Advanced Python"
+sectionSlug: advanced-python
+sectionSummary: "Comprehensions, generators, decorators, and context managers."
+order: 1
+sourceFile: 09_advanced_python/01_list_comprehensions.py
+---
+
+This file demonstrates comprehensions in Python - a concise and powerful way to create lists, dictionaries, sets, and generators. Comprehensions are more readable and often faster than traditional loops.
+
+```python
+"""
+================================================================================
+File: 01_list_comprehensions.py
+Topic: List Comprehensions and Other Comprehensions
+================================================================================
+
+This file demonstrates comprehensions in Python - a concise and powerful way
+to create lists, dictionaries, sets, and generators. Comprehensions are more
+readable and often faster than traditional loops.
+
+Key Concepts:
+- List comprehensions
+- Dictionary comprehensions
+- Set comprehensions
+- Generator expressions
+- Nested comprehensions
+- When to use comprehensions
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic List Comprehension
+# -----------------------------------------------------------------------------
+# [expression for item in iterable]
+
+print("--- Basic List Comprehension ---")
+
+# Traditional way
+squares_loop = []
+for x in range(1, 6):
+    squares_loop.append(x ** 2)
+print(f"Loop method: {squares_loop}")
+
+# List comprehension way
+squares_comp = [x ** 2 for x in range(1, 6)]
+print(f"Comprehension: {squares_comp}")
+
+# More examples
+numbers = [1, 2, 3, 4, 5]
+doubled = [n * 2 for n in numbers]
+strings = [str(n) for n in numbers]
+
+print(f"\nOriginal: {numbers}")
+print(f"Doubled: {doubled}")
+print(f"As strings: {strings}")
+
+# -----------------------------------------------------------------------------
+# 2. List Comprehension with Condition
+# -----------------------------------------------------------------------------
+# [expression for item in iterable if condition]
+
+print("\n--- Comprehension with Condition ---")
+
+# Get only even numbers
+numbers = range(1, 21)
+evens = [n for n in numbers if n % 2 == 0]
+print(f"Even numbers: {evens}")
+
+# Filter and transform
+words = ["hello", "world", "python", "AI", "ml"]
+long_upper = [w.upper() for w in words if len(w) > 3]
+print(f"Long words (uppercase): {long_upper}")
+
+# Multiple conditions (AND)
+numbers = range(1, 51)
+divisible_by_3_and_5 = [n for n in numbers if n % 3 == 0 and n % 5 == 0]
+print(f"Divisible by 3 and 5: {divisible_by_3_and_5}")
+
+# -----------------------------------------------------------------------------
+# 3. Conditional Expression in Comprehension
+# -----------------------------------------------------------------------------
+# [expr1 if condition else expr2 for item in iterable]
+
+print("\n--- Conditional Expression ---")
+
+# Replace negatives with zero
+numbers = [-3, -1, 0, 2, 5, -4, 8]
+non_negative = [n if n >= 0 else 0 for n in numbers]
+print(f"Original: {numbers}")
+print(f"Non-negative: {non_negative}")
+
+# Categorize numbers
+categorized = ["even" if n % 2 == 0 else "odd" for n in range(1, 6)]
+print(f"Categories: {categorized}")
+
+# Pass/fail based on score
+scores = [85, 42, 91, 78, 55]
+results = ["Pass" if s >= 60 else "Fail" for s in scores]
+print(f"Scores: {scores}")
+print(f"Results: {results}")
+
+# -----------------------------------------------------------------------------
+# 4. Nested Loops in Comprehension
+# -----------------------------------------------------------------------------
+
+print("\n--- Nested Loops ---")
+
+# Flatten a 2D list
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+flat = [num for row in matrix for num in row]
+print(f"Matrix: {matrix}")
+print(f"Flattened: {flat}")
+
+# All combinations
+colors = ["red", "green"]
+sizes = ["S", "M", "L"]
+combinations = [(color, size) for color in colors for size in sizes]
+print(f"\nCombinations: {combinations}")
+
+# Multiplication table
+table = [[i * j for j in range(1, 4)] for i in range(1, 4)]
+print("\nMultiplication table:")
+for row in table:
+    print(f"  {row}")
+
+# -----------------------------------------------------------------------------
+# 5. Dictionary Comprehensions
+# -----------------------------------------------------------------------------
+# {key: value for item in iterable}
+
+print("\n--- Dictionary Comprehensions ---")
+
+# Square numbers dictionary
+squares_dict = {x: x ** 2 for x in range(1, 6)}
+print(f"Squares dict: {squares_dict}")
+
+# From two lists
+keys = ["name", "age", "city"]
+values = ["Alice", 25, "NYC"]
+person = {k: v for k, v in zip(keys, values)}
+print(f"Person dict: {person}")
+
+# Swap keys and values
+original = {"a": 1, "b": 2, "c": 3}
+swapped = {v: k for k, v in original.items()}
+print(f"Original: {original}")
+print(f"Swapped: {swapped}")
+
+# Filter dictionary
+scores = {"Alice": 85, "Bob": 42, "Charlie": 91, "Dave": 55}
+passing = {name: score for name, score in scores.items() if score >= 60}
+print(f"\nPasssing students: {passing}")
+
+# Transform dictionary
+prices = {"apple": 1.5, "banana": 0.75, "cherry": 2.0}
+taxed = {item: price * 1.1 for item, price in prices.items()}
+print(f"With tax: {taxed}")
+
+# -----------------------------------------------------------------------------
+# 6. Set Comprehensions
+# -----------------------------------------------------------------------------
+# {expression for item in iterable}
+
+print("\n--- Set Comprehensions ---")
+
+# Unique squares
+numbers = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+unique_squares = {x ** 2 for x in numbers}
+print(f"Numbers: {numbers}")
+print(f"Unique squares: {unique_squares}")
+
+# Unique first letters
+words = ["apple", "banana", "apricot", "blueberry", "cherry"]
+first_letters = {w[0] for w in words}
+print(f"First letters: {first_letters}")
+
+# Get unique word lengths
+sentences = "the quick brown fox jumps over the lazy dog"
+word_lengths = {len(word) for word in sentences.split()}
+print(f"Unique word lengths: {word_lengths}")
+
+# -----------------------------------------------------------------------------
+# 7. Generator Expressions
+# -----------------------------------------------------------------------------
+# (expression for item in iterable) - lazy evaluation!
+
+print("\n--- Generator Expressions ---")
+
+# Generator expression (note the parentheses)
+squares_gen = (x ** 2 for x in range(1, 6))
+print(f"Generator object: {squares_gen}")
+print(f"As list: {list(squares_gen)}")
+
+# Memory efficient for large data
+# List: creates all values immediately
+# Generator: creates values on demand
+
+# Sum of squares (generator is more memory efficient)
+total = sum(x ** 2 for x in range(1, 1001))
+print(f"Sum of squares 1-1000: {total}")
+
+# Check if any/all
+numbers = [1, 3, 5, 7, 9]
+any_even = any(n % 2 == 0 for n in numbers)
+all_positive = all(n > 0 for n in numbers)
+print(f"\nNumbers: {numbers}")
+print(f"Any even? {any_even}")
+print(f"All positive? {all_positive}")
+
+# Find first match
+names = ["Alice", "Bob", "Charlie", "Diana"]
+first_long = next((name for name in names if len(name) > 5), None)
+print(f"First name > 5 chars: {first_long}")
+
+# -----------------------------------------------------------------------------
+# 8. Nested Comprehensions
+# -----------------------------------------------------------------------------
+
+print("\n--- Nested Comprehensions ---")
+
+# Create a matrix
+rows, cols = 3, 4
+matrix = [[0 for _ in range(cols)] for _ in range(rows)]
+print(f"Zero matrix {rows}x{cols}: {matrix}")
+
+# Identity matrix
+identity = [[1 if i == j else 0 for j in range(3)] for i in range(3)]
+print("\nIdentity matrix:")
+for row in identity:
+    print(f"  {row}")
+
+# Transpose matrix
+original = [[1, 2, 3], [4, 5, 6]]
+transposed = [[row[i] for row in original] for i in range(len(original[0]))]
+print(f"\nOriginal: {original}")
+print(f"Transposed: {transposed}")
+
+# -----------------------------------------------------------------------------
+# 9. When NOT to Use Comprehensions
+# -----------------------------------------------------------------------------
+
+print("\n--- When NOT to Use Comprehensions ---")
+
+# 1. Complex logic - use regular loop
+# BAD:
+# result = [func1(x) if x > 0 else func2(x) if x < 0 else func3(x) for x in data if valid(x)]
+
+# GOOD: Use regular loop for complex logic
+def process_numbers(data):
+    result = []
+    for x in data:
+        if not x:  # Skip None or 0
+            continue
+        if x > 0:
+            result.append(x ** 2)
+        else:
+            result.append(abs(x))
+    return result
+
+# 2. Side effects - use regular loop
+# BAD: [print(x) for x in items]  # Creates unnecessary list
+
+# GOOD:
+# for x in items:
+#     print(x)
+
+# 3. Very long comprehensions that require wrapping
+# Consider regular loop for readability
+
+print("Use regular loops when:")
+print("  - Logic is complex")
+print("  - There are side effects (print, modify, etc.)")
+print("  - Comprehension becomes too long to read")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# 1. Parse CSV-like data
+csv_data = "name,age,city\nAlice,25,NYC\nBob,30,LA\nCharlie,35,Chicago"
+rows = [line.split(",") for line in csv_data.split("\n")]
+print(f"Parsed CSV: {rows}")
+
+# 2. Filter and transform objects
+users = [
+    {"name": "Alice", "age": 25, "active": True},
+    {"name": "Bob", "age": 17, "active": True},
+    {"name": "Charlie", "age": 30, "active": False},
+    {"name": "Diana", "age": 22, "active": True}
+]
+active_adults = [
+    user["name"]
+    for user in users
+    if user["active"] and user["age"] >= 18
+]
+print(f"\nActive adults: {active_adults}")
+
+# 3. Word frequency (dict comprehension)
+text = "the quick brown fox jumps over the lazy dog"
+words = text.split()
+frequency = {word: words.count(word) for word in set(words)}
+print(f"\nWord frequency: {frequency}")
+
+# 4. File path manipulation
+files = ["report.pdf", "data.csv", "image.png", "document.pdf", "log.txt"]
+pdf_files = [f for f in files if f.endswith(".pdf")]
+print(f"\nPDF files: {pdf_files}")
+
+# 5. Coordinate pairs
+coords = [(x, y) for x in range(3) for y in range(3) if x != y]
+print(f"\nCoordinate pairs (x != y): {coords}")
+```

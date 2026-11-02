@@ -1,0 +1,376 @@
+---
+title: "Generators and Iterators in Python"
+section: "Advanced Python"
+sectionSlug: advanced-python
+sectionSummary: "Comprehensions, generators, decorators, and context managers."
+order: 2
+sourceFile: 09_advanced_python/02_generators.py
+---
+
+This file demonstrates generators and iterators in Python. Generators are special functions that can pause and resume execution, yielding values one at a time. They're memory-efficient for processing large data.
+
+```python
+"""
+================================================================================
+File: 02_generators.py
+Topic: Generators and Iterators in Python
+================================================================================
+
+This file demonstrates generators and iterators in Python. Generators are
+special functions that can pause and resume execution, yielding values one
+at a time. They're memory-efficient for processing large data.
+
+Key Concepts:
+- Iterator protocol (__iter__, __next__)
+- Generator functions (yield)
+- Generator expressions
+- yield from
+- Practical applications
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Understanding Iterators
+# -----------------------------------------------------------------------------
+# Iterators implement __iter__ and __next__
+
+print("--- Understanding Iterators ---")
+
+# Lists are iterable (have __iter__)
+numbers = [1, 2, 3]
+iterator = iter(numbers)  # Get iterator
+
+print(f"First: {next(iterator)}")
+print(f"Second: {next(iterator)}")
+print(f"Third: {next(iterator)}")
+# next(iterator)  # Would raise StopIteration
+
+# Custom iterator class
+class CountDown:
+    """A countdown iterator."""
+    
+    def __init__(self, start):
+        self.current = start
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.current <= 0:
+            raise StopIteration
+        value = self.current
+        self.current -= 1
+        return value
+
+print("\nCountdown iterator:")
+for num in CountDown(5):
+    print(f"  {num}")
+
+# -----------------------------------------------------------------------------
+# 2. Generator Functions
+# -----------------------------------------------------------------------------
+# Use yield to create generators
+
+print("\n--- Generator Functions ---")
+
+def countdown(n):
+    """Generator function for countdown."""
+    while n > 0:
+        yield n  # Pause here and return value
+        n -= 1   # Resume from here on next()
+
+# Using the generator
+print("Generator countdown:")
+for num in countdown(5):
+    print(f"  {num}")
+
+# Generator is an iterator
+gen = countdown(3)
+print(f"\nGenerator object: {gen}")
+print(f"next(): {next(gen)}")
+print(f"next(): {next(gen)}")
+print(f"next(): {next(gen)}")
+
+# -----------------------------------------------------------------------------
+# 3. Generators vs Lists - Memory Efficiency
+# -----------------------------------------------------------------------------
+
+print("\n--- Memory Efficiency ---")
+
+import sys
+
+# List - all values in memory at once
+list_nums = [x ** 2 for x in range(1000)]
+list_size = sys.getsizeof(list_nums)
+
+# Generator - values created on demand
+gen_nums = (x ** 2 for x in range(1000))
+gen_size = sys.getsizeof(gen_nums)
+
+print(f"List of 1000 squares: {list_size:,} bytes")
+print(f"Generator for 1000 squares: {gen_size} bytes")
+print(f"Memory saved: {list_size - gen_size:,} bytes")
+
+# For very large sequences, generators are essential
+# This would crash with a list: sum(range(10**12))
+# But works with generator: sum(range(10**6))  # Uses constant memory
+
+# -----------------------------------------------------------------------------
+# 4. Infinite Generators
+# -----------------------------------------------------------------------------
+
+print("\n--- Infinite Generators ---")
+
+def infinite_counter(start=0):
+    """Generate numbers infinitely."""
+    n = start
+    while True:
+        yield n
+        n += 1
+
+def fibonacci():
+    """Generate Fibonacci numbers infinitely."""
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+# Use islice to take limited values from infinite generator
+from itertools import islice
+
+print("First 10 counter values:")
+counter = infinite_counter(10)
+first_10 = list(islice(counter, 10))
+print(f"  {first_10}")
+
+print("\nFirst 10 Fibonacci numbers:")
+fib = fibonacci()
+fib_10 = list(islice(fib, 10))
+print(f"  {fib_10}")
+
+# -----------------------------------------------------------------------------
+# 5. Generator Methods
+# -----------------------------------------------------------------------------
+
+print("\n--- Generator Methods ---")
+
+def interactive_generator():
+    """Generator that can receive values."""
+    print("  Generator started")
+    
+    # yield can receive values via send()
+    received = yield "First yield"
+    print(f"  Received: {received}")
+    
+    received = yield "Second yield"
+    print(f"  Received: {received}")
+    
+    yield "Final yield"
+
+gen = interactive_generator()
+print(f"next(): {next(gen)}")           # Start and get first yield
+print(f"send('Hello'): {gen.send('Hello')}")  # Send value, get second yield
+print(f"send('World'): {gen.send('World')}")  # Send value, get final yield
+
+# -----------------------------------------------------------------------------
+# 6. yield from - Delegating Generators
+# -----------------------------------------------------------------------------
+
+print("\n--- yield from ---")
+
+def sub_generator():
+    """A simple sub-generator."""
+    yield 1
+    yield 2
+    yield 3
+
+# Without yield from
+def main_generator_old():
+    for item in sub_generator():
+        yield item
+    yield 4
+    yield 5
+
+# With yield from (cleaner)
+def main_generator():
+    yield from sub_generator()
+    yield 4
+    yield 5
+
+print("Using yield from:")
+result = list(main_generator())
+print(f"  {result}")
+
+# Flatten nested structure with yield from
+def flatten(nested):
+    """Flatten arbitrarily nested lists."""
+    for item in nested:
+        if isinstance(item, list):
+            yield from flatten(item)
+        else:
+            yield item
+
+nested = [1, [2, 3, [4, 5]], 6, [7, [8, 9]]]
+print(f"\nFlattening: {nested}")
+print(f"Result: {list(flatten(nested))}")
+
+# -----------------------------------------------------------------------------
+# 7. Generator Pipelines
+# -----------------------------------------------------------------------------
+
+print("\n--- Generator Pipelines ---")
+
+# Process data through multiple generators (like Unix pipes)
+
+def read_data():
+    """Simulate reading data."""
+    data = ["  John,25,NYC  ", "  Jane,30,LA  ", "  Bob,35,Chicago  ", ""]
+    for line in data:
+        yield line
+
+def strip_lines(lines):
+    """Remove whitespace from lines."""
+    for line in lines:
+        yield line.strip()
+
+def filter_empty(lines):
+    """Filter out empty lines."""
+    for line in lines:
+        if line:
+            yield line
+
+def parse_csv(lines):
+    """Parse CSV lines into dictionaries."""
+    for line in lines:
+        name, age, city = line.split(",")
+        yield {"name": name, "age": int(age), "city": city}
+
+# Chain generators together
+pipeline = parse_csv(filter_empty(strip_lines(read_data())))
+
+print("Pipeline processing:")
+for record in pipeline:
+    print(f"  {record}")
+
+# -----------------------------------------------------------------------------
+# 8. Context Manager with Generator
+# -----------------------------------------------------------------------------
+
+print("\n--- Generator as Context Manager ---")
+
+from contextlib import contextmanager
+
+@contextmanager
+def managed_resource(name):
+    """A context manager using generator."""
+    print(f"  Acquiring: {name}")
+    try:
+        yield name  # Resource is available here
+    finally:
+        print(f"  Releasing: {name}")
+
+# Using the context manager
+print("Using managed resource:")
+with managed_resource("Database Connection") as conn:
+    print(f"  Using: {conn}")
+
+# -----------------------------------------------------------------------------
+# 9. Built-in Generator Functions
+# -----------------------------------------------------------------------------
+
+print("\n--- Built-in Generator Functions ---")
+
+# range() is a generator-like object
+print(f"range(5): {list(range(5))}")
+
+# enumerate() yields (index, value)
+fruits = ["apple", "banana", "cherry"]
+print(f"\nenumerate(): {list(enumerate(fruits))}")
+
+# zip() yields tuples from multiple iterables
+names = ["Alice", "Bob"]
+ages = [25, 30]
+print(f"zip(): {list(zip(names, ages))}")
+
+# map() yields transformed values
+print(f"map(str.upper): {list(map(str.upper, fruits))}")
+
+# filter() yields filtered values
+numbers = [1, 2, 3, 4, 5, 6]
+print(f"filter(even): {list(filter(lambda x: x % 2 == 0, numbers))}")
+
+# itertools has many useful generators
+from itertools import chain, cycle, repeat, takewhile
+
+# chain - combine iterables
+print(f"\nchain([1,2], [3,4]): {list(chain([1,2], [3,4]))}")
+
+# takewhile - yield while condition is true
+nums = [2, 4, 6, 7, 8, 10]
+print(f"takewhile(even): {list(takewhile(lambda x: x % 2 == 0, nums))}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# 1. Reading large files line by line
+def read_large_file(filepath):
+    """Read file lazily, one line at a time."""
+    # In real code: yield from open(filepath)
+    # Here we simulate:
+    lines = ["Line 1", "Line 2", "Line 3"]
+    for line in lines:
+        yield line
+
+print("Reading 'file' lazily:")
+for line in read_large_file("data.txt"):
+    print(f"  Processing: {line}")
+
+# 2. Paginated API results
+def fetch_paginated_data(total_pages=3):
+    """Simulate fetching paginated API data."""
+    for page in range(1, total_pages + 1):
+        print(f"  Fetching page {page}...")
+        yield [f"item_{page}_{i}" for i in range(3)]
+
+print("\nPaginated data:")
+for items in fetch_paginated_data():
+    for item in items:
+        print(f"    {item}")
+
+# 3. Sliding window
+def sliding_window(iterable, size):
+    """Generate sliding windows over data."""
+    from collections import deque
+    window = deque(maxlen=size)
+    
+    for item in iterable:
+        window.append(item)
+        if len(window) == size:
+            yield tuple(window)
+
+data = [1, 2, 3, 4, 5, 6]
+print(f"\nSliding window (size 3) over {data}:")
+for window in sliding_window(data, 3):
+    print(f"  {window}")
+
+# 4. Batch processing
+def batch(iterable, size):
+    """Yield items in batches."""
+    batch = []
+    for item in iterable:
+        batch.append(item)
+        if len(batch) == size:
+            yield batch
+            batch = []
+    if batch:
+        yield batch
+
+items = list(range(1, 11))
+print(f"\nBatching {items} into groups of 3:")
+for b in batch(items, 3):
+    print(f"  {b}")
+```

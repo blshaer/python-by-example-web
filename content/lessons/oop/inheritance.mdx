@@ -1,0 +1,449 @@
+---
+title: "Inheritance in Python"
+section: "Object-Oriented Programming"
+sectionSlug: oop
+sectionSummary: "Classes, inheritance, and polymorphism."
+order: 3
+sourceFile: 08_oop/03_inheritance.py
+---
+
+This file demonstrates inheritance in Python, a fundamental OOP concept that allows classes to inherit attributes and methods from other classes. This promotes code reuse and establishes relationships between classes.
+
+```python
+"""
+================================================================================
+File: 03_inheritance.py
+Topic: Inheritance in Python
+================================================================================
+
+This file demonstrates inheritance in Python, a fundamental OOP concept that
+allows classes to inherit attributes and methods from other classes. This
+promotes code reuse and establishes relationships between classes.
+
+Key Concepts:
+- Single inheritance
+- Method overriding
+- super() function
+- Multiple inheritance
+- Method Resolution Order (MRO)
+- Abstract base classes
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic Inheritance
+# -----------------------------------------------------------------------------
+# Child class inherits from parent class
+
+print("--- Basic Inheritance ---")
+
+class Animal:
+    """Base class for all animals."""
+    
+    def __init__(self, name):
+        """Initialize animal with a name."""
+        self.name = name
+    
+    def speak(self):
+        """Make a generic sound."""
+        return "Some generic sound"
+    
+    def describe(self):
+        """Describe the animal."""
+        return f"I am {self.name}"
+
+class Dog(Animal):
+    """Dog class inheriting from Animal."""
+    pass  # Inherits everything from Animal
+
+# Dog has all Animal's methods
+buddy = Dog("Buddy")
+print(buddy.describe())
+print(f"Says: {buddy.speak()}")
+print(f"Dog is instance of Animal: {isinstance(buddy, Animal)}")
+
+# -----------------------------------------------------------------------------
+# 2. Method Overriding
+# -----------------------------------------------------------------------------
+# Child class can override parent methods
+
+print("\n--- Method Overriding ---")
+
+class Cat(Animal):
+    """Cat class with overridden method."""
+    
+    def speak(self):
+        """Cats meow instead of generic sound."""
+        return "Meow!"
+
+class Cow(Animal):
+    """Cow class with overridden method."""
+    
+    def speak(self):
+        """Cows moo."""
+        return "Moo!"
+
+# Each animal speaks differently
+animals = [Dog("Rex"), Cat("Whiskers"), Cow("Bessie")]
+
+print("Each animal speaks:")
+for animal in animals:
+    print(f"  {animal.name}: {animal.speak()}")
+
+# -----------------------------------------------------------------------------
+# 3. Extending Parent Class with super()
+# -----------------------------------------------------------------------------
+# Use super() to call parent methods
+
+print("\n--- Using super() ---")
+
+class Bird(Animal):
+    """Bird class extending Animal."""
+    
+    def __init__(self, name, can_fly=True):
+        """Initialize bird with flying ability."""
+        super().__init__(name)  # Call parent's __init__
+        self.can_fly = can_fly
+    
+    def speak(self):
+        """Birds chirp."""
+        return "Chirp!"
+    
+    def describe(self):
+        """Extend parent's describe method."""
+        base = super().describe()  # Get parent's description
+        fly_status = "can fly" if self.can_fly else "cannot fly"
+        return f"{base} and I {fly_status}"
+
+sparrow = Bird("Sparrow", can_fly=True)
+penguin = Bird("Penny", can_fly=False)
+
+print(sparrow.describe())
+print(penguin.describe())
+
+# -----------------------------------------------------------------------------
+# 4. Inheritance Chain
+# -----------------------------------------------------------------------------
+# Classes can inherit from other child classes
+
+print("\n--- Inheritance Chain ---")
+
+class Vehicle:
+    """Base vehicle class."""
+    
+    def __init__(self, brand):
+        self.brand = brand
+    
+    def start(self):
+        return "Vehicle starting..."
+
+class Car(Vehicle):
+    """Car inherits from Vehicle."""
+    
+    def __init__(self, brand, model):
+        super().__init__(brand)
+        self.model = model
+    
+    def start(self):
+        return f"{self.brand} {self.model} engine starting..."
+
+class ElectricCar(Car):
+    """ElectricCar inherits from Car."""
+    
+    def __init__(self, brand, model, battery_kw):
+        super().__init__(brand, model)
+        self.battery_kw = battery_kw
+    
+    def start(self):
+        return f"{self.brand} {self.model} powering up silently... (Battery: {self.battery_kw}kW)"
+    
+    def charge(self):
+        return f"Charging {self.battery_kw}kW battery..."
+
+# Create instances
+regular_car = Car("Toyota", "Camry")
+electric_car = ElectricCar("Tesla", "Model 3", 75)
+
+print(regular_car.start())
+print(electric_car.start())
+print(electric_car.charge())
+
+# Check inheritance
+print(f"\nElectricCar is Car: {isinstance(electric_car, Car)}")
+print(f"ElectricCar is Vehicle: {isinstance(electric_car, Vehicle)}")
+
+# -----------------------------------------------------------------------------
+# 5. Multiple Inheritance
+# -----------------------------------------------------------------------------
+# A class can inherit from multiple parent classes
+
+print("\n--- Multiple Inheritance ---")
+
+class Flyable:
+    """Mixin class for flying ability."""
+    
+    def fly(self):
+        return f"{self.name} is flying!"
+    
+    def land(self):
+        return f"{self.name} has landed."
+
+class Swimmable:
+    """Mixin class for swimming ability."""
+    
+    def swim(self):
+        return f"{self.name} is swimming!"
+    
+    def dive(self):
+        return f"{self.name} dives underwater."
+
+class Duck(Animal, Flyable, Swimmable):
+    """Duck can do everything!"""
+    
+    def speak(self):
+        return "Quack!"
+
+# Duck has methods from all parent classes
+duck = Duck("Donald")
+print(f"{duck.name} says: {duck.speak()}")
+print(duck.fly())
+print(duck.swim())
+print(duck.describe())
+
+# -----------------------------------------------------------------------------
+# 6. Method Resolution Order (MRO)
+# -----------------------------------------------------------------------------
+# Python determines method lookup order
+
+print("\n--- Method Resolution Order (MRO) ---")
+
+class A:
+    def method(self):
+        return "A"
+
+class B(A):
+    def method(self):
+        return "B"
+
+class C(A):
+    def method(self):
+        return "C"
+
+class D(B, C):
+    pass
+
+class E(B, C):
+    def method(self):
+        return "E"
+
+# Check MRO
+print("MRO for class D:")
+for cls in D.__mro__:
+    print(f"  {cls.__name__}")
+
+d = D()
+e = E()
+print(f"\nd.method(): {d.method()}")  # Returns "B" (first in MRO after D)
+print(f"e.method(): {e.method()}")    # Returns "E" (overridden)
+
+# -----------------------------------------------------------------------------
+# 7. Calling Methods from Specific Parent
+# -----------------------------------------------------------------------------
+
+print("\n--- Calling Specific Parent Methods ---")
+
+class Parent1:
+    def greet(self):
+        return "Hello from Parent1"
+
+class Parent2:
+    def greet(self):
+        return "Hello from Parent2"
+
+class Child(Parent1, Parent2):
+    def greet(self):
+        return "Hello from Child"
+    
+    def greet_all(self):
+        """Call all parent greet methods."""
+        return [
+            f"Child: {self.greet()}",
+            f"Parent1: {Parent1.greet(self)}",
+            f"Parent2: {Parent2.greet(self)}"
+        ]
+
+child = Child()
+print("Calling all greet methods:")
+for greeting in child.greet_all():
+    print(f"  {greeting}")
+
+# -----------------------------------------------------------------------------
+# 8. Abstract Base Classes
+# -----------------------------------------------------------------------------
+# Define interfaces that must be implemented
+
+print("\n--- Abstract Base Classes ---")
+
+from abc import ABC, abstractmethod
+
+class Shape(ABC):
+    """Abstract base class for shapes."""
+    
+    @abstractmethod
+    def area(self):
+        """Calculate area - must be implemented."""
+        pass
+    
+    @abstractmethod
+    def perimeter(self):
+        """Calculate perimeter - must be implemented."""
+        pass
+    
+    def describe(self):
+        """Non-abstract method - can be used as-is."""
+        return f"A shape with area {self.area():.2f}"
+
+class Rectangle(Shape):
+    """Concrete rectangle class."""
+    
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        return self.width * self.height
+    
+    def perimeter(self):
+        return 2 * (self.width + self.height)
+
+class Circle(Shape):
+    """Concrete circle class."""
+    
+    def __init__(self, radius):
+        self.radius = radius
+    
+    def area(self):
+        import math
+        return math.pi * self.radius ** 2
+    
+    def perimeter(self):
+        import math
+        return 2 * math.pi * self.radius
+
+# Cannot instantiate abstract class
+# shape = Shape()  # TypeError!
+
+# Concrete classes work fine
+rect = Rectangle(5, 3)
+circle = Circle(4)
+
+print(f"Rectangle: area={rect.area()}, perimeter={rect.perimeter()}")
+print(f"Circle: area={circle.area():.2f}, perimeter={circle.perimeter():.2f}")
+print(rect.describe())
+
+# -----------------------------------------------------------------------------
+# 9. Using isinstance() and issubclass()
+# -----------------------------------------------------------------------------
+
+print("\n--- Type Checking ---")
+
+class Mammal(Animal):
+    pass
+
+class Reptile(Animal):
+    pass
+
+class DogV2(Mammal):
+    def speak(self):
+        return "Woof!"
+
+class Snake(Reptile):
+    def speak(self):
+        return "Hiss!"
+
+dog = DogV2("Rex")
+snake = Snake("Slinky")
+
+# isinstance() checks if object is instance of class
+print("isinstance checks:")
+print(f"  dog isinstance of DogV2: {isinstance(dog, DogV2)}")
+print(f"  dog isinstance of Mammal: {isinstance(dog, Mammal)}")
+print(f"  dog isinstance of Animal: {isinstance(dog, Animal)}")
+print(f"  dog isinstance of Reptile: {isinstance(dog, Reptile)}")
+
+# issubclass() checks class relationships
+print("\nissubclass checks:")
+print(f"  DogV2 issubclass of Mammal: {issubclass(DogV2, Mammal)}")
+print(f"  DogV2 issubclass of Animal: {issubclass(DogV2, Animal)}")
+print(f"  DogV2 issubclass of Reptile: {issubclass(DogV2, Reptile)}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Example: Employee Hierarchy
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Example: Employee Hierarchy ---")
+
+class Employee:
+    """Base employee class."""
+    
+    def __init__(self, name, employee_id, salary):
+        self.name = name
+        self.employee_id = employee_id
+        self._salary = salary
+    
+    @property
+    def salary(self):
+        return self._salary
+    
+    def get_annual_salary(self):
+        return self._salary * 12
+    
+    def __str__(self):
+        return f"{self.name} (ID: {self.employee_id})"
+
+class Manager(Employee):
+    """Manager with team and bonus."""
+    
+    def __init__(self, name, employee_id, salary, team_size=0):
+        super().__init__(name, employee_id, salary)
+        self.team_size = team_size
+    
+    def get_annual_salary(self):
+        # Managers get bonus based on team size
+        base = super().get_annual_salary()
+        bonus = self.team_size * 1000  # $1000 per team member
+        return base + bonus
+    
+    def __str__(self):
+        return f"Manager {super().__str__()} - Team: {self.team_size}"
+
+class Developer(Employee):
+    """Developer with tech stack."""
+    
+    def __init__(self, name, employee_id, salary, languages):
+        super().__init__(name, employee_id, salary)
+        self.languages = languages
+    
+    def get_annual_salary(self):
+        # Developers get extra for each language
+        base = super().get_annual_salary()
+        language_bonus = len(self.languages) * 500  # $500 per language
+        return base + language_bonus
+    
+    def __str__(self):
+        langs = ", ".join(self.languages)
+        return f"Developer {super().__str__()} - Languages: {langs}"
+
+# Create employees
+manager = Manager("Alice", "M001", 8000, team_size=5)
+dev1 = Developer("Bob", "D001", 6000, ["Python", "JavaScript", "SQL"])
+dev2 = Developer("Charlie", "D002", 5500, ["Python"])
+
+employees = [manager, dev1, dev2]
+
+print("Employee Details:")
+for emp in employees:
+    print(f"  {emp}")
+    print(f"    Annual Salary: ${emp.get_annual_salary():,}")
+```

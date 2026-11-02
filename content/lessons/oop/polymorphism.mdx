@@ -1,0 +1,543 @@
+---
+title: "Polymorphism in Python"
+section: "Object-Oriented Programming"
+sectionSlug: oop
+sectionSummary: "Classes, inheritance, and polymorphism."
+order: 4
+sourceFile: 08_oop/04_polymorphism.py
+---
+
+This file demonstrates polymorphism in Python - the ability of different objects to respond to the same method call in different ways. This is a core OOP principle that enables flexible and extensible code.
+
+```python
+"""
+================================================================================
+File: 04_polymorphism.py
+Topic: Polymorphism in Python
+================================================================================
+
+This file demonstrates polymorphism in Python - the ability of different
+objects to respond to the same method call in different ways. This is a
+core OOP principle that enables flexible and extensible code.
+
+Key Concepts:
+- Duck typing
+- Method polymorphism
+- Operator overloading
+- Protocols and ABC
+- Practical polymorphism patterns
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. What is Polymorphism?
+# -----------------------------------------------------------------------------
+# "Many forms" - same interface, different implementations
+
+print("--- What is Polymorphism? ---")
+
+class Dog:
+    def speak(self):
+        return "Woof!"
+
+class Cat:
+    def speak(self):
+        return "Meow!"
+
+class Duck:
+    def speak(self):
+        return "Quack!"
+
+# Same method call, different behavior
+animals = [Dog(), Cat(), Duck()]
+
+print("Different animals, same method:")
+for animal in animals:
+    print(f"  {type(animal).__name__}: {animal.speak()}")
+
+# -----------------------------------------------------------------------------
+# 2. Duck Typing
+# -----------------------------------------------------------------------------
+# "If it walks like a duck and quacks like a duck, it's a duck"
+
+print("\n--- Duck Typing ---")
+
+class RealDuck:
+    """A real duck."""
+    def quack(self):
+        return "Quack quack!"
+    
+    def fly(self):
+        return "Flap flap, flying!"
+
+class RobotDuck:
+    """A robot that acts like a duck."""
+    def quack(self):
+        return "Beep boop quack!"
+    
+    def fly(self):
+        return "Propellers spinning, ascending!"
+
+class Person:
+    """A person pretending to be a duck."""
+    def quack(self):
+        return "*Person making quack sounds*"
+    
+    def fly(self):
+        return "*Person flapping arms*"
+
+def duck_demo(duck):
+    """Demonstrate a duck (or anything duck-like)."""
+    print(f"  {type(duck).__name__}:")
+    print(f"    Quacking: {duck.quack()}")
+    print(f"    Flying: {duck.fly()}")
+
+# All these work because they have the required methods
+print("Duck typing demo:")
+duck_demo(RealDuck())
+duck_demo(RobotDuck())
+duck_demo(Person())
+
+# -----------------------------------------------------------------------------
+# 3. Method Polymorphism with Inheritance
+# -----------------------------------------------------------------------------
+
+print("\n--- Method Polymorphism ---")
+
+class Shape:
+    """Base shape class."""
+    
+    def area(self):
+        raise NotImplementedError("Subclass must implement area()")
+    
+    def describe(self):
+        return f"{self.__class__.__name__} with area {self.area():.2f}"
+
+class Rectangle(Shape):
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        return self.width * self.height
+
+class Circle(Shape):
+    def __init__(self, radius):
+        self.radius = radius
+    
+    def area(self):
+        import math
+        return math.pi * self.radius ** 2
+
+class Triangle(Shape):
+    def __init__(self, base, height):
+        self.base = base
+        self.height = height
+    
+    def area(self):
+        return 0.5 * self.base * self.height
+
+# Polymorphism in action
+shapes = [
+    Rectangle(5, 3),
+    Circle(4),
+    Triangle(6, 4)
+]
+
+print("Shape descriptions:")
+for shape in shapes:
+    print(f"  {shape.describe()}")
+
+# Calculate total area polymorphically
+total_area = sum(shape.area() for shape in shapes)
+print(f"\nTotal area of all shapes: {total_area:.2f}")
+
+# -----------------------------------------------------------------------------
+# 4. Operator Overloading
+# -----------------------------------------------------------------------------
+# Same operators, different behaviors
+
+print("\n--- Operator Overloading ---")
+
+class Vector:
+    """A 2D vector with overloaded operators."""
+    
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+    
+    def __str__(self):
+        return f"Vector({self.x}, {self.y})"
+    
+    def __repr__(self):
+        return self.__str__()
+    
+    def __add__(self, other):
+        """Vector addition: v1 + v2"""
+        return Vector(self.x + other.x, self.y + other.y)
+    
+    def __sub__(self, other):
+        """Vector subtraction: v1 - v2"""
+        return Vector(self.x - other.x, self.y - other.y)
+    
+    def __mul__(self, scalar):
+        """Scalar multiplication: v * n"""
+        return Vector(self.x * scalar, self.y * scalar)
+    
+    def __rmul__(self, scalar):
+        """Reverse multiplication: n * v"""
+        return self.__mul__(scalar)
+    
+    def __neg__(self):
+        """Negation: -v"""
+        return Vector(-self.x, -self.y)
+    
+    def __eq__(self, other):
+        """Equality: v1 == v2"""
+        return self.x == other.x and self.y == other.y
+    
+    def __abs__(self):
+        """Magnitude: abs(v)"""
+        return (self.x ** 2 + self.y ** 2) ** 0.5
+
+v1 = Vector(3, 4)
+v2 = Vector(1, 2)
+
+print(f"v1 = {v1}")
+print(f"v2 = {v2}")
+print(f"v1 + v2 = {v1 + v2}")
+print(f"v1 - v2 = {v1 - v2}")
+print(f"v1 * 3 = {v1 * 3}")
+print(f"2 * v2 = {2 * v2}")
+print(f"-v1 = {-v1}")
+print(f"|v1| = {abs(v1)}")
+print(f"v1 == Vector(3, 4): {v1 == Vector(3, 4)}")
+
+# -----------------------------------------------------------------------------
+# 5. Polymorphism with Built-in Functions
+# -----------------------------------------------------------------------------
+
+print("\n--- Built-in Function Polymorphism ---")
+
+class Playlist:
+    """A playlist that works with len() and iteration."""
+    
+    def __init__(self, name):
+        self.name = name
+        self.songs = []
+    
+    def add_song(self, song):
+        self.songs.append(song)
+    
+    def __len__(self):
+        """Enable len(playlist)"""
+        return len(self.songs)
+    
+    def __iter__(self):
+        """Enable for song in playlist"""
+        return iter(self.songs)
+    
+    def __getitem__(self, index):
+        """Enable playlist[index]"""
+        return self.songs[index]
+    
+    def __contains__(self, song):
+        """Enable 'song' in playlist"""
+        return song in self.songs
+
+playlist = Playlist("My Favorites")
+playlist.add_song("Song A")
+playlist.add_song("Song B")
+playlist.add_song("Song C")
+
+print(f"Playlist '{playlist.name}':")
+print(f"  Length: {len(playlist)}")
+print(f"  First song: {playlist[0]}")
+print(f"  'Song B' in playlist: {'Song B' in playlist}")
+print("  All songs:")
+for song in playlist:
+    print(f"    - {song}")
+
+# -----------------------------------------------------------------------------
+# 6. Polymorphic Functions
+# -----------------------------------------------------------------------------
+
+print("\n--- Polymorphic Functions ---")
+
+def process_payment(payment_method):
+    """
+    Process any payment method polymorphically.
+    Any object with a process() method works!
+    """
+    print(f"  Processing with {type(payment_method).__name__}...")
+    return payment_method.process()
+
+class CreditCard:
+    def __init__(self, card_number):
+        self.card_number = card_number[-4:]  # Last 4 digits
+    
+    def process(self):
+        return f"Charged to card ending in {self.card_number}"
+
+class PayPal:
+    def __init__(self, email):
+        self.email = email
+    
+    def process(self):
+        return f"Payment sent via PayPal ({self.email})"
+
+class CryptoCurrency:
+    def __init__(self, wallet):
+        self.wallet = wallet[:8]
+    
+    def process(self):
+        return f"Crypto transferred from {self.wallet}..."
+
+# Same function, different payment methods
+payment_methods = [
+    CreditCard("4111111111111234"),
+    PayPal("user@example.com"),
+    CryptoCurrency("0x1234567890abcdef")
+]
+
+print("Processing payments:")
+for method in payment_methods:
+    result = process_payment(method)
+    print(f"    Result: {result}")
+
+# -----------------------------------------------------------------------------
+# 7. Protocols (Informal Interfaces)
+# -----------------------------------------------------------------------------
+
+print("\n--- Protocols (Informal Interfaces) ---")
+
+# Python 3.8+ has typing.Protocol for formal protocols
+# Here's the concept with duck typing:
+
+class Drawable:
+    """Protocol: anything with a draw() method."""
+    def draw(self):
+        raise NotImplementedError
+
+class Circle2D:
+    def draw(self):
+        return "Drawing a circle: O"
+
+class Square2D:
+    def draw(self):
+        return "Drawing a square: □"
+
+class Triangle2D:
+    def draw(self):
+        return "Drawing a triangle: △"
+
+class Text2D:
+    def __init__(self, text):
+        self.text = text
+    
+    def draw(self):
+        return f"Drawing text: '{self.text}'"
+
+def render_canvas(drawables):
+    """Render anything that has a draw() method."""
+    print("Canvas:")
+    for drawable in drawables:
+        print(f"  {drawable.draw()}")
+
+# All these can be rendered
+elements = [Circle2D(), Square2D(), Triangle2D(), Text2D("Hello")]
+render_canvas(elements)
+
+# -----------------------------------------------------------------------------
+# 8. Polymorphism with Abstract Base Classes
+# -----------------------------------------------------------------------------
+
+print("\n--- ABC Polymorphism ---")
+
+from abc import ABC, abstractmethod
+
+class DataExporter(ABC):
+    """Abstract base class for data exporters."""
+    
+    @abstractmethod
+    def export(self, data):
+        """Export data - must be implemented."""
+        pass
+    
+    def validate(self, data):
+        """Common validation (can be overridden)."""
+        if not data:
+            raise ValueError("No data to export")
+        return True
+
+class JSONExporter(DataExporter):
+    def export(self, data):
+        import json
+        self.validate(data)
+        return json.dumps(data, indent=2)
+
+class CSVExporter(DataExporter):
+    def export(self, data):
+        self.validate(data)
+        if not data:
+            return ""
+        headers = ",".join(data[0].keys())
+        rows = [",".join(str(v) for v in row.values()) for row in data]
+        return headers + "\n" + "\n".join(rows)
+
+class XMLExporter(DataExporter):
+    def export(self, data):
+        self.validate(data)
+        xml = "<root>\n"
+        for item in data:
+            xml += "  <item>\n"
+            for key, value in item.items():
+                xml += f"    <{key}>{value}</{key}>\n"
+            xml += "  </item>\n"
+        xml += "</root>"
+        return xml
+
+# Same data, different formats
+sample_data = [
+    {"name": "Alice", "age": 25},
+    {"name": "Bob", "age": 30}
+]
+
+exporters = [JSONExporter(), CSVExporter(), XMLExporter()]
+
+print("Exporting same data in different formats:")
+for exporter in exporters:
+    print(f"\n{type(exporter).__name__}:")
+    print(exporter.export(sample_data))
+
+# -----------------------------------------------------------------------------
+# 9. Method Dispatch Based on Type
+# -----------------------------------------------------------------------------
+
+print("\n--- Type-Based Method Dispatch ---")
+
+from functools import singledispatch
+
+@singledispatch
+def process(value):
+    """Default processing for unknown types."""
+    return f"Don't know how to process {type(value).__name__}"
+
+@process.register(int)
+def _(value):
+    """Process integers."""
+    return f"Integer: {value * 2}"
+
+@process.register(str)
+def _(value):
+    """Process strings."""
+    return f"String: {value.upper()}"
+
+@process.register(list)
+def _(value):
+    """Process lists."""
+    return f"List with {len(value)} items"
+
+# Same function name, different behavior based on type
+print("Single dispatch polymorphism:")
+print(f"  process(42): {process(42)}")
+print(f"  process('hello'): {process('hello')}")
+print(f"  process([1,2,3]): {process([1,2,3])}")
+print(f"  process(3.14): {process(3.14)}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Example: Notification System
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Example: Notification System ---")
+
+class NotificationService(ABC):
+    """Abstract base for notification services."""
+    
+    @abstractmethod
+    def send(self, recipient, message):
+        """Send a notification."""
+        pass
+    
+    @abstractmethod
+    def get_status(self):
+        """Get service status."""
+        pass
+
+class EmailNotification(NotificationService):
+    def __init__(self, smtp_server="mail.example.com"):
+        self.smtp_server = smtp_server
+    
+    def send(self, recipient, message):
+        return f"📧 Email sent to {recipient}: '{message}'"
+    
+    def get_status(self):
+        return f"Email service connected to {self.smtp_server}"
+
+class SMSNotification(NotificationService):
+    def __init__(self, provider="TwilioMock"):
+        self.provider = provider
+    
+    def send(self, recipient, message):
+        return f"📱 SMS sent to {recipient}: '{message[:50]}...'"
+    
+    def get_status(self):
+        return f"SMS service using {self.provider}"
+
+class PushNotification(NotificationService):
+    def __init__(self, app_name="MyApp"):
+        self.app_name = app_name
+    
+    def send(self, recipient, message):
+        return f"🔔 Push notification to {recipient}: '{message}'"
+    
+    def get_status(self):
+        return f"Push service for {self.app_name}"
+
+class SlackNotification(NotificationService):
+    def __init__(self, workspace="MyWorkspace"):
+        self.workspace = workspace
+    
+    def send(self, recipient, message):
+        return f"💬 Slack message to #{recipient}: '{message}'"
+    
+    def get_status(self):
+        return f"Slack connected to {self.workspace}"
+
+# Polymorphic notification manager
+class NotificationManager:
+    """Manages multiple notification services."""
+    
+    def __init__(self):
+        self.services = []
+    
+    def add_service(self, service):
+        self.services.append(service)
+    
+    def send_all(self, recipient, message):
+        """Send via all services."""
+        results = []
+        for service in self.services:
+            results.append(service.send(recipient, message))
+        return results
+    
+    def status(self):
+        """Get status of all services."""
+        return [service.get_status() for service in self.services]
+
+# Create manager and add services
+manager = NotificationManager()
+manager.add_service(EmailNotification())
+manager.add_service(SMSNotification())
+manager.add_service(PushNotification())
+manager.add_service(SlackNotification())
+
+print("Service status:")
+for status in manager.status():
+    print(f"  ✓ {status}")
+
+print("\nSending notification via all channels:")
+for result in manager.send_all("user123", "Your order has been shipped!"):
+    print(f"  {result}")
+```

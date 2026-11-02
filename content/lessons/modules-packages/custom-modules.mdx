@@ -1,0 +1,456 @@
+---
+title: "Creating and Using Custom Modules"
+section: "Modules and Packages"
+sectionSlug: modules-packages
+sectionSummary: "Imports and custom modules."
+order: 2
+sourceFile: 06_modules_packages/02_custom_modules.py
+---
+
+This file demonstrates how to create your own modules and packages in Python. Custom modules help organize code, promote reusability, and maintain clean project structures.
+
+```python
+"""
+================================================================================
+File: 02_custom_modules.py
+Topic: Creating and Using Custom Modules
+================================================================================
+
+This file demonstrates how to create your own modules and packages in Python.
+Custom modules help organize code, promote reusability, and maintain clean
+project structures.
+
+Key Concepts:
+- Creating module files
+- The __name__ variable
+- __init__.py for packages
+- Relative imports
+- Module documentation
+- Publishing modules
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. What is a Module?
+# -----------------------------------------------------------------------------
+# A module is simply a .py file containing Python code
+
+print("--- What is a Module? ---")
+
+# Any Python file is a module!
+# If you have: my_utils.py
+# You can: import my_utils
+
+# Example module content (imagine this is saved as 'my_math.py'):
+"""
+# my_math.py
+
+def add(a, b):
+    return a + b
+
+def subtract(a, b):
+    return a - b
+
+PI = 3.14159
+
+class Calculator:
+    def multiply(self, a, b):
+        return a * b
+"""
+
+print("A module is just a Python file that can be imported.")
+print("It can contain functions, classes, and variables.")
+
+# -----------------------------------------------------------------------------
+# 2. The __name__ Variable
+# -----------------------------------------------------------------------------
+# __name__ tells you how the module is being used
+
+print("\n--- The __name__ Variable ---")
+
+# When a file is run directly: __name__ == "__main__"
+# When a file is imported: __name__ == module_name
+
+print(f"Current __name__: {__name__}")
+
+# Common pattern for executable modules:
+"""
+# utils.py
+
+def useful_function():
+    return "I'm useful!"
+
+def main():
+    print("Running as main program")
+    print(useful_function())
+
+# This block only runs when file is executed directly
+if __name__ == "__main__":
+    main()
+"""
+
+# Demo of the pattern
+def demo_function():
+    """A function that would be in a module."""
+    return "Hello from demo!"
+
+def main():
+    """Main function that runs when executed directly."""
+    print("This module is being run directly!")
+    print(demo_function())
+
+# This is the __name__ check pattern
+if __name__ == "__main__":
+    # This runs only when this file is executed directly
+    # Not when it's imported
+    pass  # In real code, you'd call main()
+
+print("\nThe 'if __name__ == \"__main__\"' pattern prevents code from")
+print("running when the module is imported.")
+
+# -----------------------------------------------------------------------------
+# 3. Module Structure Example
+# -----------------------------------------------------------------------------
+
+print("\n--- Module Structure ---")
+
+# A well-structured module typically has:
+module_template = '''
+"""
+Module: my_module
+Description: What this module does
+
+This module provides functionality for...
+"""
+
+# Imports at the top
+import os
+from typing import List
+
+# Module-level constants
+VERSION = "1.0.0"
+DEFAULT_TIMEOUT = 30
+
+# Private helpers (convention: prefix with _)
+def _internal_helper():
+    """Not meant to be used outside this module."""
+    pass
+
+# Public functions
+def public_function(arg1: str) -> str:
+    """
+    This is a public function.
+    
+    Args:
+        arg1: Description of argument
+    
+    Returns:
+        Description of return value
+    """
+    return f"Result: {arg1}"
+
+# Classes
+class MyClass:
+    """A class in the module."""
+    pass
+
+# Main entry point (if applicable)
+def main():
+    """Entry point when run as script."""
+    print(public_function("test"))
+
+if __name__ == "__main__":
+    main()
+'''
+
+print("A module should have:")
+print("  1. Module docstring at top")
+print("  2. Imports")
+print("  3. Constants")
+print("  4. Private helpers (prefixed with _)")
+print("  5. Public functions/classes")
+print("  6. Main block if it's executable")
+
+# -----------------------------------------------------------------------------
+# 4. Creating a Package
+# -----------------------------------------------------------------------------
+
+print("\n--- Creating a Package ---")
+
+# A package is a directory containing:
+# - __init__.py (can be empty)
+# - One or more module files
+
+package_structure = """
+my_package/
+    __init__.py
+    module1.py
+    module2.py
+    utils/
+        __init__.py
+        helpers.py
+        validators.py
+"""
+
+print("Package structure:")
+print(package_structure)
+
+# The __init__.py file makes a directory a package
+# It can be empty or contain initialization code
+
+init_example = '''
+# my_package/__init__.py
+
+# Package version
+__version__ = "1.0.0"
+
+# Control what gets imported with "from my_package import *"
+__all__ = ['module1', 'module2', 'important_function']
+
+# Import commonly used items for convenient access
+from .module1 import important_function
+from .module2 import AnotherClass
+'''
+
+print("__init__.py can:")
+print("  - Define package version")
+print("  - Control __all__ exports")
+print("  - Import frequently used items for convenience")
+
+# -----------------------------------------------------------------------------
+# 5. Import Examples for Packages
+# -----------------------------------------------------------------------------
+
+print("\n--- Package Import Examples ---")
+
+import_examples = """
+# Given this package structure:
+# myapp/
+#     __init__.py
+#     core.py
+#     utils/
+#         __init__.py
+#         helpers.py
+
+# Import the package
+import myapp
+
+# Import a module from the package
+from myapp import core
+
+# Import a function from a module
+from myapp.core import process_data
+
+# Import from nested package
+from myapp.utils import helpers
+from myapp.utils.helpers import format_output
+
+# Relative imports (inside the package)
+# In myapp/core.py:
+from . import utils           # Same-level import
+from .utils import helpers    # Nested module
+from .utils.helpers import format_output
+from .. import other_package  # Parent-level (if applicable)
+"""
+
+print("Package import patterns:")
+print("  import package")
+print("  from package import module")
+print("  from package.module import function")
+print("  from package.sub import submodule")
+
+# -----------------------------------------------------------------------------
+# 6. Simulating a Module
+# -----------------------------------------------------------------------------
+
+print("\n--- Simulated Module Example ---")
+
+# Let's create module-like code inline to demonstrate
+
+# === This would be in: calculator.py ===
+class Calculator:
+    """A simple calculator class."""
+    
+    def __init__(self):
+        self.history = []
+    
+    def add(self, a, b):
+        """Add two numbers."""
+        result = a + b
+        self.history.append(f"{a} + {b} = {result}")
+        return result
+    
+    def subtract(self, a, b):
+        """Subtract b from a."""
+        result = a - b
+        self.history.append(f"{a} - {b} = {result}")
+        return result
+    
+    def get_history(self):
+        """Get calculation history."""
+        return self.history
+
+# === Using the "module" ===
+calc = Calculator()
+print(f"5 + 3 = {calc.add(5, 3)}")
+print(f"10 - 4 = {calc.subtract(10, 4)}")
+print(f"History: {calc.get_history()}")
+
+# -----------------------------------------------------------------------------
+# 7. Module Documentation
+# -----------------------------------------------------------------------------
+
+print("\n--- Module Documentation ---")
+
+# Good module documentation includes:
+# - Module-level docstring
+# - Function/class docstrings
+# - Type hints
+# - Examples
+
+documented_module = '''
+"""
+mymodule - A demonstration of proper documentation
+
+This module provides utilities for string manipulation
+and validation. It follows Google-style docstrings.
+
+Example:
+    >>> from mymodule import validate_email
+    >>> validate_email("test@example.com")
+    True
+
+Attributes:
+    EMAIL_REGEX (str): Regular expression for email validation
+"""
+
+import re
+from typing import Optional
+
+EMAIL_REGEX = r'^[\w.-]+@[\w.-]+\.\w+$'
+
+def validate_email(email: str) -> bool:
+    """
+    Validate an email address format.
+    
+    Args:
+        email: The email address to validate
+    
+    Returns:
+        True if valid format, False otherwise
+    
+    Raises:
+        TypeError: If email is not a string
+    
+    Example:
+        >>> validate_email("user@domain.com")
+        True
+        >>> validate_email("invalid-email")
+        False
+    """
+    if not isinstance(email, str):
+        raise TypeError("email must be a string")
+    return bool(re.match(EMAIL_REGEX, email))
+'''
+
+print("Include in your modules:")
+print("  - Module docstring explaining purpose")
+print("  - Type hints for parameters and returns")
+print("  - Examples in docstrings")
+print("  - Proper exception documentation")
+
+# -----------------------------------------------------------------------------
+# 8. The __all__ Variable
+# -----------------------------------------------------------------------------
+
+print("\n--- The __all__ Variable ---")
+
+# __all__ controls what's exported with "from module import *"
+
+all_example = '''
+# mymodule.py
+
+# Only these will be exported with "from mymodule import *"
+__all__ = ['public_func', 'PublicClass', 'CONSTANT']
+
+CONSTANT = 42
+
+def public_func():
+    """This is meant to be used externally."""
+    pass
+
+def _private_func():
+    """This is internal (won't be exported)."""
+    pass
+
+class PublicClass:
+    """This class is for external use."""
+    pass
+'''
+
+print("__all__ defines what gets exported with 'import *'")
+print("Items NOT in __all__ won't be exported")
+print("Underscore-prefixed items are convention for private")
+
+# -----------------------------------------------------------------------------
+# 9. Reloading Modules
+# -----------------------------------------------------------------------------
+
+print("\n--- Reloading Modules ---")
+
+# During development, you might need to reload a modified module
+from importlib import reload
+
+# If you modify 'mymodule', you can reload it:
+# import mymodule
+# # ... modify the file ...
+# reload(mymodule)  # Get the updated version
+
+print("Use importlib.reload() to reload a modified module")
+print("Useful during development and debugging")
+
+# -----------------------------------------------------------------------------
+# 10. Project Structure Best Practices
+# -----------------------------------------------------------------------------
+
+print("\n--- Project Structure Best Practices ---")
+
+project_structure = """
+myproject/
+    README.md
+    setup.py or pyproject.toml
+    requirements.txt
+    .gitignore
+    
+    src/
+        mypackage/
+            __init__.py
+            core.py
+            utils.py
+            models/
+                __init__.py
+                user.py
+                product.py
+    
+    tests/
+        __init__.py
+        test_core.py
+        test_utils.py
+    
+    docs/
+        index.md
+    
+    scripts/
+        run_server.py
+"""
+
+print("Recommended project structure:")
+print(project_structure)
+
+print("Key points:")
+print("  - Separate source code (src/) from tests")
+print("  - Keep configuration at project root")
+print("  - Use __init__.py for all packages")
+print("  - Tests mirror source structure")
+```

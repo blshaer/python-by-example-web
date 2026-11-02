@@ -1,0 +1,299 @@
+---
+title: "Python Tuples - Ordered, Immutable Collections"
+section: "Data Structures"
+sectionSlug: data-structures
+sectionSummary: "Lists, tuples, sets, and dictionaries."
+order: 2
+sourceFile: 04_data_structures/02_tuples.py
+---
+
+This file demonstrates Python tuples, which are ordered, immutable collections. Unlike lists, tuples cannot be modified after creation, making them useful for data that should not change.
+
+```python
+"""
+================================================================================
+File: 02_tuples.py
+Topic: Python Tuples - Ordered, Immutable Collections
+================================================================================
+
+This file demonstrates Python tuples, which are ordered, immutable collections.
+Unlike lists, tuples cannot be modified after creation, making them useful
+for data that should not change.
+
+Key Concepts:
+- Creating tuples
+- Tuple immutability
+- Accessing elements
+- Tuple unpacking
+- When to use tuples vs lists
+- Named tuples for clarity
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Creating Tuples
+# -----------------------------------------------------------------------------
+# Tuples are created with parentheses () or just commas
+
+print("--- Creating Tuples ---")
+
+# Empty tuple
+empty_tuple = ()
+print(f"Empty tuple: {empty_tuple}")
+
+# Tuple with elements
+coordinates = (10, 20)
+colors = ("red", "green", "blue")
+mixed = (1, "hello", 3.14, True)
+
+print(f"Coordinates: {coordinates}")
+print(f"Colors: {colors}")
+print(f"Mixed types: {mixed}")
+
+# Single element tuple - needs trailing comma!
+single = (42,)      # This is a tuple
+not_tuple = (42)    # This is just an integer!
+print(f"\nSingle element tuple: {single}, type: {type(single)}")
+print(f"Without comma: {not_tuple}, type: {type(not_tuple)}")
+
+# Tuple without parentheses (packing)
+packed = 1, 2, 3
+print(f"Packed tuple: {packed}, type: {type(packed)}")
+
+# Using tuple() constructor
+from_list = tuple([1, 2, 3])
+from_string = tuple("Python")
+print(f"From list: {from_list}")
+print(f"From string: {from_string}")
+
+# -----------------------------------------------------------------------------
+# 2. Accessing Elements
+# -----------------------------------------------------------------------------
+# Same indexing and slicing as lists
+
+print("\n--- Accessing Elements ---")
+
+fruits = ("apple", "banana", "cherry", "date", "elderberry")
+print(f"Tuple: {fruits}")
+
+print(f"First element: {fruits[0]}")
+print(f"Last element: {fruits[-1]}")
+print(f"Slice [1:4]: {fruits[1:4]}")
+print(f"Every other: {fruits[::2]}")
+
+# -----------------------------------------------------------------------------
+# 3. Tuple Immutability
+# -----------------------------------------------------------------------------
+# Tuples cannot be modified after creation
+
+print("\n--- Immutability ---")
+
+point = (10, 20, 30)
+print(f"Original point: {point}")
+
+# This would raise an error:
+# point[0] = 100  # TypeError: 'tuple' object does not support item assignment
+
+# However, you can create a new tuple
+point = (100,) + point[1:]  # Create new tuple
+print(f"New point: {point}")
+
+# Note: Mutable objects inside tuples can still be modified
+mutable_inside = ([1, 2], [3, 4])
+mutable_inside[0].append(3)  # This works!
+print(f"Mutable inside tuple: {mutable_inside}")
+
+# -----------------------------------------------------------------------------
+# 4. Tuple Unpacking
+# -----------------------------------------------------------------------------
+# Assign tuple elements to multiple variables
+
+print("\n--- Tuple Unpacking ---")
+
+# Basic unpacking
+coordinates = (100, 200, 300)
+x, y, z = coordinates
+print(f"Unpacked: x={x}, y={y}, z={z}")
+
+# Swap values using tuple unpacking
+a, b = 1, 2
+print(f"Before swap: a={a}, b={b}")
+a, b = b, a  # Elegant swap!
+print(f"After swap: a={a}, b={b}")
+
+# Unpacking with * (extended unpacking)
+numbers = (1, 2, 3, 4, 5)
+first, *middle, last = numbers
+print(f"\nExtended unpacking:")
+print(f"  first: {first}")
+print(f"  middle: {middle}")  # This becomes a list!
+print(f"  last: {last}")
+
+# Ignoring values with underscore
+data = ("John", 25, "Developer", "NYC")
+name, _, job, _ = data  # Ignore age and city
+print(f"Name: {name}, Job: {job}")
+
+# -----------------------------------------------------------------------------
+# 5. Tuple Methods
+# -----------------------------------------------------------------------------
+# Tuples have only two methods (because they're immutable)
+
+print("\n--- Tuple Methods ---")
+
+numbers = (1, 2, 3, 2, 4, 2, 5)
+print(f"Tuple: {numbers}")
+
+# count() - Count occurrences
+print(f"Count of 2: {numbers.count(2)}")
+
+# index() - Find index of first occurrence
+print(f"Index of 4: {numbers.index(4)}")
+
+# -----------------------------------------------------------------------------
+# 6. Tuple Operations
+# -----------------------------------------------------------------------------
+
+print("\n--- Tuple Operations ---")
+
+# Concatenation
+t1 = (1, 2, 3)
+t2 = (4, 5, 6)
+combined = t1 + t2
+print(f"{t1} + {t2} = {combined}")
+
+# Repetition
+repeated = (0,) * 5
+print(f"(0,) * 5 = {repeated}")
+
+# Membership
+colors = ("red", "green", "blue")
+print(f"'green' in colors: {'green' in colors}")
+
+# Length
+print(f"len(colors): {len(colors)}")
+
+# Min, Max, Sum
+nums = (5, 2, 8, 1, 9)
+print(f"min: {min(nums)}, max: {max(nums)}, sum: {sum(nums)}")
+
+# -----------------------------------------------------------------------------
+# 7. Tuples as Dictionary Keys
+# -----------------------------------------------------------------------------
+# Tuples can be used as dictionary keys (lists cannot)
+
+print("\n--- Tuples as Dictionary Keys ---")
+
+# Mapping (x, y) coordinates to location names
+locations = {
+    (40.7128, -74.0060): "New York City",
+    (34.0522, -118.2437): "Los Angeles",
+    (51.5074, -0.1278): "London"
+}
+
+print("Locations dictionary:")
+for coords, city in locations.items():
+    print(f"  {coords}: {city}")
+
+# Access by tuple key
+coord = (40.7128, -74.0060)
+print(f"\nLocation at {coord}: {locations[coord]}")
+
+# -----------------------------------------------------------------------------
+# 8. Returning Multiple Values from Functions
+# -----------------------------------------------------------------------------
+# Functions can return tuples
+
+print("\n--- Functions Returning Tuples ---")
+
+def get_stats(numbers):
+    """Return multiple statistics as a tuple."""
+    return min(numbers), max(numbers), sum(numbers) / len(numbers)
+
+data = [10, 20, 30, 40, 50]
+minimum, maximum, average = get_stats(data)
+print(f"Stats for {data}:")
+print(f"  Min: {minimum}, Max: {maximum}, Avg: {average}")
+
+def divide_with_remainder(a, b):
+    """Return quotient and remainder."""
+    return a // b, a % b
+
+quotient, remainder = divide_with_remainder(17, 5)
+print(f"\n17 ÷ 5 = {quotient} remainder {remainder}")
+
+# -----------------------------------------------------------------------------
+# 9. Named Tuples
+# -----------------------------------------------------------------------------
+# Tuples with named fields for clarity
+
+print("\n--- Named Tuples ---")
+
+from collections import namedtuple
+
+# Define a named tuple type
+Person = namedtuple("Person", ["name", "age", "city"])
+
+# Create instances
+person1 = Person("Baraa", 25, "Gaza")
+person2 = Person(name="Sara", age=30, city="Cairo")
+
+print(f"Person 1: {person1}")
+print(f"Person 2: {person2}")
+
+# Access by name or index
+print(f"\nAccess by name: {person1.name}")
+print(f"Access by index: {person1[0]}")
+
+# Named tuple is still immutable
+# person1.age = 26  # This would raise an error
+
+# Convert to dictionary
+print(f"As dict: {person1._asdict()}")
+
+# Create from dictionary
+data = {"name": "Ali", "age": 28, "city": "Dubai"}
+person3 = Person(**data)
+print(f"From dict: {person3}")
+
+# -----------------------------------------------------------------------------
+# 10. When to Use Tuples vs Lists
+# -----------------------------------------------------------------------------
+
+print("\n--- Tuples vs Lists ---")
+
+# Use TUPLES when:
+# 1. Data should not change
+rgb_red = (255, 0, 0)  # Color values shouldn't change
+
+# 2. Using as dictionary keys
+grid_positions = {(0, 0): "start", (9, 9): "end"}
+
+# 3. Returning multiple values from functions
+def get_point(): return (10, 20)
+
+# 4. Heterogeneous data (different types, specific meaning)
+person = ("John", 30, "Engineer")  # name, age, job
+
+# Use LISTS when:
+# 1. Data will be modified
+shopping_cart = ["apple", "bread"]  # Items will be added/removed
+
+# 2. Homogeneous collection
+scores = [85, 90, 78, 92]  # All same type, will be processed together
+
+# 3. Order matters and you need to sort/shuffle
+rankings = [3, 1, 4, 1, 5]
+rankings.sort()  # Lists are sortable in place
+
+print("Summary:")
+print("  Tuples: Immutable, hashable, for fixed data")
+print("  Lists: Mutable, flexible, for changing data")
+
+# Performance note: Tuples are slightly faster and use less memory
+import sys
+list_size = sys.getsizeof([1, 2, 3, 4, 5])
+tuple_size = sys.getsizeof((1, 2, 3, 4, 5))
+print(f"\nMemory: List={list_size} bytes, Tuple={tuple_size} bytes")
+```

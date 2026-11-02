@@ -1,0 +1,256 @@
+---
+title: "Pattern Matching with match-case (Python 3.10+)"
+section: "Control Flow"
+sectionSlug: control-flow
+sectionSummary: "Conditionals, elif, and match/case."
+order: 3
+sourceFile: 02_control_flow/03_match_case.py
+---
+
+This file demonstrates Python's structural pattern matching introduced in Python 3.10. It's similar to switch/case in other languages but much more powerful with pattern matching capabilities.
+
+```python
+"""
+================================================================================
+File: 03_match_case.py
+Topic: Pattern Matching with match-case (Python 3.10+)
+================================================================================
+
+This file demonstrates Python's structural pattern matching introduced in
+Python 3.10. It's similar to switch/case in other languages but much more
+powerful with pattern matching capabilities.
+
+Key Concepts:
+- Basic match-case syntax
+- The underscore (_) as wildcard/default case
+- Pattern matching with guards
+- Matching sequences and mappings
+- Capturing values in patterns
+
+Note: This requires Python 3.10 or later!
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic match-case (Similar to switch/case)
+# -----------------------------------------------------------------------------
+# The simplest form of pattern matching
+
+def get_day_name(day_number: int) -> str:
+    """Convert day number to day name."""
+    match day_number:
+        case 1:
+            return "Monday"
+        case 2:
+            return "Tuesday"
+        case 3:
+            return "Wednesday"
+        case 4:
+            return "Thursday"
+        case 5:
+            return "Friday"
+        case 6:
+            return "Saturday"
+        case 7:
+            return "Sunday"
+        case _:  # Default case (underscore is wildcard)
+            return "Invalid day"
+
+print("--- Basic match-case ---")
+print(f"Day 1: {get_day_name(1)}")
+print(f"Day 5: {get_day_name(5)}")
+print(f"Day 9: {get_day_name(9)}")
+
+# -----------------------------------------------------------------------------
+# 2. Multiple Patterns in One Case
+# -----------------------------------------------------------------------------
+# Use the | operator to match multiple values
+
+def categorize_day(day: str) -> str:
+    """Categorize day as weekday or weekend."""
+    match day.lower():
+        case "saturday" | "sunday":
+            return "Weekend - Time to relax!"
+        case "monday" | "tuesday" | "wednesday" | "thursday" | "friday":
+            return "Weekday - Time to work!"
+        case _:
+            return "Unknown day"
+
+print("\n--- Multiple Patterns ---")
+print(f"Saturday: {categorize_day('Saturday')}")
+print(f"Monday: {categorize_day('Monday')}")
+
+# -----------------------------------------------------------------------------
+# 3. Pattern Matching with Guards
+# -----------------------------------------------------------------------------
+# Add conditions using 'if' after the pattern
+
+def evaluate_score(score: int) -> str:
+    """Evaluate score with guards."""
+    match score:
+        case n if n < 0:
+            return "Invalid score (negative)"
+        case n if n > 100:
+            return "Invalid score (over 100)"
+        case n if n >= 90:
+            return f"Grade A - Excellent! ({n}%)"
+        case n if n >= 80:
+            return f"Grade B - Good! ({n}%)"
+        case n if n >= 70:
+            return f"Grade C - Satisfactory ({n}%)"
+        case n if n >= 60:
+            return f"Grade D - Pass ({n}%)"
+        case _:
+            return f"Grade F - Fail ({score}%)"
+
+print("\n--- Pattern with Guards ---")
+print(evaluate_score(95))
+print(evaluate_score(75))
+print(evaluate_score(45))
+print(evaluate_score(-10))
+
+# -----------------------------------------------------------------------------
+# 4. Matching Sequences (Tuples/Lists)
+# -----------------------------------------------------------------------------
+# Match against list or tuple patterns
+
+def describe_point(point):
+    """Describe a point based on its coordinates."""
+    match point:
+        case (0, 0):
+            return "Origin"
+        case (0, y):
+            return f"On Y-axis at y={y}"
+        case (x, 0):
+            return f"On X-axis at x={x}"
+        case (x, y) if x == y:
+            return f"On diagonal at ({x}, {y})"
+        case (x, y):
+            return f"Point at ({x}, {y})"
+        case _:
+            return "Not a valid point"
+
+print("\n--- Matching Sequences ---")
+print(describe_point((0, 0)))
+print(describe_point((0, 5)))
+print(describe_point((3, 0)))
+print(describe_point((4, 4)))
+print(describe_point((3, 7)))
+
+# -----------------------------------------------------------------------------
+# 5. Matching with Variable Length Sequences
+# -----------------------------------------------------------------------------
+# Use * to capture remaining elements
+
+def analyze_list(data):
+    """Analyze list structure."""
+    match data:
+        case []:
+            return "Empty list"
+        case [single]:
+            return f"Single element: {single}"
+        case [first, second]:
+            return f"Two elements: {first} and {second}"
+        case [first, *middle, last]:
+            return f"First: {first}, Last: {last}, Middle count: {len(middle)}"
+        case _:
+            return "Not a list"
+
+print("\n--- Variable Length Matching ---")
+print(analyze_list([]))
+print(analyze_list([42]))
+print(analyze_list([1, 2]))
+print(analyze_list([1, 2, 3, 4, 5]))
+
+# -----------------------------------------------------------------------------
+# 6. Matching Dictionaries
+# -----------------------------------------------------------------------------
+# Match against dictionary patterns
+
+def process_request(request):
+    """Process different types of requests."""
+    match request:
+        case {"type": "login", "user": username}:
+            return f"User '{username}' is logging in"
+        case {"type": "logout", "user": username}:
+            return f"User '{username}' is logging out"
+        case {"type": "message", "user": username, "content": content}:
+            return f"Message from '{username}': {content}"
+        case {"type": action}:
+            return f"Unknown action: {action}"
+        case _:
+            return "Invalid request format"
+
+print("\n--- Matching Dictionaries ---")
+print(process_request({"type": "login", "user": "Baraa"}))
+print(process_request({"type": "message", "user": "Ali", "content": "Hello!"}))
+print(process_request({"type": "logout", "user": "Sara"}))
+print(process_request({"type": "unknown_action"}))
+
+# -----------------------------------------------------------------------------
+# 7. Matching Class Instances
+# -----------------------------------------------------------------------------
+# Match against object attributes
+
+class Point:
+    """Simple point class for demonstration."""
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+def classify_point(point):
+    """Classify point using class matching."""
+    match point:
+        case Point(x=0, y=0):
+            return "At origin"
+        case Point(x=0, y=y):
+            return f"On Y-axis at {y}"
+        case Point(x=x, y=0):
+            return f"On X-axis at {x}"
+        case Point(x=x, y=y):
+            return f"At ({x}, {y})"
+        case _:
+            return "Not a Point"
+
+print("\n--- Matching Class Instances ---")
+print(classify_point(Point(0, 0)))
+print(classify_point(Point(0, 7)))
+print(classify_point(Point(5, 0)))
+print(classify_point(Point(3, 4)))
+
+# -----------------------------------------------------------------------------
+# 8. Practical Example: Command Parser
+# -----------------------------------------------------------------------------
+# Real-world use case for a simple command interpreter
+
+def execute_command(command):
+    """Parse and execute simple commands."""
+    parts = command.split()
+    
+    match parts:
+        case ["quit"] | ["exit"] | ["q"]:
+            return "Goodbye!"
+        case ["hello"]:
+            return "Hello there!"
+        case ["hello", name]:
+            return f"Hello, {name}!"
+        case ["add", x, y]:
+            return f"Result: {int(x) + int(y)}"
+        case ["repeat", count, *words]:
+            return " ".join(words) * int(count)
+        case ["help"]:
+            return "Available: quit, hello [name], add x y, repeat n words..."
+        case [unknown, *_]:
+            return f"Unknown command: {unknown}. Type 'help' for assistance."
+        case _:
+            return "Please enter a command"
+
+print("\n--- Command Parser Example ---")
+print(f"'hello': {execute_command('hello')}")
+print(f"'hello Baraa': {execute_command('hello Baraa')}")
+print(f"'add 5 3': {execute_command('add 5 3')}")
+print(f"'repeat 3 Hi': {execute_command('repeat 3 Hi ')}")
+print(f"'help': {execute_command('help')}")
+print(f"'xyz': {execute_command('xyz')}")
+```

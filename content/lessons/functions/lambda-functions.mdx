@@ -1,0 +1,353 @@
+---
+title: "Lambda Functions in Python"
+section: "Functions"
+sectionSlug: functions
+sectionSummary: "Arguments, returns, and lambdas."
+order: 4
+sourceFile: 05_functions/04_lambda_functions.py
+---
+
+This file demonstrates lambda functions (anonymous functions) in Python. Lambda functions are small, one-line functions that can be defined inline without using the 'def' keyword.
+
+```python
+"""
+================================================================================
+File: 04_lambda_functions.py
+Topic: Lambda Functions in Python
+================================================================================
+
+This file demonstrates lambda functions (anonymous functions) in Python.
+Lambda functions are small, one-line functions that can be defined inline
+without using the 'def' keyword.
+
+Key Concepts:
+- Lambda syntax
+- When to use lambda functions
+- Lambda with built-in functions (map, filter, sorted)
+- Lambda vs regular functions
+- Common use cases and patterns
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic Lambda Syntax
+# -----------------------------------------------------------------------------
+# lambda arguments: expression
+
+print("--- Basic Lambda Syntax ---")
+
+# Regular function
+def add_regular(a, b):
+    return a + b
+
+# Equivalent lambda function
+add_lambda = lambda a, b: a + b
+
+print(f"Regular function: {add_regular(3, 5)}")
+print(f"Lambda function: {add_lambda(3, 5)}")
+
+# More examples
+square = lambda x: x ** 2
+is_even = lambda x: x % 2 == 0
+greet = lambda name: f"Hello, {name}!"
+
+print(f"\nsquare(4) = {square(4)}")
+print(f"is_even(7) = {is_even(7)}")
+print(f"greet('Alice') = {greet('Alice')}")
+
+# Lambda with no arguments
+get_pi = lambda: 3.14159
+print(f"get_pi() = {get_pi()}")
+
+# -----------------------------------------------------------------------------
+# 2. Lambda with Multiple Arguments
+# -----------------------------------------------------------------------------
+
+print("\n--- Multiple Arguments ---")
+
+# Two arguments
+multiply = lambda x, y: x * y
+print(f"multiply(4, 5) = {multiply(4, 5)}")
+
+# Three arguments
+volume = lambda l, w, h: l * w * h
+print(f"volume(2, 3, 4) = {volume(2, 3, 4)}")
+
+# With default arguments
+power = lambda base, exp=2: base ** exp
+print(f"power(3) = {power(3)}")      # 3^2 = 9
+print(f"power(2, 3) = {power(2, 3)}")  # 2^3 = 8
+
+# -----------------------------------------------------------------------------
+# 3. Lambda with Conditional Expression
+# -----------------------------------------------------------------------------
+# Using ternary operator in lambda
+
+print("\n--- Conditional Lambda ---")
+
+# Simple conditional
+get_sign = lambda x: "positive" if x > 0 else ("negative" if x < 0 else "zero")
+
+print(f"get_sign(5) = {get_sign(5)}")
+print(f"get_sign(-3) = {get_sign(-3)}")
+print(f"get_sign(0) = {get_sign(0)}")
+
+# Max of two numbers
+max_of_two = lambda a, b: a if a > b else b
+print(f"\nmax_of_two(10, 20) = {max_of_two(10, 20)}")
+
+# Absolute value
+absolute = lambda x: x if x >= 0 else -x
+print(f"absolute(-7) = {absolute(-7)}")
+
+# -----------------------------------------------------------------------------
+# 4. Lambda with map()
+# -----------------------------------------------------------------------------
+# Apply function to each element of iterable
+
+print("\n--- Lambda with map() ---")
+
+numbers = [1, 2, 3, 4, 5]
+
+# Square each number
+squares = list(map(lambda x: x ** 2, numbers))
+print(f"Original: {numbers}")
+print(f"Squared: {squares}")
+
+# Convert to strings
+strings = list(map(lambda x: str(x), numbers))
+print(f"As strings: {strings}")
+
+# Multiple iterables with map
+list1 = [1, 2, 3]
+list2 = [10, 20, 30]
+sums = list(map(lambda x, y: x + y, list1, list2))
+print(f"\n{list1} + {list2} = {sums}")
+
+# Processing strings
+names = ["alice", "bob", "charlie"]
+capitalized = list(map(lambda name: name.capitalize(), names))
+print(f"Capitalized: {capitalized}")
+
+# -----------------------------------------------------------------------------
+# 5. Lambda with filter()
+# -----------------------------------------------------------------------------
+# Filter elements based on condition
+
+print("\n--- Lambda with filter() ---")
+
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+# Filter even numbers
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+print(f"Original: {numbers}")
+print(f"Even only: {evens}")
+
+# Filter numbers greater than 5
+greater_than_5 = list(filter(lambda x: x > 5, numbers))
+print(f"Greater than 5: {greater_than_5}")
+
+# Filter non-empty strings
+strings = ["hello", "", "world", "", "python", ""]
+non_empty = list(filter(lambda s: s, strings))
+print(f"\nNon-empty strings: {non_empty}")
+
+# Complex filtering
+people = [
+    {"name": "Alice", "age": 25},
+    {"name": "Bob", "age": 17},
+    {"name": "Charlie", "age": 30},
+    {"name": "David", "age": 15}
+]
+
+adults = list(filter(lambda p: p["age"] >= 18, people))
+print(f"Adults: {[p['name'] for p in adults]}")
+
+# -----------------------------------------------------------------------------
+# 6. Lambda with sorted()
+# -----------------------------------------------------------------------------
+# Custom sorting with key function
+
+print("\n--- Lambda with sorted() ---")
+
+# Sort by absolute value
+numbers = [-5, 2, -1, 7, -3, 4]
+by_absolute = sorted(numbers, key=lambda x: abs(x))
+print(f"Original: {numbers}")
+print(f"Sorted by absolute value: {by_absolute}")
+
+# Sort strings by length
+words = ["python", "is", "a", "programming", "language"]
+by_length = sorted(words, key=lambda w: len(w))
+print(f"\nSorted by length: {by_length}")
+
+# Sort objects by attribute
+students = [
+    {"name": "Alice", "grade": 85},
+    {"name": "Bob", "grade": 92},
+    {"name": "Charlie", "grade": 78}
+]
+
+by_grade = sorted(students, key=lambda s: s["grade"], reverse=True)
+print(f"\nBy grade (highest first):")
+for s in by_grade:
+    print(f"  {s['name']}: {s['grade']}")
+
+# Sort by multiple criteria
+items = [("apple", 3), ("banana", 1), ("cherry", 2), ("apple", 1)]
+# Sort by name, then by number
+sorted_items = sorted(items, key=lambda x: (x[0], x[1]))
+print(f"\nSorted by name, then number: {sorted_items}")
+
+# -----------------------------------------------------------------------------
+# 7. Lambda with reduce()
+# -----------------------------------------------------------------------------
+# Reduce iterable to single value
+
+print("\n--- Lambda with reduce() ---")
+
+from functools import reduce
+
+numbers = [1, 2, 3, 4, 5]
+
+# Sum all numbers
+total = reduce(lambda acc, x: acc + x, numbers)
+print(f"Sum of {numbers} = {total}")
+
+# Product of all numbers
+product = reduce(lambda acc, x: acc * x, numbers)
+print(f"Product of {numbers} = {product}")
+
+# Find maximum
+maximum = reduce(lambda a, b: a if a > b else b, numbers)
+print(f"Maximum of {numbers} = {maximum}")
+
+# Concatenate strings
+words = ["Hello", " ", "World", "!"]
+sentence = reduce(lambda a, b: a + b, words)
+print(f"Concatenated: '{sentence}'")
+
+# With initial value
+numbers = [1, 2, 3]
+sum_with_initial = reduce(lambda acc, x: acc + x, numbers, 100)
+print(f"\nSum with initial 100: {sum_with_initial}")
+
+# -----------------------------------------------------------------------------
+# 8. Lambda in Data Processing
+# -----------------------------------------------------------------------------
+
+print("\n--- Data Processing Example ---")
+
+# Sample data
+transactions = [
+    {"id": 1, "type": "credit", "amount": 100},
+    {"id": 2, "type": "debit", "amount": 50},
+    {"id": 3, "type": "credit", "amount": 200},
+    {"id": 4, "type": "debit", "amount": 75},
+    {"id": 5, "type": "credit", "amount": 150}
+]
+
+# Filter credits only
+credits = list(filter(lambda t: t["type"] == "credit", transactions))
+print(f"Credit transactions: {len(credits)}")
+
+# Extract amounts from credits
+credit_amounts = list(map(lambda t: t["amount"], credits))
+print(f"Credit amounts: {credit_amounts}")
+
+# Total credits
+total_credits = reduce(lambda acc, t: acc + t["amount"], credits, 0)
+print(f"Total credits: ${total_credits}")
+
+# Combined: total debits in one expression
+total_debits = reduce(
+    lambda acc, x: acc + x,
+    map(
+        lambda t: t["amount"],
+        filter(lambda t: t["type"] == "debit", transactions)
+    ),
+    0
+)
+print(f"Total debits: ${total_debits}")
+
+# -----------------------------------------------------------------------------
+# 9. Lambda vs Regular Functions
+# -----------------------------------------------------------------------------
+
+print("\n--- Lambda vs Regular Functions ---")
+
+# Lambda: one expression, implicit return
+# Regular: multiple statements, explicit return
+
+# When to use LAMBDA:
+# - Simple, one-line operations
+# - As arguments to higher-order functions
+# - When function won't be reused
+
+# When to use REGULAR FUNCTIONS:
+# - Multiple expressions/statements needed
+# - Need docstrings
+# - Function will be reused or tested
+# - Complex logic
+
+# Example: Complex logic needs regular function
+def process_value(x):
+    """Process value with multiple steps."""
+    # Step 1: Validate
+    if x < 0:
+        return None
+    
+    # Step 2: Transform
+    result = x ** 2
+    
+    # Step 3: Apply ceiling
+    if result > 100:
+        result = 100
+    
+    return result
+
+# This CAN'T be easily done with lambda
+# lambda x: (None if x < 0 else min(x ** 2, 100))  # Gets messy
+
+print(f"process_value(-5) = {process_value(-5)}")
+print(f"process_value(5) = {process_value(5)}")
+print(f"process_value(15) = {process_value(15)}")
+
+# -----------------------------------------------------------------------------
+# 10. Common Lambda Patterns
+# -----------------------------------------------------------------------------
+
+print("\n--- Common Lambda Patterns ---")
+
+# 1. Default value getter
+get_value = lambda d, key, default=None: d.get(key, default)
+data = {"name": "John", "age": 30}
+print(f"get_value: {get_value(data, 'name')}, {get_value(data, 'email', 'N/A')}")
+
+# 2. Compose functions
+compose = lambda f, g: lambda x: f(g(x))
+add_one = lambda x: x + 1
+double = lambda x: x * 2
+add_then_double = compose(double, add_one)
+print(f"add_then_double(5) = {add_then_double(5)}")  # (5+1)*2 = 12
+
+# 3. Partial application simulation
+multiply_by = lambda n: lambda x: x * n
+times_three = multiply_by(3)
+print(f"times_three(7) = {times_three(7)}")
+
+# 4. Key extractors for sorting
+by_key = lambda key: lambda x: x[key]
+products = [
+    {"name": "Apple", "price": 1.50},
+    {"name": "Banana", "price": 0.75},
+    {"name": "Cherry", "price": 2.00}
+]
+sorted_by_price = sorted(products, key=by_key("price"))
+print(f"\nSorted by price: {[p['name'] for p in sorted_by_price]}")
+
+# 5. Immediate invocation (IIFE-style)
+result = (lambda x, y: x ** y)(2, 10)
+print(f"\nImmediately invoked: 2^10 = {result}")
+```

@@ -1,0 +1,321 @@
+---
+title: "Function Arguments in Python"
+section: "Functions"
+sectionSlug: functions
+sectionSummary: "Arguments, returns, and lambdas."
+order: 2
+sourceFile: 05_functions/02_arguments.py
+---
+
+This file demonstrates the different ways to pass arguments to functions in Python. Understanding these patterns is essential for writing flexible and reusable functions.
+
+```python
+"""
+================================================================================
+File: 02_arguments.py
+Topic: Function Arguments in Python
+================================================================================
+
+This file demonstrates the different ways to pass arguments to functions
+in Python. Understanding these patterns is essential for writing flexible
+and reusable functions.
+
+Key Concepts:
+- Positional arguments
+- Keyword arguments
+- Default parameter values
+- *args (variable positional arguments)
+- **kwargs (variable keyword arguments)
+- Argument unpacking
+- Keyword-only and positional-only arguments
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Positional Arguments
+# -----------------------------------------------------------------------------
+# Arguments passed in order; position matters
+
+print("--- Positional Arguments ---")
+
+def greet(first_name, last_name):
+    """Greet using positional arguments."""
+    print(f"Hello, {first_name} {last_name}!")
+
+greet("John", "Doe")      # Correct order
+greet("Jane", "Smith")    # Correct order
+
+# Order matters!
+greet("Doe", "John")      # Wrong order gives wrong result
+
+# -----------------------------------------------------------------------------
+# 2. Keyword Arguments
+# -----------------------------------------------------------------------------
+# Arguments passed by name; order doesn't matter
+
+print("\n--- Keyword Arguments ---")
+
+def create_profile(name, age, city):
+    """Create a profile using keyword arguments."""
+    print(f"Name: {name}, Age: {age}, City: {city}")
+
+# Using keyword arguments (order doesn't matter)
+create_profile(name="Alice", age=25, city="NYC")
+create_profile(city="Tokyo", name="Bob", age=30)
+
+# Mix positional and keyword (positional must come first!)
+create_profile("Charlie", city="London", age=28)
+
+# -----------------------------------------------------------------------------
+# 3. Default Parameter Values
+# -----------------------------------------------------------------------------
+# Parameters can have default values
+
+print("\n--- Default Parameter Values ---")
+
+def greet_with_title(name, title="Mr."):
+    """Greet with an optional title."""
+    print(f"Hello, {title} {name}!")
+
+greet_with_title("Smith")           # Uses default title
+greet_with_title("Johnson", "Dr.")  # Overrides default
+
+# Multiple defaults
+def create_user(username, email, role="user", active=True):
+    """Create a user with defaults."""
+    print(f"User: {username}, Email: {email}, Role: {role}, Active: {active}")
+
+create_user("john", "john@example.com")
+create_user("admin", "admin@example.com", role="admin")
+create_user("test", "test@example.com", active=False)
+
+# CAUTION: Mutable default arguments
+# DON'T DO THIS:
+def bad_function(items=[]):  # Bad! List is shared across calls
+    items.append(1)
+    return items
+
+# DO THIS INSTEAD:
+def good_function(items=None):
+    """Safe way to handle mutable defaults."""
+    if items is None:
+        items = []
+    items.append(1)
+    return items
+
+print(f"\nBad function calls: {bad_function()}, {bad_function()}, {bad_function()}")
+print(f"Good function calls: {good_function()}, {good_function()}, {good_function()}")
+
+# -----------------------------------------------------------------------------
+# 4. *args - Variable Positional Arguments
+# -----------------------------------------------------------------------------
+# Accept any number of positional arguments
+
+print("\n--- *args (Variable Positional Arguments) ---")
+
+def sum_all(*args):
+    """Sum all provided numbers."""
+    print(f"  Received args: {args} (type: {type(args).__name__})")
+    return sum(args)
+
+print(f"sum_all(1, 2): {sum_all(1, 2)}")
+print(f"sum_all(1, 2, 3, 4, 5): {sum_all(1, 2, 3, 4, 5)}")
+print(f"sum_all(): {sum_all()}")
+
+# Combining regular parameters with *args
+def greet_people(greeting, *names):
+    """Greet multiple people with the same greeting."""
+    for name in names:
+        print(f"  {greeting}, {name}!")
+
+print("\nGreeting people:")
+greet_people("Hello", "Alice", "Bob", "Charlie")
+
+# -----------------------------------------------------------------------------
+# 5. **kwargs - Variable Keyword Arguments
+# -----------------------------------------------------------------------------
+# Accept any number of keyword arguments
+
+print("\n--- **kwargs (Variable Keyword Arguments) ---")
+
+def print_info(**kwargs):
+    """Print all keyword arguments."""
+    print(f"  Received kwargs: {kwargs} (type: {type(kwargs).__name__})")
+    for key, value in kwargs.items():
+        print(f"    {key}: {value}")
+
+print_info(name="Baraa", age=25, city="Gaza")
+print_info(language="Python", level="Expert")
+
+# Combining all parameter types
+def complete_example(required, *args, default="value", **kwargs):
+    """Demonstrate all parameter types."""
+    print(f"  Required: {required}")
+    print(f"  *args: {args}")
+    print(f"  Default: {default}")
+    print(f"  **kwargs: {kwargs}")
+
+print("\nComplete example:")
+complete_example("must_have", 1, 2, 3, default="custom", extra="data", more="stuff")
+
+# -----------------------------------------------------------------------------
+# 6. Argument Unpacking
+# -----------------------------------------------------------------------------
+# Use * and ** to unpack sequences and dictionaries into arguments
+
+print("\n--- Argument Unpacking ---")
+
+def introduce(name, age, city):
+    """Introduce a person."""
+    print(f"I'm {name}, {age} years old, from {city}")
+
+# Unpack list/tuple with *
+person_list = ["Alice", 30, "Paris"]
+introduce(*person_list)  # Same as: introduce("Alice", 30, "Paris")
+
+# Unpack dictionary with **
+person_dict = {"name": "Bob", "age": 25, "city": "Berlin"}
+introduce(**person_dict)  # Same as: introduce(name="Bob", age=25, city="Berlin")
+
+# Combine unpacking
+def multiply(a, b, c):
+    return a * b * c
+
+nums = [2, 3]
+print(f"\nMultiply with unpacking: {multiply(*nums, 4)}")
+
+# -----------------------------------------------------------------------------
+# 7. Keyword-Only Arguments (Python 3+)
+# -----------------------------------------------------------------------------
+# Arguments after * must be passed as keywords
+
+print("\n--- Keyword-Only Arguments ---")
+
+def format_name(first, last, *, upper=False, reverse=False):
+    """
+    Format a name. 'upper' and 'reverse' are keyword-only.
+    """
+    name = f"{first} {last}"
+    if reverse:
+        name = f"{last}, {first}"
+    if upper:
+        name = name.upper()
+    return name
+
+# These work:
+print(format_name("John", "Doe"))
+print(format_name("John", "Doe", upper=True))
+print(format_name("John", "Doe", reverse=True, upper=True))
+
+# This would fail:
+# format_name("John", "Doe", True)  # Error! upper must be keyword
+
+# Using bare * for keyword-only
+def connect(*, host, port, timeout=30):
+    """All parameters are keyword-only."""
+    print(f"  Connecting to {host}:{port} (timeout: {timeout}s)")
+
+connect(host="localhost", port=8080)
+connect(host="db.example.com", port=5432, timeout=60)
+
+# -----------------------------------------------------------------------------
+# 8. Positional-Only Arguments (Python 3.8+)
+# -----------------------------------------------------------------------------
+# Arguments before / must be passed positionally
+
+print("\n--- Positional-Only Arguments ---")
+
+def divide(x, y, /):
+    """x and y must be passed positionally."""
+    return x / y
+
+print(f"divide(10, 2): {divide(10, 2)}")
+# divide(x=10, y=2)  # Error! x and y are positional-only
+
+# Combining positional-only, regular, and keyword-only
+def complex_function(pos_only1, pos_only2, /, regular1, regular2, *, kw_only1, kw_only2="default"):
+    """
+    pos_only1, pos_only2: positional-only (before /)
+    regular1, regular2: can be either
+    kw_only1, kw_only2: keyword-only (after *)
+    """
+    print(f"  pos_only: {pos_only1}, {pos_only2}")
+    print(f"  regular: {regular1}, {regular2}")
+    print(f"  kw_only: {kw_only1}, {kw_only2}")
+
+print("\nComplex function:")
+complex_function(1, 2, 3, regular2=4, kw_only1="required")
+
+# -----------------------------------------------------------------------------
+# 9. Type Hints for Arguments (Preview)
+# -----------------------------------------------------------------------------
+# Adding type information (doesn't enforce, just hints)
+
+print("\n--- Type Hints ---")
+
+def calculate_total(price: float, quantity: int, tax_rate: float = 0.1) -> float:
+    """
+    Calculate total price with tax.
+    
+    Args:
+        price: Unit price (float)
+        quantity: Number of items (int)
+        tax_rate: Tax rate as decimal (default 0.1 = 10%)
+    
+    Returns:
+        Total price including tax
+    """
+    subtotal = price * quantity
+    return subtotal * (1 + tax_rate)
+
+total = calculate_total(19.99, 3)
+print(f"Total: ${total:.2f}")
+
+# Type hints with complex types
+from typing import List, Optional, Dict
+
+def process_scores(scores: List[int], name: Optional[str] = None) -> Dict[str, float]:
+    """Process a list of scores and return statistics."""
+    return {
+        "name": name or "Unknown",
+        "average": sum(scores) / len(scores),
+        "highest": max(scores),
+        "lowest": min(scores)
+    }
+
+result = process_scores([85, 90, 78, 92], "Alice")
+print(f"Score stats: {result}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# Flexible logging function
+def log(message, *tags, level="INFO", **metadata):
+    """Log a message with optional tags and metadata."""
+    tag_str = " ".join(f"[{tag}]" for tag in tags)
+    meta_str = " | ".join(f"{k}={v}" for k, v in metadata.items())
+    
+    output = f"[{level}] {tag_str} {message}"
+    if meta_str:
+        output += f" ({meta_str})"
+    print(output)
+
+log("Server started", "server", "startup")
+log("User logged in", "auth", level="DEBUG", user_id=123, ip="192.168.1.1")
+
+# Builder pattern with kwargs
+def create_html_element(tag, content="", **attributes):
+    """Create an HTML element string."""
+    attrs = " ".join(f'{k}="{v}"' for k, v in attributes.items())
+    if attrs:
+        attrs = " " + attrs
+    return f"<{tag}{attrs}>{content}</{tag}>"
+
+print("\n" + create_html_element("p", "Hello World"))
+print(create_html_element("a", "Click me", href="https://example.com", target="_blank"))
+print(create_html_element("input", type="text", placeholder="Enter name", id="name_input"))
+```

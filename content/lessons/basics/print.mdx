@@ -1,0 +1,236 @@
+---
+title: "The print() Function in Python"
+section: "Basics"
+sectionSlug: basics
+sectionSummary: "Print, comments, variables, and data types."
+order: 1
+sourceFile: 01_basics/01_print.py
+---
+
+This file demonstrates the print() function, which is used to display output to the console. It's one of the most fundamental functions in Python and essential for debugging and displaying information.
+
+```python
+"""
+================================================================================
+File: 01_print.py
+Topic: The print() Function in Python
+================================================================================
+
+This file demonstrates the print() function, which is used to display output
+to the console. It's one of the most fundamental functions in Python and
+essential for debugging and displaying information.
+
+Key Concepts:
+- Basic printing
+- Multiple arguments
+- Separators and end characters
+- Formatted strings (f-strings)
+- Escape characters
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Simple Output
+# -----------------------------------------------------------------------------
+# The most basic use of print()
+
+print("--- Simple Output ---")
+
+print("Hello, World!")
+print("Welcome to Python!")
+print("Learning is fun!")
+
+# -----------------------------------------------------------------------------
+# 2. Printing Different Data Types
+# -----------------------------------------------------------------------------
+# print() can output any data type
+
+print("\n--- Different Data Types ---")
+
+print(42)              # Integer
+print(3.14159)         # Float
+print(True)            # Boolean
+print(None)            # NoneType
+print([1, 2, 3])       # List
+print({"a": 1})        # Dictionary
+
+# -----------------------------------------------------------------------------
+# 3. Printing Multiple Items
+# -----------------------------------------------------------------------------
+# Pass multiple arguments separated by commas
+
+print("\n--- Multiple Items ---")
+
+print("Hello", "World")
+print("Python", "is", "awesome")
+print("Name:", "Baraa", "| Age:", 25)
+print(1, 2, 3, 4, 5)
+
+# -----------------------------------------------------------------------------
+# 4. The sep Parameter
+# -----------------------------------------------------------------------------
+# sep defines what goes between multiple items (default is space)
+
+print("\n--- Separator Parameter ---")
+
+print("Python", "Java", "C++", sep=", ")
+print("2025", "01", "15", sep="-")      # Date format
+print("192", "168", "1", "1", sep=".")   # IP address
+print("apple", "banana", "cherry", sep=" | ")
+print("a", "b", "c", sep="")             # No separator
+
+# -----------------------------------------------------------------------------
+# 5. The end Parameter
+# -----------------------------------------------------------------------------
+# end defines what goes at the end (default is newline \n)
+
+print("\n--- End Parameter ---")
+
+print("Loading", end="")
+print("...", end="")
+print(" Done!")
+
+print("First line", end=" --> ")
+print("Second line")
+
+# Creating a progress bar effect
+print("\nProgress: ", end="")
+for i in range(5):
+    print("█", end="")
+print(" Complete!")
+
+# -----------------------------------------------------------------------------
+# 6. Variables in Print
+# -----------------------------------------------------------------------------
+# Print variable values
+
+print("\n--- Variables ---")
+
+name = "Baraa"
+age = 25
+city = "Gaza"
+is_student = True
+
+print("Name:", name)
+print("Age:", age)
+print("City:", city)
+print("Student:", is_student)
+
+# Print with variable calculations
+x = 10
+y = 5
+print("Sum:", x + y)
+print("Product:", x * y)
+
+# -----------------------------------------------------------------------------
+# 7. String Formatting - f-strings (Recommended)
+# -----------------------------------------------------------------------------
+# Modern way to embed variables in strings (Python 3.6+)
+
+print("\n--- f-strings (Formatted String Literals) ---")
+
+name = "Baraa"
+age = 25
+height = 1.75
+
+print(f"My name is {name}")
+print(f"I am {age} years old")
+print(f"Next year I'll be {age + 1}")
+
+# Formatting numbers
+pi = 3.14159265359
+print(f"Pi to 2 decimals: {pi:.2f}")
+print(f"Pi to 4 decimals: {pi:.4f}")
+
+# Padding and alignment
+print(f"{'Left':<10}|{'Center':^10}|{'Right':>10}")
+print(f"{1:<10}|{2:^10}|{3:>10}")
+
+# Currency formatting
+price = 1234.567
+print(f"Price: ${price:,.2f}")
+
+# -----------------------------------------------------------------------------
+# 8. String Formatting - Other Methods
+# -----------------------------------------------------------------------------
+# Alternative formatting methods
+
+print("\n--- Other Formatting Methods ---")
+
+# .format() method
+name = "Alice"
+age = 30
+print("Hello, {}! You are {} years old.".format(name, age))
+print("Hello, {0}! You are {1} years old.".format(name, age))
+print("Hello, {n}! You are {a} years old.".format(n=name, a=age))
+
+# % operator (older style)
+print("Hello, %s! You are %d years old." % (name, age))
+
+# -----------------------------------------------------------------------------
+# 9. Escape Characters
+# -----------------------------------------------------------------------------
+# Special characters using backslash \
+
+print("\n--- Escape Characters ---")
+
+print("Line 1\nLine 2\nLine 3")           # \n = newline
+print("Column1\tColumn2\tColumn3")         # \t = tab
+print("She said: \"Hello!\"")              # \" = quote
+print('It\'s a beautiful day')             # \' = apostrophe
+print("Path: C:\\Users\\Documents")        # \\ = backslash
+print("Bell sound: \a")                    # \a = bell (may not work)
+
+# Raw strings - ignore escape characters
+print("\nRaw string:")
+print(r"C:\Users\Baraa\Desktop")           # r prefix for raw string
+
+# -----------------------------------------------------------------------------
+# 10. Multi-line Printing
+# -----------------------------------------------------------------------------
+
+print("\n--- Multi-line Strings ---")
+
+# Using triple quotes
+message = """
+This is a multi-line message.
+It spans across several lines.
+Very useful for long text!
+"""
+print(message)
+
+# ASCII art example
+print("""
+  ╔═══════════════════════════╗
+  ║   Welcome to Python!      ║
+  ║   Let's learn together!   ║
+  ╚═══════════════════════════╝
+""")
+
+# -----------------------------------------------------------------------------
+# 11. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("--- Practical Examples ---")
+
+# Receipt example
+print("\n========== RECEIPT ==========")
+item1, price1 = "Coffee", 4.99
+item2, price2 = "Sandwich", 8.50
+item3, price3 = "Cookie", 2.25
+total = price1 + price2 + price3
+
+print(f"{item1:.<20}${price1:.2f}")
+print(f"{item2:.<20}${price2:.2f}")
+print(f"{item3:.<20}${price3:.2f}")
+print("=" * 30)
+print(f"{'TOTAL':.<20}${total:.2f}")
+
+# Table example
+print("\n| Name     | Age | City       |")
+print("|----------|-----|------------|")
+print(f"| {'Alice':<8} | {25:<3} | {'New York':<10} |")
+print(f"| {'Bob':<8} | {30:<3} | {'London':<10} |")
+print(f"| {'Charlie':<8} | {35:<3} | {'Tokyo':<10} |")
+```

@@ -1,0 +1,421 @@
+---
+title: "Creating and Using Custom Exceptions"
+section: "Error Handling"
+sectionSlug: error-handling
+sectionSummary: "try/except and custom exceptions."
+order: 2
+sourceFile: 07_error_handling/02_custom_exceptions.py
+---
+
+This file demonstrates how to create your own exception classes in Python. Custom exceptions make your code more expressive and allow you to handle specific error conditions in a meaningful way.
+
+```python
+"""
+================================================================================
+File: 02_custom_exceptions.py
+Topic: Creating and Using Custom Exceptions
+================================================================================
+
+This file demonstrates how to create your own exception classes in Python.
+Custom exceptions make your code more expressive and allow you to handle
+specific error conditions in a meaningful way.
+
+Key Concepts:
+- Why use custom exceptions
+- Creating exception classes
+- Exception with custom attributes
+- Exception chaining
+- Best practices
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Why Custom Exceptions?
+# -----------------------------------------------------------------------------
+
+print("--- Why Custom Exceptions? ---")
+
+# Built-in exceptions are generic
+# Custom exceptions:
+# - Are more descriptive
+# - Can carry additional data
+# - Allow specific handling
+# - Document error conditions
+
+print("Benefits of custom exceptions:")
+print("  - More meaningful error messages")
+print("  - Carry context-specific data")
+print("  - Enable targeted exception handling")
+print("  - Self-documenting code")
+
+# -----------------------------------------------------------------------------
+# 2. Basic Custom Exception
+# -----------------------------------------------------------------------------
+
+print("\n--- Basic Custom Exception ---")
+
+# Inherit from Exception (or a more specific built-in)
+class InvalidAgeError(Exception):
+    """Raised when an age value is invalid."""
+    pass
+
+# Using the custom exception
+def set_age(age):
+    """Set age with validation."""
+    if age < 0:
+        raise InvalidAgeError("Age cannot be negative")
+    if age > 150:
+        raise InvalidAgeError("Age seems unrealistically high")
+    return age
+
+# Catching custom exception
+try:
+    set_age(-5)
+except InvalidAgeError as e:
+    print(f"Caught InvalidAgeError: {e}")
+
+try:
+    set_age(200)
+except InvalidAgeError as e:
+    print(f"Caught InvalidAgeError: {e}")
+
+# -----------------------------------------------------------------------------
+# 3. Custom Exception with Attributes
+# -----------------------------------------------------------------------------
+
+print("\n--- Exception with Custom Attributes ---")
+
+class ValidationError(Exception):
+    """Raised when validation fails."""
+    
+    def __init__(self, field, value, message):
+        self.field = field
+        self.value = value
+        self.message = message
+        # Call parent constructor with full message
+        super().__init__(f"{field}: {message} (got: {value})")
+    
+    def to_dict(self):
+        """Convert error to dictionary (useful for API responses)."""
+        return {
+            "field": self.field,
+            "value": self.value,
+            "message": self.message
+        }
+
+# Using the enhanced exception
+def validate_email(email):
+    """Validate email format."""
+    if not email:
+        raise ValidationError("email", email, "Email is required")
+    if "@" not in email:
+        raise ValidationError("email", email, "Invalid email format")
+    return True
+
+try:
+    validate_email("invalid-email")
+except ValidationError as e:
+    print(f"Error: {e}")
+    print(f"Field: {e.field}")
+    print(f"Value: {e.value}")
+    print(f"As dict: {e.to_dict()}")
+
+# -----------------------------------------------------------------------------
+# 4. Exception Hierarchy
+# -----------------------------------------------------------------------------
+
+print("\n--- Exception Hierarchy ---")
+
+# Create a base exception for your module/application
+class AppError(Exception):
+    """Base exception for the application."""
+    pass
+
+class DatabaseError(AppError):
+    """Database-related errors."""
+    pass
+
+class ConnectionError(DatabaseError):
+    """Database connection errors."""
+    pass
+
+class QueryError(DatabaseError):
+    """Query execution errors."""
+    pass
+
+class AuthenticationError(AppError):
+    """Authentication-related errors."""
+    pass
+
+class PermissionError(AppError):
+    """Permission-related errors."""
+    pass
+
+# Now you can catch broadly or specifically
+def database_operation():
+    raise QueryError("Invalid SQL syntax")
+
+try:
+    database_operation()
+except DatabaseError as e:
+    # Catches ConnectionError and QueryError
+    print(f"Database error: {e}")
+except AppError as e:
+    # Catches all app errors
+    print(f"App error: {e}")
+
+# -----------------------------------------------------------------------------
+# 5. Exception Chaining
+# -----------------------------------------------------------------------------
+
+print("\n--- Exception Chaining ---")
+
+class ProcessingError(Exception):
+    """Error during data processing."""
+    pass
+
+def parse_config(data):
+    """Parse configuration data."""
+    try:
+        # Simulating a parsing error
+        if not data:
+            raise ValueError("Empty data")
+        return {"parsed": data}
+    except ValueError as e:
+        # Chain the original exception
+        raise ProcessingError("Failed to parse config") from e
+
+try:
+    parse_config("")
+except ProcessingError as e:
+    print(f"Processing error: {e}")
+    print(f"Caused by: {e.__cause__}")
+
+# Using 'from None' to suppress chaining
+def simple_error():
+    try:
+        raise ValueError("original")
+    except ValueError:
+        raise RuntimeError("new error") from None  # Hides original
+
+# -----------------------------------------------------------------------------
+# 6. Practical Example: User Registration
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Example: User Registration ---")
+
+class RegistrationError(Exception):
+    """Base class for registration errors."""
+    pass
+
+class UsernameError(RegistrationError):
+    """Username-related errors."""
+    def __init__(self, username, reason):
+        self.username = username
+        self.reason = reason
+        super().__init__(f"Username '{username}': {reason}")
+
+class PasswordError(RegistrationError):
+    """Password-related errors."""
+    def __init__(self, issues):
+        self.issues = issues
+        super().__init__(f"Password issues: {', '.join(issues)}")
+
+class EmailError(RegistrationError):
+    """Email-related errors."""
+    pass
+
+def validate_username(username):
+    """Validate username."""
+    if len(username) < 3:
+        raise UsernameError(username, "Too short (min 3 chars)")
+    if not username.isalnum():
+        raise UsernameError(username, "Must be alphanumeric")
+    # Check if username exists (simulated)
+    existing = ["admin", "root", "user"]
+    if username.lower() in existing:
+        raise UsernameError(username, "Already taken")
+    return True
+
+def validate_password(password):
+    """Validate password strength."""
+    issues = []
+    if len(password) < 8:
+        issues.append("too short")
+    if not any(c.isupper() for c in password):
+        issues.append("needs uppercase")
+    if not any(c.islower() for c in password):
+        issues.append("needs lowercase")
+    if not any(c.isdigit() for c in password):
+        issues.append("needs digit")
+    
+    if issues:
+        raise PasswordError(issues)
+    return True
+
+def register_user(username, password, email):
+    """Register a new user."""
+    try:
+        validate_username(username)
+        validate_password(password)
+        # validate_email(email) - already defined above
+        print(f"  ✓ User '{username}' registered successfully!")
+        return True
+    except RegistrationError as e:
+        print(f"  ✗ Registration failed: {e}")
+        return False
+
+# Test registration
+print("Registration attempts:")
+register_user("ab", "password123", "test@example.com")
+register_user("admin", "Password1", "test@example.com")
+register_user("newuser", "weak", "test@example.com")
+register_user("newuser", "StrongPass123", "test@example.com")
+
+# -----------------------------------------------------------------------------
+# 7. Context Manager with Exceptions
+# -----------------------------------------------------------------------------
+
+print("\n--- Exception in Context Manager ---")
+
+class ManagedResource:
+    """Resource with cleanup that handles exceptions."""
+    
+    def __init__(self, name):
+        self.name = name
+    
+    def __enter__(self):
+        print(f"  Acquiring resource: {self.name}")
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print(f"  Releasing resource: {self.name}")
+        if exc_type is not None:
+            print(f"  Exception occurred: {exc_type.__name__}: {exc_val}")
+            # Return True to suppress the exception
+            # Return False to propagate it
+        return False  # Don't suppress exceptions
+
+# Using the context manager
+print("Context manager with exception:")
+try:
+    with ManagedResource("database") as resource:
+        print(f"  Using {resource.name}")
+        raise RuntimeError("Something went wrong!")
+except RuntimeError:
+    print("  Caught exception outside")
+
+# -----------------------------------------------------------------------------
+# 8. Re-raising Exceptions
+# -----------------------------------------------------------------------------
+
+print("\n--- Re-raising Exceptions ---")
+
+def process_data(data):
+    """Process data with logging and re-raise."""
+    try:
+        # Processing that might fail
+        if not data:
+            raise ValueError("Empty data")
+        return data.upper()
+    except ValueError as e:
+        print(f"  Logging error: {e}")
+        raise  # Re-raise the same exception
+
+try:
+    process_data("")
+except ValueError as e:
+    print(f"Caught re-raised exception: {e}")
+
+# -----------------------------------------------------------------------------
+# 9. Exception Documentation
+# -----------------------------------------------------------------------------
+
+print("\n--- Exception Documentation ---")
+
+class APIError(Exception):
+    """
+    Base exception for API errors.
+    
+    Attributes:
+        status_code: HTTP status code
+        message: Human-readable error message
+        error_code: Application-specific error code
+    
+    Example:
+        >>> raise APIError(404, "Resource not found", "NOT_FOUND")
+    """
+    
+    def __init__(self, status_code: int, message: str, error_code: str = None):
+        """
+        Initialize API error.
+        
+        Args:
+            status_code: HTTP status code (e.g., 400, 404, 500)
+            message: Human-readable error description
+            error_code: Optional application error code
+        """
+        self.status_code = status_code
+        self.message = message
+        self.error_code = error_code
+        super().__init__(message)
+    
+    def to_response(self):
+        """Convert to API response format."""
+        return {
+            "error": {
+                "code": self.error_code,
+                "message": self.message,
+                "status": self.status_code
+            }
+        }
+
+# Using documented exception
+try:
+    raise APIError(404, "User not found", "USER_NOT_FOUND")
+except APIError as e:
+    print(f"API Error Response: {e.to_response()}")
+
+# -----------------------------------------------------------------------------
+# 10. Best Practices
+# -----------------------------------------------------------------------------
+
+print("\n--- Best Practices ---")
+
+best_practices = """
+1. Inherit from Exception, not BaseException
+   - BaseException includes SystemExit, KeyboardInterrupt
+
+2. Create a hierarchy for related exceptions
+   - Base exception for your module/app
+   - Specific exceptions inherit from base
+
+3. Add useful attributes
+   - Include context that helps debugging
+   - Provide methods for serialization (API responses)
+
+4. Document your exceptions
+   - What conditions trigger them
+   - What attributes they have
+   - How to handle them
+
+5. Use meaningful names
+   - End with 'Error' or 'Exception'
+   - Be specific: UserNotFoundError, not JustError
+
+6. Don't over-catch
+   - except Exception: catches too much
+   - Be specific about what you expect
+
+7. Re-raise when appropriate
+   - Log and re-raise for debugging
+   - Transform to appropriate exception type
+
+8. Use exception chaining
+   - Use 'from' to preserve original exception
+   - Helps with debugging complex systems
+"""
+
+print(best_practices)
+```

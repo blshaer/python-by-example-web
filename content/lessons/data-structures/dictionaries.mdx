@@ -1,0 +1,364 @@
+---
+title: "Python Dictionaries - Key-Value Pair Collections"
+section: "Data Structures"
+sectionSlug: data-structures
+sectionSummary: "Lists, tuples, sets, and dictionaries."
+order: 4
+sourceFile: 04_data_structures/04_dictionaries.py
+---
+
+This file demonstrates Python dictionaries, which store data as key-value pairs. Dictionaries are extremely versatile and provide fast access to values using their associated keys.
+
+```python
+"""
+================================================================================
+File: 04_dictionaries.py
+Topic: Python Dictionaries - Key-Value Pair Collections
+================================================================================
+
+This file demonstrates Python dictionaries, which store data as key-value pairs.
+Dictionaries are extremely versatile and provide fast access to values using
+their associated keys.
+
+Key Concepts:
+- Creating and accessing dictionaries
+- Adding, modifying, and removing key-value pairs
+- Dictionary methods
+- Iterating over dictionaries
+- Nested dictionaries
+- Dictionary comprehensions
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Creating Dictionaries
+# -----------------------------------------------------------------------------
+# Dictionaries use curly braces with key: value syntax
+
+print("--- Creating Dictionaries ---")
+
+# Empty dictionary
+empty_dict = {}
+also_empty = dict()
+print(f"Empty dict: {empty_dict}")
+
+# Dictionary with elements
+person = {
+    "name": "Baraa",
+    "age": 25,
+    "city": "Gaza",
+    "is_developer": True
+}
+print(f"Person: {person}")
+
+# Using dict() constructor
+from_pairs = dict([("a", 1), ("b", 2), ("c", 3)])
+from_kwargs = dict(x=10, y=20, z=30)
+print(f"From pairs: {from_pairs}")
+print(f"From kwargs: {from_kwargs}")
+
+# Keys can be any immutable type
+mixed_keys = {
+    "string_key": "value1",
+    42: "value2",
+    (1, 2): "value3",  # Tuple as key
+    True: "value4"
+}
+print(f"Mixed keys: {mixed_keys}")
+
+# -----------------------------------------------------------------------------
+# 2. Accessing Values
+# -----------------------------------------------------------------------------
+
+print("\n--- Accessing Values ---")
+
+student = {
+    "name": "Ali",
+    "age": 20,
+    "grades": [85, 90, 78],
+    "active": True
+}
+
+# Using square brackets
+print(f"Name: {student['name']}")
+print(f"Grades: {student['grades']}")
+
+# Using get() - safer, returns None if key doesn't exist
+print(f"Age: {student.get('age')}")
+print(f"Email: {student.get('email')}")  # Returns None
+print(f"Email with default: {student.get('email', 'Not provided')}")
+
+# Accessing nested values
+print(f"First grade: {student['grades'][0]}")
+
+# -----------------------------------------------------------------------------
+# 3. Modifying Dictionaries
+# -----------------------------------------------------------------------------
+
+print("\n--- Modifying Dictionaries ---")
+
+config = {"theme": "dark", "font_size": 14}
+print(f"Original: {config}")
+
+# Update existing key
+config["font_size"] = 16
+print(f"After update: {config}")
+
+# Add new key
+config["language"] = "English"
+print(f"After adding key: {config}")
+
+# Update multiple keys at once
+config.update({"theme": "light", "auto_save": True})
+print(f"After update(): {config}")
+
+# Using setdefault() - only adds if key doesn't exist
+config.setdefault("font_size", 20)  # Won't change (key exists)
+config.setdefault("new_key", "default_value")  # Will add
+print(f"After setdefault(): {config}")
+
+# -----------------------------------------------------------------------------
+# 4. Removing Items
+# -----------------------------------------------------------------------------
+
+print("\n--- Removing Items ---")
+
+data = {"a": 1, "b": 2, "c": 3, "d": 4, "e": 5}
+print(f"Original: {data}")
+
+# pop() - Remove and return value
+removed = data.pop("c")
+print(f"Popped 'c': {removed}, Dict: {data}")
+
+# pop() with default - no error if key missing
+removed = data.pop("z", "Not found")
+print(f"Popped 'z': {removed}")
+
+# popitem() - Remove and return last inserted pair
+last_item = data.popitem()
+print(f"Popitem: {last_item}, Dict: {data}")
+
+# del - Delete specific key
+del data["b"]
+print(f"After del 'b': {data}")
+
+# clear() - Remove all items
+temp = {"x": 1, "y": 2}
+temp.clear()
+print(f"After clear(): {temp}")
+
+# -----------------------------------------------------------------------------
+# 5. Dictionary Methods
+# -----------------------------------------------------------------------------
+
+print("\n--- Dictionary Methods ---")
+
+info = {"name": "Sara", "age": 28, "job": "Engineer"}
+
+# keys() - Get all keys
+print(f"Keys: {list(info.keys())}")
+
+# values() - Get all values
+print(f"Values: {list(info.values())}")
+
+# items() - Get all key-value pairs
+print(f"Items: {list(info.items())}")
+
+# Check if key exists
+print(f"\n'name' in info: {'name' in info}")
+print(f"'email' in info: {'email' in info}")
+
+# Copy
+original = {"a": 1, "b": 2}
+copied = original.copy()
+copied["c"] = 3
+print(f"\nOriginal: {original}")
+print(f"Copy: {copied}")
+
+# fromkeys() - Create dict with same value for all keys
+keys = ["x", "y", "z"]
+default_dict = dict.fromkeys(keys, 0)
+print(f"From keys: {default_dict}")
+
+# -----------------------------------------------------------------------------
+# 6. Iterating Over Dictionaries
+# -----------------------------------------------------------------------------
+
+print("\n--- Iterating Over Dictionaries ---")
+
+scores = {"Alice": 95, "Bob": 87, "Charlie": 92}
+
+# Iterate over keys (default)
+print("Keys:")
+for key in scores:
+    print(f"  {key}")
+
+# Iterate over values
+print("\nValues:")
+for value in scores.values():
+    print(f"  {value}")
+
+# Iterate over key-value pairs
+print("\nKey-Value pairs:")
+for name, score in scores.items():
+    print(f"  {name}: {score}")
+
+# With enumerate (if you need index)
+print("\nWith index:")
+for idx, (name, score) in enumerate(scores.items(), 1):
+    print(f"  {idx}. {name} scored {score}")
+
+# -----------------------------------------------------------------------------
+# 7. Nested Dictionaries
+# -----------------------------------------------------------------------------
+
+print("\n--- Nested Dictionaries ---")
+
+# Dictionary containing dictionaries
+company = {
+    "engineering": {
+        "lead": "Alice",
+        "members": ["Bob", "Charlie"],
+        "budget": 50000
+    },
+    "marketing": {
+        "lead": "David",
+        "members": ["Eve", "Frank"],
+        "budget": 30000
+    },
+    "hr": {
+        "lead": "Grace",
+        "members": ["Henry"],
+        "budget": 20000
+    }
+}
+
+print("Company structure:")
+for dept, details in company.items():
+    print(f"\n  {dept.title()} Department:")
+    print(f"    Lead: {details['lead']}")
+    print(f"    Members: {details['members']}")
+    print(f"    Budget: ${details['budget']:,}")
+
+# Access nested values
+print(f"\nEngineering lead: {company['engineering']['lead']}")
+print(f"Marketing members: {company['marketing']['members']}")
+
+# Modify nested value
+company['hr']['budget'] = 25000
+print(f"Updated HR budget: {company['hr']['budget']}")
+
+# -----------------------------------------------------------------------------
+# 8. Dictionary Comprehensions
+# -----------------------------------------------------------------------------
+
+print("\n--- Dictionary Comprehensions ---")
+
+# Basic dictionary comprehension
+squares = {x: x**2 for x in range(1, 6)}
+print(f"Squares: {squares}")
+
+# With condition
+even_squares = {x: x**2 for x in range(1, 11) if x % 2 == 0}
+print(f"Even squares: {even_squares}")
+
+# Transform existing dictionary
+original = {"a": 1, "b": 2, "c": 3}
+doubled = {k: v * 2 for k, v in original.items()}
+print(f"Doubled values: {doubled}")
+
+# Swap keys and values
+flipped = {v: k for k, v in original.items()}
+print(f"Flipped: {flipped}")
+
+# Filter dictionary
+scores = {"Alice": 95, "Bob": 67, "Charlie": 82, "David": 55}
+passing = {name: score for name, score in scores.items() if score >= 70}
+print(f"Passing students: {passing}")
+
+# From two lists
+keys = ["name", "age", "city"]
+values = ["John", 30, "NYC"]
+combined = {k: v for k, v in zip(keys, values)}
+print(f"Combined: {combined}")
+
+# -----------------------------------------------------------------------------
+# 9. Merging Dictionaries
+# -----------------------------------------------------------------------------
+
+print("\n--- Merging Dictionaries ---")
+
+dict1 = {"a": 1, "b": 2}
+dict2 = {"c": 3, "d": 4}
+dict3 = {"b": 99, "e": 5}  # Note: 'b' also exists in dict1
+
+# Method 1: update() - modifies in place
+merged = dict1.copy()
+merged.update(dict2)
+print(f"Using update(): {merged}")
+
+# Method 2: ** unpacking (Python 3.5+)
+merged = {**dict1, **dict2}
+print(f"Using ** unpacking: {merged}")
+
+# Method 3: | operator (Python 3.9+)
+merged = dict1 | dict2
+print(f"Using | operator: {merged}")
+
+# Later values overwrite earlier ones
+merged = {**dict1, **dict3}  # 'b' will be 99
+print(f"With overlap: {merged}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# 1. Word frequency counter
+text = "the quick brown fox jumps over the lazy dog the fox"
+words = text.split()
+frequency = {}
+for word in words:
+    frequency[word] = frequency.get(word, 0) + 1
+print(f"Word frequency: {frequency}")
+
+# 2. Grouping items
+students = [
+    {"name": "Alice", "grade": "A"},
+    {"name": "Bob", "grade": "B"},
+    {"name": "Charlie", "grade": "A"},
+    {"name": "David", "grade": "B"},
+    {"name": "Eve", "grade": "A"}
+]
+
+by_grade = {}
+for student in students:
+    grade = student["grade"]
+    if grade not in by_grade:
+        by_grade[grade] = []
+    by_grade[grade].append(student["name"])
+print(f"\nStudents by grade: {by_grade}")
+
+# 3. Using dict as simple cache/memo
+cache = {}
+
+def fibonacci(n):
+    if n in cache:
+        return cache[n]
+    if n <= 1:
+        return n
+    result = fibonacci(n-1) + fibonacci(n-2)
+    cache[n] = result
+    return result
+
+print(f"\nFibonacci(10): {fibonacci(10)}")
+print(f"Cache: {cache}")
+
+# 4. Configuration settings
+default_config = {"theme": "dark", "font": "Arial", "size": 12}
+user_config = {"theme": "light", "size": 14}
+final_config = {**default_config, **user_config}
+print(f"\nFinal config: {final_config}")
+```

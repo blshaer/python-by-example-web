@@ -1,0 +1,395 @@
+---
+title: "Context Managers in Python"
+section: "Advanced Python"
+sectionSlug: advanced-python
+sectionSummary: "Comprehensions, generators, decorators, and context managers."
+order: 4
+sourceFile: 09_advanced_python/04_context_managers.py
+---
+
+This file demonstrates context managers in Python. Context managers are objects that define setup and cleanup actions, typically used with the 'with' statement. They ensure resources are properly managed even when errors occur.
+
+```python
+"""
+================================================================================
+File: 04_context_managers.py
+Topic: Context Managers in Python
+================================================================================
+
+This file demonstrates context managers in Python. Context managers are objects
+that define setup and cleanup actions, typically used with the 'with' statement.
+They ensure resources are properly managed even when errors occur.
+
+Key Concepts:
+- The 'with' statement
+- __enter__ and __exit__ methods
+- contextlib module
+- File handling
+- Resource management patterns
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. The 'with' Statement
+# -----------------------------------------------------------------------------
+# Ensures cleanup happens automatically
+
+print("--- The 'with' Statement ---")
+
+# Most common use: file handling
+# Without 'with' (error-prone)
+"""
+file = open('example.txt', 'w')
+try:
+    file.write('Hello')
+finally:
+    file.close()  # Must remember to close!
+"""
+
+# With 'with' (automatic cleanup)
+"""
+with open('example.txt', 'w') as file:
+    file.write('Hello')
+# File is automatically closed here
+"""
+
+print("The 'with' statement:")
+print("  - Automatically handles setup and cleanup")
+print("  - Ensures cleanup even if errors occur")
+print("  - Cleaner, more readable code")
+
+# -----------------------------------------------------------------------------
+# 2. Creating a Context Manager Class
+# -----------------------------------------------------------------------------
+# Implement __enter__ and __exit__
+
+print("\n--- Context Manager Class ---")
+
+class ManagedFile:
+    """A custom context manager for file handling."""
+    
+    def __init__(self, filename, mode='r'):
+        self.filename = filename
+        self.mode = mode
+        self.file = None
+    
+    def __enter__(self):
+        """Called when entering 'with' block."""
+        print(f"  Opening file: {self.filename}")
+        # In real code: self.file = open(self.filename, self.mode)
+        self.file = f"<FileObject: {self.filename}>"
+        return self.file  # This is assigned to the 'as' variable
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Called when exiting 'with' block."""
+        print(f"  Closing file: {self.filename}")
+        # In real code: self.file.close()
+        
+        # exc_type, exc_val, exc_tb contain exception info if an error occurred
+        if exc_type is not None:
+            print(f"  Exception occurred: {exc_type.__name__}: {exc_val}")
+        
+        # Return True to suppress the exception, False to propagate
+        return False
+
+# Using the context manager
+print("Normal usage:")
+with ManagedFile("data.txt", "w") as f:
+    print(f"  Working with: {f}")
+
+print("\nWith exception:")
+try:
+    with ManagedFile("data.txt") as f:
+        print(f"  Working with: {f}")
+        raise ValueError("Something went wrong!")
+except ValueError:
+    print("  Exception was propagated")
+
+# -----------------------------------------------------------------------------
+# 3. Context Manager with Exception Suppression
+# -----------------------------------------------------------------------------
+
+print("\n--- Suppressing Exceptions ---")
+
+class SuppressErrors:
+    """Context manager that suppresses specified exceptions."""
+    
+    def __init__(self, *exceptions):
+        self.exceptions = exceptions
+    
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None and issubclass(exc_type, self.exceptions):
+            print(f"  Suppressed: {exc_type.__name__}: {exc_val}")
+            return True  # Suppress the exception
+        return False  # Don't suppress
+
+# Using the suppressor
+print("Suppressing ValueError:")
+with SuppressErrors(ValueError, TypeError):
+    print("  Before error")
+    raise ValueError("This will be suppressed")
+    print("  After error")  # Never reached
+
+print("  Code continues after 'with' block")
+
+# -----------------------------------------------------------------------------
+# 4. Using contextlib
+# -----------------------------------------------------------------------------
+# Create context managers without classes
+
+print("\n--- Using contextlib ---")
+
+from contextlib import contextmanager
+
+@contextmanager
+def managed_resource(name):
+    """A context manager using @contextmanager decorator."""
+    print(f"  Acquiring: {name}")
+    try:
+        yield name  # Control is passed to 'with' block here
+    finally:
+        print(f"  Releasing: {name}")
+
+print("@contextmanager decorator:")
+with managed_resource("Database") as resource:
+    print(f"  Using: {resource}")
+
+# Timer context manager
+import time
+
+@contextmanager
+def timer(description="Operation"):
+    """Time the enclosed code block."""
+    start = time.time()
+    try:
+        yield
+    finally:
+        elapsed = time.time() - start
+        print(f"  {description} took {elapsed:.4f} seconds")
+
+print("\nTimer context manager:")
+with timer("Sleep operation"):
+    time.sleep(0.1)
+
+# -----------------------------------------------------------------------------
+# 5. Multiple Context Managers
+# -----------------------------------------------------------------------------
+
+print("\n--- Multiple Context Managers ---")
+
+@contextmanager
+def open_mock_file(name):
+    """Mock file context manager."""
+    print(f"    Opening: {name}")
+    yield f"<{name}>"
+    print(f"    Closing: {name}")
+
+# Multiple context managers in one 'with'
+print("Multiple context managers:")
+with open_mock_file("input.txt") as infile, \
+     open_mock_file("output.txt") as outfile:
+    print(f"    Reading from: {infile}")
+    print(f"    Writing to: {outfile}")
+
+# Python 3.10+ allows parenthesized context managers
+"""
+with (
+    open_mock_file("input.txt") as infile,
+    open_mock_file("output.txt") as outfile
+):
+    ...
+"""
+
+# -----------------------------------------------------------------------------
+# 6. Practical Context Managers
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Context Managers ---")
+
+# 1. Database connection (mock)
+@contextmanager
+def database_connection(host):
+    """Mock database connection."""
+    print(f"  Connecting to {host}...")
+    connection = {"host": host, "connected": True}
+    try:
+        yield connection
+    finally:
+        connection["connected"] = False
+        print(f"  Disconnected from {host}")
+
+print("Database connection:")
+with database_connection("localhost") as db:
+    print(f"  Connected: {db['connected']}")
+    # Perform database operations
+
+# 2. Temporary working directory
+import os
+from contextlib import contextmanager
+
+@contextmanager
+def temp_directory_context():
+    """Change to temp directory and restore."""
+    original_dir = os.getcwd()
+    temp_dir = os.path.dirname(original_dir) if original_dir else original_dir
+    try:
+        # In real code: os.chdir(temp_dir)
+        print(f"  Changed to: {temp_dir}")
+        yield temp_dir
+    finally:
+        # os.chdir(original_dir)
+        print(f"  Restored to: {original_dir}")
+
+print("\nDirectory change:")
+with temp_directory_context():
+    print("  Working in temp directory")
+
+# 3. Lock context manager
+@contextmanager
+def locked(lock_name="default"):
+    """Mock lock context manager."""
+    print(f"  Acquiring lock: {lock_name}")
+    try:
+        yield
+    finally:
+        print(f"  Releasing lock: {lock_name}")
+
+print("\nLocking:")
+with locked("resource_lock"):
+    print("  Critical section")
+
+# -----------------------------------------------------------------------------
+# 7. contextlib Utilities
+# -----------------------------------------------------------------------------
+
+print("\n--- contextlib Utilities ---")
+
+from contextlib import closing, suppress
+
+# closing() - for objects with close() but no __exit__
+class Connection:
+    def close(self):
+        print("  Connection closed")
+
+print("using closing():")
+with closing(Connection()) as conn:
+    print("  Using connection")
+
+# suppress() - ignore specified exceptions
+print("\nsuppress() example:")
+from contextlib import suppress
+
+# Instead of try/except for simple cases
+with suppress(FileNotFoundError, KeyError):
+    # This would normally raise an error
+    print("  Attempting risky operations...")
+    # raise FileNotFoundError("No such file")
+print("  Continued after suppress")
+
+# nullcontext() - do-nothing context manager (Python 3.7+)
+from contextlib import nullcontext
+
+def process_data(data, lock=None):
+    """Process with optional lock."""
+    with lock if lock else nullcontext():
+        print(f"  Processing: {data}")
+
+print("\nnullcontext() example:")
+process_data("data1")  # No lock
+process_data("data2", locked("my_lock"))  # With lock
+
+# -----------------------------------------------------------------------------
+# 8. Async Context Managers
+# -----------------------------------------------------------------------------
+
+print("\n--- Async Context Managers ---")
+
+# For async code, use __aenter__ and __aexit__
+async_example = '''
+class AsyncResource:
+    async def __aenter__(self):
+        print("Acquiring async resource...")
+        await asyncio.sleep(0.1)
+        return self
+    
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        print("Releasing async resource...")
+        await asyncio.sleep(0.1)
+        return False
+
+# Usage:
+async with AsyncResource() as resource:
+    print("Using resource")
+'''
+
+print("Async context managers use __aenter__ and __aexit__")
+print("Use 'async with' statement")
+
+# -----------------------------------------------------------------------------
+# 9. Reentrant and Reusable Context Managers
+# -----------------------------------------------------------------------------
+
+print("\n--- Reentrant Context Managers ---")
+
+# A context manager that can be used multiple times
+class ReusableContext:
+    """Context manager that can be reused."""
+    
+    def __init__(self, name):
+        self.name = name
+        self.uses = 0
+    
+    def __enter__(self):
+        self.uses += 1
+        print(f"  Entering {self.name} (use #{self.uses})")
+        return self
+    
+    def __exit__(self, *args):
+        print(f"  Exiting {self.name}")
+        return False
+
+ctx = ReusableContext("MyContext")
+
+print("Reusing context manager:")
+with ctx:
+    print("  First use")
+
+with ctx:
+    print("  Second use")
+
+print(f"Total uses: {ctx.uses}")
+
+# -----------------------------------------------------------------------------
+# 10. Real-World Pattern: Configuration Override
+# -----------------------------------------------------------------------------
+
+print("\n--- Real-World: Config Override ---")
+
+class Config:
+    """Application configuration."""
+    settings = {"debug": False, "log_level": "INFO"}
+    
+    @classmethod
+    @contextmanager
+    def override(cls, **overrides):
+        """Temporarily override configuration."""
+        original = cls.settings.copy()
+        try:
+            cls.settings.update(overrides)
+            print(f"  Config overridden: {overrides}")
+            yield cls.settings
+        finally:
+            cls.settings = original
+            print("  Config restored")
+
+print(f"Original config: {Config.settings}")
+
+with Config.override(debug=True, log_level="DEBUG") as settings:
+    print(f"  Inside 'with': {settings}")
+
+print(f"After 'with': {Config.settings}")
+```

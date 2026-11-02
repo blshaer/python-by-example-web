@@ -1,0 +1,276 @@
+---
+title: "While Loops in Python"
+section: "Loops"
+sectionSlug: loops
+sectionSummary: "for, while, break, and continue."
+order: 2
+sourceFile: 03_loops/02_while_loop.py
+---
+
+This file demonstrates the 'while' loop in Python, which repeatedly executes a block of code as long as a condition remains True. Unlike for loops, while loops are typically used when the number of iterations is not known in advance.
+
+```python
+"""
+================================================================================
+File: 02_while_loop.py
+Topic: While Loops in Python
+================================================================================
+
+This file demonstrates the 'while' loop in Python, which repeatedly executes
+a block of code as long as a condition remains True. Unlike for loops,
+while loops are typically used when the number of iterations is not known
+in advance.
+
+Key Concepts:
+- Basic while loop syntax
+- Counter-controlled loops
+- Sentinel-controlled loops (input validation)
+- Infinite loops and how to handle them
+- While-else construct
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Basic While Loop
+# -----------------------------------------------------------------------------
+# Executes as long as condition is True
+
+print("--- Basic While Loop ---")
+
+count = 1
+
+while count <= 5:
+    print(f"Count: {count}")
+    count += 1  # Don't forget to update the condition variable!
+
+print("Loop finished!")
+
+# -----------------------------------------------------------------------------
+# 2. Counter-Controlled While Loop
+# -----------------------------------------------------------------------------
+# When you know how many iterations you need
+
+print("\n--- Counter-Controlled Loop ---")
+
+# Countdown
+countdown = 5
+
+print("Rocket Launch Countdown:")
+while countdown > 0:
+    print(f"T-minus {countdown}...")
+    countdown -= 1
+print("Liftoff! 🚀")
+
+# -----------------------------------------------------------------------------
+# 3. Summing Numbers with While
+# -----------------------------------------------------------------------------
+# Accumulator pattern
+
+print("\n--- Sum of Numbers ---")
+
+# Sum numbers from 1 to 10
+n = 1
+total = 0
+
+while n <= 10:
+    total += n
+    n += 1
+
+print(f"Sum of 1 to 10 = {total}")
+
+# -----------------------------------------------------------------------------
+# 4. Sentinel-Controlled Loop (Input Validation)
+# -----------------------------------------------------------------------------
+# Loop until a specific condition is met
+
+print("\n--- Sentinel-Controlled Loop ---")
+
+# Simulating password validation (in practice, use input())
+attempts = 0
+max_attempts = 3
+correct_password = "secret123"
+
+# Simulated user inputs
+user_inputs = ["wrong1", "wrong2", "secret123"]
+
+while attempts < max_attempts:
+    # In real code: password = input("Enter password: ")
+    password = user_inputs[attempts]
+    print(f"Attempt {attempts + 1}: Entered '{password}'")
+    
+    if password == correct_password:
+        print("Access granted! ✓")
+        break
+    else:
+        print("Incorrect password.")
+        attempts += 1
+else:
+    # This runs if the loop completes without break
+    print("Too many failed attempts. Account locked.")
+
+# -----------------------------------------------------------------------------
+# 5. While Loop with User Simulation
+# -----------------------------------------------------------------------------
+# Menu-driven program example
+
+print("\n--- Menu-Driven Example ---")
+
+# Simulated menu choices
+menu_selections = [1, 2, 4, 3]
+selection_index = 0
+
+running = True
+while running:
+    # Simulating menu selection
+    choice = menu_selections[selection_index]
+    selection_index += 1
+    
+    print(f"\nMenu: 1=Add, 2=View, 3=Exit | Choice: {choice}")
+    
+    if choice == 1:
+        print("  ➤ Adding item...")
+    elif choice == 2:
+        print("  ➤ Viewing items...")
+    elif choice == 3:
+        print("  ➤ Exiting program...")
+        running = False
+    else:
+        print("  ➤ Invalid choice, try again.")
+
+# -----------------------------------------------------------------------------
+# 6. Infinite Loops (and how to avoid them)
+# -----------------------------------------------------------------------------
+# A loop that never ends - usually a bug
+
+print("\n--- Avoiding Infinite Loops ---")
+
+# BAD: This would run forever (commented out)
+# i = 0
+# while i < 5:
+#     print(i)
+#     # Missing: i += 1
+
+# GOOD: Always update the condition variable
+i = 0
+while i < 5:
+    print(f"i = {i}")
+    i += 1  # This is crucial!
+
+# -----------------------------------------------------------------------------
+# 7. While-Else Construct
+# -----------------------------------------------------------------------------
+# The else block executes if the loop completes normally (no break)
+
+print("\n--- While-Else Construct ---")
+
+# Example 1: Loop completes normally
+n = 5
+while n > 0:
+    print(n, end=" ")
+    n -= 1
+else:
+    print("\n  ↳ Countdown complete! (else block executed)")
+
+# Example 2: Loop exits via break
+print("\nSearching in list:")
+items = ["a", "b", "c", "d"]
+target = "b"
+index = 0
+
+while index < len(items):
+    if items[index] == target:
+        print(f"  Found '{target}' at index {index}")
+        break
+    index += 1
+else:
+    print(f"  '{target}' not found")
+
+# -----------------------------------------------------------------------------
+# 8. Nested While Loops
+# -----------------------------------------------------------------------------
+# A while inside another while
+
+print("\n--- Nested While Loops ---")
+
+# Create a simple pattern
+row = 1
+while row <= 4:
+    col = 1
+    while col <= row:
+        print("*", end=" ")
+        col += 1
+    print()  # New line
+    row += 1
+
+# -----------------------------------------------------------------------------
+# 9. While with Break and Continue
+# -----------------------------------------------------------------------------
+# Control flow within loops (preview - detailed in next file)
+
+print("\n--- Break and Continue in While ---")
+
+# Break example
+print("Break example (stop at 5):")
+i = 0
+while True:  # Intentional infinite loop
+    i += 1
+    if i > 5:
+        break
+    print(i, end=" ")
+print()
+
+# Continue example
+print("\nContinue example (skip even numbers):")
+i = 0
+while i < 10:
+    i += 1
+    if i % 2 == 0:
+        continue  # Skip even numbers
+    print(i, end=" ")
+print()
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# Fibonacci sequence
+print("Fibonacci sequence (first 10 numbers):")
+a, b = 0, 1
+count = 0
+while count < 10:
+    print(a, end=" ")
+    a, b = b, a + b
+    count += 1
+print()
+
+# Finding digits in a number
+print("\nDigits of 12345:")
+number = 12345
+while number > 0:
+    digit = number % 10
+    print(f"  Digit: {digit}")
+    number //= 10
+
+# Guessing game logic
+print("\n Guess the Number Game Logic:")
+secret = 7
+guesses = [3, 8, 5, 7]
+guess_index = 0
+
+while guess_index < len(guesses):
+    guess = guesses[guess_index]
+    print(f"  Guess: {guess}", end=" ")
+    
+    if guess < secret:
+        print("- Too low!")
+    elif guess > secret:
+        print("- Too high!")
+    else:
+        print("- Correct! 🎉")
+        break
+    
+    guess_index += 1
+```

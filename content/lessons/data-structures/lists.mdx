@@ -1,0 +1,300 @@
+---
+title: "Python Lists - Ordered, Mutable Collections"
+section: "Data Structures"
+sectionSlug: data-structures
+sectionSummary: "Lists, tuples, sets, and dictionaries."
+order: 1
+sourceFile: 04_data_structures/01_lists.py
+---
+
+This file demonstrates Python lists, which are ordered, mutable collections that can store elements of any type. Lists are one of the most versatile and commonly used data structures in Python.
+
+```python
+"""
+================================================================================
+File: 01_lists.py
+Topic: Python Lists - Ordered, Mutable Collections
+================================================================================
+
+This file demonstrates Python lists, which are ordered, mutable collections
+that can store elements of any type. Lists are one of the most versatile
+and commonly used data structures in Python.
+
+Key Concepts:
+- Creating and accessing lists
+- List methods (append, insert, remove, pop, etc.)
+- Slicing and indexing
+- List operations (concatenation, repetition)
+- Nested lists
+- List comprehensions
+
+================================================================================
+"""
+
+# -----------------------------------------------------------------------------
+# 1. Creating Lists
+# -----------------------------------------------------------------------------
+# Lists are created with square brackets []
+
+print("--- Creating Lists ---")
+
+# Empty list
+empty_list = []
+print(f"Empty list: {empty_list}")
+
+# List with elements
+numbers = [1, 2, 3, 4, 5]
+fruits = ["apple", "banana", "cherry"]
+mixed = [1, "hello", 3.14, True, None]
+
+print(f"Numbers: {numbers}")
+print(f"Fruits: {fruits}")
+print(f"Mixed types: {mixed}")
+
+# Using list() constructor
+chars = list("Python")
+print(f"From string: {chars}")
+
+# List from range
+range_list = list(range(1, 6))
+print(f"From range: {range_list}")
+
+# -----------------------------------------------------------------------------
+# 2. Accessing Elements (Indexing)
+# -----------------------------------------------------------------------------
+# Lists are zero-indexed; negative indices count from the end
+
+print("\n--- Indexing ---")
+
+colors = ["red", "green", "blue", "yellow", "purple"]
+
+print(f"List: {colors}")
+print(f"First element (index 0): {colors[0]}")
+print(f"Third element (index 2): {colors[2]}")
+print(f"Last element (index -1): {colors[-1]}")
+print(f"Second to last (index -2): {colors[-2]}")
+
+# -----------------------------------------------------------------------------
+# 3. Slicing Lists
+# -----------------------------------------------------------------------------
+# Syntax: list[start:stop:step]
+
+print("\n--- Slicing ---")
+
+nums = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+print(f"Original: {nums}")
+
+print(f"nums[2:5]: {nums[2:5]}")       # Elements 2, 3, 4
+print(f"nums[:4]: {nums[:4]}")          # First 4 elements
+print(f"nums[6:]: {nums[6:]}")          # From index 6 to end
+print(f"nums[::2]: {nums[::2]}")        # Every 2nd element
+print(f"nums[::-1]: {nums[::-1]}")      # Reversed list
+print(f"nums[1:8:2]: {nums[1:8:2]}")    # Odd indices from 1 to 7
+
+# -----------------------------------------------------------------------------
+# 4. Modifying Lists
+# -----------------------------------------------------------------------------
+# Lists are mutable - you can change their contents
+
+print("\n--- Modifying Lists ---")
+
+languages = ["Python", "Java", "C++"]
+print(f"Original: {languages}")
+
+# Change single element
+languages[1] = "JavaScript"
+print(f"After changing index 1: {languages}")
+
+# Change multiple elements with slicing
+languages[0:2] = ["Rust", "Go"]
+print(f"After slice replacement: {languages}")
+
+# -----------------------------------------------------------------------------
+# 5. List Methods
+# -----------------------------------------------------------------------------
+# Built-in methods to manipulate lists
+
+print("\n--- List Methods ---")
+
+# append() - Add element to end
+items = [1, 2, 3]
+items.append(4)
+print(f"After append(4): {items}")
+
+# extend() - Add multiple elements
+items.extend([5, 6])
+print(f"After extend([5, 6]): {items}")
+
+# insert() - Add element at specific position
+items.insert(0, 0)  # Insert 0 at index 0
+print(f"After insert(0, 0): {items}")
+
+# remove() - Remove first occurrence of value
+items.remove(3)
+print(f"After remove(3): {items}")
+
+# pop() - Remove and return element at index (default: last)
+popped = items.pop()
+print(f"Popped: {popped}, List now: {items}")
+
+popped = items.pop(0)
+print(f"Popped at 0: {popped}, List now: {items}")
+
+# index() - Find index of first occurrence
+fruits = ["apple", "banana", "cherry", "banana"]
+print(f"\nfruits = {fruits}")
+print(f"Index of 'banana': {fruits.index('banana')}")
+
+# count() - Count occurrences
+print(f"Count of 'banana': {fruits.count('banana')}")
+
+# sort() - Sort in place
+numbers = [3, 1, 4, 1, 5, 9, 2, 6]
+numbers.sort()
+print(f"\nAfter sort(): {numbers}")
+
+numbers.sort(reverse=True)
+print(f"After sort(reverse=True): {numbers}")
+
+# reverse() - Reverse in place
+numbers.reverse()
+print(f"After reverse(): {numbers}")
+
+# copy() - Create a shallow copy
+original = [1, 2, 3]
+copied = original.copy()
+print(f"\nOriginal: {original}, Copy: {copied}")
+
+# clear() - Remove all elements
+copied.clear()
+print(f"After clear(): {copied}")
+
+# -----------------------------------------------------------------------------
+# 6. List Operations
+# -----------------------------------------------------------------------------
+
+print("\n--- List Operations ---")
+
+# Concatenation (+)
+list1 = [1, 2, 3]
+list2 = [4, 5, 6]
+combined = list1 + list2
+print(f"{list1} + {list2} = {combined}")
+
+# Repetition (*)
+repeated = [0] * 5
+print(f"[0] * 5 = {repeated}")
+
+# Membership (in)
+fruits = ["apple", "banana", "cherry"]
+print(f"'banana' in fruits: {'banana' in fruits}")
+print(f"'grape' in fruits: {'grape' in fruits}")
+
+# Length
+print(f"len(fruits): {len(fruits)}")
+
+# Min and Max
+numbers = [5, 2, 8, 1, 9]
+print(f"min({numbers}): {min(numbers)}")
+print(f"max({numbers}): {max(numbers)}")
+print(f"sum({numbers}): {sum(numbers)}")
+
+# -----------------------------------------------------------------------------
+# 7. Nested Lists (2D Lists)
+# -----------------------------------------------------------------------------
+
+print("\n--- Nested Lists ---")
+
+# Creating a 2D list (matrix)
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+
+print("Matrix:")
+for row in matrix:
+    print(f"  {row}")
+
+# Accessing elements
+print(f"\nElement at [1][2]: {matrix[1][2]}")  # Row 1, Column 2 = 6
+print(f"Second row: {matrix[1]}")
+
+# Modifying nested element
+matrix[0][0] = 100
+print(f"After matrix[0][0] = 100: {matrix[0]}")
+
+# -----------------------------------------------------------------------------
+# 8. List Comprehensions
+# -----------------------------------------------------------------------------
+# Concise way to create lists
+
+print("\n--- List Comprehensions ---")
+
+# Basic list comprehension
+squares = [x**2 for x in range(1, 6)]
+print(f"Squares 1-5: {squares}")
+
+# With condition
+even_squares = [x**2 for x in range(1, 11) if x % 2 == 0]
+print(f"Even squares: {even_squares}")
+
+# With expression
+words = ["hello", "world", "python"]
+upper_words = [word.upper() for word in words]
+print(f"Uppercase: {upper_words}")
+
+# Nested comprehension (flattening)
+matrix = [[1, 2], [3, 4], [5, 6]]
+flattened = [num for row in matrix for num in row]
+print(f"Flattened: {flattened}")
+
+# -----------------------------------------------------------------------------
+# 9. Copying Lists - Shallow vs Deep
+# -----------------------------------------------------------------------------
+
+print("\n--- Copying Lists ---")
+
+import copy
+
+# Shallow copy - nested objects share reference
+original = [[1, 2], [3, 4]]
+shallow = original.copy()
+shallow[0][0] = 999  # Affects both!
+print(f"Shallow copy issue:")
+print(f"  Original: {original}")
+print(f"  Shallow: {shallow}")
+
+# Deep copy - completely independent
+original = [[1, 2], [3, 4]]
+deep = copy.deepcopy(original)
+deep[0][0] = 999  # Only affects copy
+print(f"\nDeep copy:")
+print(f"  Original: {original}")
+print(f"  Deep: {deep}")
+
+# -----------------------------------------------------------------------------
+# 10. Practical Examples
+# -----------------------------------------------------------------------------
+
+print("\n--- Practical Examples ---")
+
+# Finding unique elements while preserving order
+items = [1, 2, 2, 3, 3, 3, 4, 4, 4, 4]
+unique = []
+for item in items:
+    if item not in unique:
+        unique.append(item)
+print(f"Unique elements: {unique}")
+
+# Filtering with list comprehension
+scores = [85, 42, 91, 78, 55, 99, 66]
+passing = [score for score in scores if score >= 60]
+print(f"Passing scores: {passing}")
+
+# Transforming data
+temperatures_c = [0, 10, 20, 30, 40]
+temperatures_f = [(c * 9/5) + 32 for c in temperatures_c]
+print(f"Celsius: {temperatures_c}")
+print(f"Fahrenheit: {temperatures_f}")
+```

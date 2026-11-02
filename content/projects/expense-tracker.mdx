@@ -1,0 +1,324 @@
+---
+title: "💰 Project 02 - Expense Tracker"
+slug: expense-tracker
+sourceDir: projects/02_expense_tracker
+---
+
+# 💰 Project 02: Expense Tracker
+
+## Difficulty: 🟡 Intermediate
+
+## Description
+Build a command-line expense tracker that allows users to add, view, and analyze
+their expenses. Data is saved to a JSON file so expenses persist between sessions.
+
+## Requirements
+
+1. Add new expenses with a description, amount, and category
+2. View all expenses in a formatted table
+3. Filter expenses by category
+4. Show a summary with total spending and spending per category
+5. Save and load expenses from a JSON file
+6. Delete an expense by its ID
+
+## Concepts You'll Practice
+
+- Dictionaries and Lists
+- File I/O (JSON)
+- Functions with multiple parameters
+- String formatting
+- `datetime` module
+- Data filtering and aggregation
+
+## Example Output
+
+```
+💰 EXPENSE TRACKER
+==================
+
+1. Add Expense
+2. View All Expenses
+3. View by Category
+4. Summary
+5. Delete Expense
+6. Exit
+
+Choose an option: 1
+
+Enter description: Coffee
+Enter amount: 4.50
+Enter category (food/transport/entertainment/bills/other): food
+✅ Expense added successfully!
+
+Choose an option: 4
+
+📊 EXPENSE SUMMARY
+Total Expenses: $127.50
+  🍔 Food:          $45.00 (35.3%)
+  🚗 Transport:     $32.50 (25.5%)
+  🎬 Entertainment: $25.00 (19.6%)
+  📄 Bills:         $25.00 (19.6%)
+```
+
+## How to Run
+
+```bash
+cd projects/02_expense_tracker
+python solution.py
+```
+
+## Bonus Challenges
+
+- [ ] Add monthly budget limits with warnings
+- [ ] Export expenses to CSV
+- [ ] Add date range filtering
+
+
+## Solution
+
+```python
+"""
+================================================================================
+Project 02: Expense Tracker
+Difficulty: 🟡 Intermediate
+================================================================================
+
+A command-line expense tracker that lets users add, view, filter, and analyze
+their expenses. Data is persisted to a JSON file between sessions.
+
+Concepts Used:
+- Dictionaries and Lists
+- File I/O (JSON)
+- Functions with parameters
+- String formatting
+- datetime module
+- Data filtering and aggregation
+
+================================================================================
+"""
+
+import json
+import os
+from datetime import datetime
+
+
+# -----------------------------------------------------------------------------
+# Constants
+# -----------------------------------------------------------------------------
+
+DATA_FILE = os.path.join(os.path.dirname(__file__), "expenses.json")
+
+CATEGORIES = {
+    "food": "🍔",
+    "transport": "🚗",
+    "entertainment": "🎬",
+    "bills": "📄",
+    "other": "📦",
+}
+
+
+# -----------------------------------------------------------------------------
+# Data Management
+# -----------------------------------------------------------------------------
+
+def load_expenses() -> list:
+    """Load expenses from the JSON file."""
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    return []
+
+
+def save_expenses(expenses: list) -> None:
+    """Save expenses to the JSON file."""
+    with open(DATA_FILE, "w") as f:
+        json.dump(expenses, f, indent=2)
+
+
+def generate_id(expenses: list) -> int:
+    """Generate a unique ID for a new expense."""
+    if not expenses:
+        return 1
+    return max(exp["id"] for exp in expenses) + 1
+
+
+# -----------------------------------------------------------------------------
+# Core Features
+# -----------------------------------------------------------------------------
+
+def add_expense(expenses: list) -> None:
+    """Add a new expense."""
+    description = input("  Enter description: ").strip()
+    if not description:
+        print("  ❌ Description cannot be empty.")
+        return
+
+    try:
+        amount = float(input("  Enter amount: $"))
+        if amount <= 0:
+            print("  ❌ Amount must be positive.")
+            return
+    except ValueError:
+        print("  ❌ Invalid amount.")
+        return
+
+    print(f"  Categories: {', '.join(CATEGORIES.keys())}")
+    category = input("  Enter category: ").strip().lower()
+    if category not in CATEGORIES:
+        print(f"  ⚠️  Unknown category. Defaulting to 'other'.")
+        category = "other"
+
+    expense = {
+        "id": generate_id(expenses),
+        "description": description,
+        "amount": amount,
+        "category": category,
+        "date": datetime.now().strftime("%Y-%m-%d %H:%M"),
+    }
+
+    expenses.append(expense)
+    save_expenses(expenses)
+    print(f"  ✅ Expense added: {description} — ${amount:.2f} [{category}]")
+
+
+def view_expenses(expenses: list, filter_category: str = None) -> None:
+    """Display expenses in a formatted table."""
+    filtered = expenses
+    if filter_category:
+        filtered = [e for e in expenses if e["category"] == filter_category]
+
+    if not filtered:
+        print("  📭 No expenses found.")
+        return
+
+    # Header
+    print(f"\n  {'ID':<4} {'Date':<18} {'Category':<15} {'Description':<20} {'Amount':>10}")
+    print(f"  {'—'*4} {'—'*18} {'—'*15} {'—'*20} {'—'*10}")
+
+    # Rows
+    for exp in filtered:
+        icon = CATEGORIES.get(exp["category"], "📦")
+        print(
+            f"  {exp['id']:<4} "
+            f"{exp['date']:<18} "
+            f"{icon} {exp['category']:<12} "
+            f"{exp['description']:<20} "
+            f"${exp['amount']:>8.2f}"
+        )
+
+    total = sum(e["amount"] for e in filtered)
+    print(f"\n  {'Total:':<60} ${total:>8.2f}")
+
+
+def view_by_category(expenses: list) -> None:
+    """Filter and view expenses by category."""
+    print(f"  Categories: {', '.join(CATEGORIES.keys())}")
+    category = input("  Enter category to filter: ").strip().lower()
+    if category not in CATEGORIES:
+        print("  ❌ Invalid category.")
+        return
+    view_expenses(expenses, filter_category=category)
+
+
+def show_summary(expenses: list) -> None:
+    """Display spending summary with category breakdown."""
+    if not expenses:
+        print("  📭 No expenses to summarize.")
+        return
+
+    total = sum(e["amount"] for e in expenses)
+
+    # Group by category
+    by_category = {}
+    for exp in expenses:
+        cat = exp["category"]
+        by_category[cat] = by_category.get(cat, 0) + exp["amount"]
+
+    print(f"\n  📊 EXPENSE SUMMARY")
+    print(f"  {'='*40}")
+    print(f"  Total Expenses: ${total:,.2f}")
+    print(f"  Total Items:    {len(expenses)}")
+    print(f"  {'—'*40}")
+
+    # Sort categories by amount (descending)
+    sorted_cats = sorted(by_category.items(), key=lambda x: x[1], reverse=True)
+
+    for cat, amount in sorted_cats:
+        icon = CATEGORIES.get(cat, "📦")
+        percentage = (amount / total) * 100
+        bar = "█" * int(percentage / 5)
+        print(f"  {icon} {cat:<15} ${amount:>8.2f}  ({percentage:>5.1f}%)  {bar}")
+
+
+def delete_expense(expenses: list) -> None:
+    """Delete an expense by its ID."""
+    view_expenses(expenses)
+    if not expenses:
+        return
+
+    try:
+        exp_id = int(input("\n  Enter expense ID to delete: "))
+    except ValueError:
+        print("  ❌ Invalid ID.")
+        return
+
+    for i, exp in enumerate(expenses):
+        if exp["id"] == exp_id:
+            removed = expenses.pop(i)
+            save_expenses(expenses)
+            print(f"  🗑️  Deleted: {removed['description']} — ${removed['amount']:.2f}")
+            return
+
+    print(f"  ❌ Expense with ID {exp_id} not found.")
+
+
+# -----------------------------------------------------------------------------
+# Main Menu
+# -----------------------------------------------------------------------------
+
+def display_menu():
+    """Display the main menu."""
+    print("""
+╔══════════════════════════════════════════╗
+║         💰 EXPENSE TRACKER 💰           ║
+╠══════════════════════════════════════════╣
+║  1. Add Expense                         ║
+║  2. View All Expenses                   ║
+║  3. View by Category                    ║
+║  4. Summary                             ║
+║  5. Delete Expense                      ║
+║  6. Exit                                ║
+╚══════════════════════════════════════════╝
+    """)
+
+
+def main():
+    """Main entry point."""
+    expenses = load_expenses()
+
+    while True:
+        display_menu()
+        choice = input("  Choose an option (1-6): ").strip()
+
+        if choice == "1":
+            add_expense(expenses)
+        elif choice == "2":
+            view_expenses(expenses)
+        elif choice == "3":
+            view_by_category(expenses)
+        elif choice == "4":
+            show_summary(expenses)
+        elif choice == "5":
+            delete_expense(expenses)
+        elif choice == "6":
+            print("\n  👋 Goodbye! Keep tracking your expenses!")
+            break
+        else:
+            print("  ❌ Invalid option. Please choose 1-6.")
+
+        input("\n  Press Enter to continue...")
+
+
+if __name__ == "__main__":
+    main()
+```

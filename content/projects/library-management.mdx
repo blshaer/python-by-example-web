@@ -1,0 +1,466 @@
+---
+title: "📚 Project 03 - Library Management System"
+slug: library-management
+sourceDir: projects/03_library_management
+---
+
+# 📚 Project 03: Library Management System
+
+## Difficulty: 🟠 Advanced
+
+## Description
+Build an object-oriented Library Management System where users can manage books,
+members, and borrowing/returning of books. This project emphasizes classes,
+inheritance, encapsulation, and error handling.
+
+## Requirements
+
+1. Create a `Book` class with title, author, ISBN, and availability status
+2. Create a `Member` class with name, member ID, and borrowed books list
+3. Create a `Library` class that manages books and members
+4. Allow adding/removing books from the library catalog
+5. Allow registering new members
+6. Implement borrow and return functionality with proper validation
+7. Handle edge cases: book already borrowed, member limit reached, book not found
+8. Display library catalog and member details
+
+## Concepts You'll Practice
+
+- Classes and Objects
+- Inheritance and Encapsulation
+- Properties and Methods
+- Custom Exceptions
+- `__str__` and `__repr__` magic methods
+- Composition (Library has Books and Members)
+
+## Example Output
+
+```
+📚 LIBRARY MANAGEMENT SYSTEM
+=============================
+
+1. View Catalog
+2. Add Book
+3. Register Member
+4. Borrow Book
+5. Return Book
+6. View Member Info
+7. Exit
+
+Choose: 4
+
+Enter Member ID: M001
+Enter Book ISBN: 978-0-13-110362-7
+
+✅ "The C Programming Language" has been borrowed by Alice.
+   Due date: 2025-02-15
+   Books borrowed: 1/3
+```
+
+## How to Run
+
+```bash
+cd projects/03_library_management
+python solution.py
+```
+
+## Bonus Challenges
+
+- [ ] Add due dates and overdue book tracking
+- [ ] Save library data to JSON for persistence
+- [ ] Add search functionality (by title, author, or ISBN)
+
+
+## Solution
+
+```python
+"""
+================================================================================
+Project 03: Library Management System
+Difficulty: 🟠 Advanced
+================================================================================
+
+An object-oriented Library Management System for managing books, members,
+and borrow/return operations with proper validation and error handling.
+
+Concepts Used:
+- Classes and Objects
+- Inheritance and Encapsulation
+- Properties and Methods
+- Custom Exceptions
+- __str__ and __repr__ magic methods
+- Composition (Library has Books and Members)
+
+================================================================================
+"""
+
+from datetime import datetime, timedelta
+
+
+# -----------------------------------------------------------------------------
+# Custom Exceptions
+# -----------------------------------------------------------------------------
+
+class LibraryError(Exception):
+    """Base exception for library errors."""
+    pass
+
+
+class BookNotFoundError(LibraryError):
+    """Raised when a book is not found."""
+    pass
+
+
+class BookNotAvailableError(LibraryError):
+    """Raised when a book is already borrowed."""
+    pass
+
+
+class MemberNotFoundError(LibraryError):
+    """Raised when a member is not found."""
+    pass
+
+
+class BorrowLimitError(LibraryError):
+    """Raised when a member has reached their borrow limit."""
+    pass
+
+
+# -----------------------------------------------------------------------------
+# Book Class
+# -----------------------------------------------------------------------------
+
+class Book:
+    """Represents a book in the library."""
+
+    def __init__(self, title: str, author: str, isbn: str):
+        self._title = title
+        self._author = author
+        self._isbn = isbn
+        self._is_available = True
+        self._borrowed_by = None
+        self._due_date = None
+
+    @property
+    def title(self) -> str:
+        return self._title
+
+    @property
+    def author(self) -> str:
+        return self._author
+
+    @property
+    def isbn(self) -> str:
+        return self._isbn
+
+    @property
+    def is_available(self) -> bool:
+        return self._is_available
+
+    @property
+    def due_date(self):
+        return self._due_date
+
+    def borrow(self, member_id: str, days: int = 14) -> None:
+        """Mark the book as borrowed."""
+        if not self._is_available:
+            raise BookNotAvailableError(
+                f'"{self._title}" is already borrowed.'
+            )
+        self._is_available = False
+        self._borrowed_by = member_id
+        self._due_date = datetime.now() + timedelta(days=days)
+
+    def return_book(self) -> None:
+        """Mark the book as returned."""
+        self._is_available = True
+        self._borrowed_by = None
+        self._due_date = None
+
+    def __str__(self) -> str:
+        status = "✅ Available" if self._is_available else f"❌ Borrowed (due: {self._due_date.strftime('%Y-%m-%d')})"
+        return f'"{self._title}" by {self._author} [ISBN: {self._isbn}] — {status}'
+
+    def __repr__(self) -> str:
+        return f"Book(title='{self._title}', author='{self._author}', isbn='{self._isbn}')"
+
+
+# -----------------------------------------------------------------------------
+# Member Class
+# -----------------------------------------------------------------------------
+
+class Member:
+    """Represents a library member."""
+
+    MAX_BORROW_LIMIT = 3
+
+    def __init__(self, name: str, member_id: str):
+        self._name = name
+        self._member_id = member_id
+        self._borrowed_books: list[str] = []  # List of ISBNs
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def member_id(self) -> str:
+        return self._member_id
+
+    @property
+    def borrowed_books(self) -> list:
+        return self._borrowed_books.copy()
+
+    @property
+    def borrow_count(self) -> int:
+        return len(self._borrowed_books)
+
+    def can_borrow(self) -> bool:
+        """Check if the member can borrow more books."""
+        return self.borrow_count < self.MAX_BORROW_LIMIT
+
+    def add_book(self, isbn: str) -> None:
+        """Add a book ISBN to the borrowed list."""
+        if not self.can_borrow():
+            raise BorrowLimitError(
+                f"{self._name} has reached the borrow limit ({self.MAX_BORROW_LIMIT} books)."
+            )
+        self._borrowed_books.append(isbn)
+
+    def remove_book(self, isbn: str) -> None:
+        """Remove a book ISBN from the borrowed list."""
+        if isbn in self._borrowed_books:
+            self._borrowed_books.remove(isbn)
+
+    def __str__(self) -> str:
+        return (
+            f"👤 {self._name} (ID: {self._member_id}) "
+            f"— Books borrowed: {self.borrow_count}/{self.MAX_BORROW_LIMIT}"
+        )
+
+    def __repr__(self) -> str:
+        return f"Member(name='{self._name}', member_id='{self._member_id}')"
+
+
+# -----------------------------------------------------------------------------
+# Library Class (Composition)
+# -----------------------------------------------------------------------------
+
+class Library:
+    """Manages books and members."""
+
+    def __init__(self, name: str):
+        self.name = name
+        self._books: dict[str, Book] = {}       # ISBN -> Book
+        self._members: dict[str, Member] = {}   # member_id -> Member
+
+    # --- Book Management ---
+
+    def add_book(self, title: str, author: str, isbn: str) -> Book:
+        """Add a new book to the catalog."""
+        if isbn in self._books:
+            print(f"  ⚠️  Book with ISBN {isbn} already exists.")
+            return self._books[isbn]
+
+        book = Book(title, author, isbn)
+        self._books[isbn] = book
+        return book
+
+    def find_book(self, isbn: str) -> Book:
+        """Find a book by ISBN."""
+        if isbn not in self._books:
+            raise BookNotFoundError(f"No book found with ISBN: {isbn}")
+        return self._books[isbn]
+
+    def search_books(self, query: str) -> list[Book]:
+        """Search books by title or author."""
+        query_lower = query.lower()
+        return [
+            book for book in self._books.values()
+            if query_lower in book.title.lower() or query_lower in book.author.lower()
+        ]
+
+    # --- Member Management ---
+
+    def register_member(self, name: str, member_id: str) -> Member:
+        """Register a new library member."""
+        if member_id in self._members:
+            print(f"  ⚠️  Member ID {member_id} already exists.")
+            return self._members[member_id]
+
+        member = Member(name, member_id)
+        self._members[member_id] = member
+        return member
+
+    def find_member(self, member_id: str) -> Member:
+        """Find a member by ID."""
+        if member_id not in self._members:
+            raise MemberNotFoundError(f"No member found with ID: {member_id}")
+        return self._members[member_id]
+
+    # --- Borrow / Return ---
+
+    def borrow_book(self, member_id: str, isbn: str) -> None:
+        """Allow a member to borrow a book."""
+        member = self.find_member(member_id)
+        book = self.find_book(isbn)
+
+        if not member.can_borrow():
+            raise BorrowLimitError(
+                f"{member.name} has reached the borrow limit."
+            )
+
+        book.borrow(member_id)
+        member.add_book(isbn)
+        print(f'  ✅ "{book.title}" has been borrowed by {member.name}.')
+        print(f"     Due date: {book.due_date.strftime('%Y-%m-%d')}")
+        print(f"     Books borrowed: {member.borrow_count}/{Member.MAX_BORROW_LIMIT}")
+
+    def return_book(self, member_id: str, isbn: str) -> None:
+        """Allow a member to return a book."""
+        member = self.find_member(member_id)
+        book = self.find_book(isbn)
+
+        book.return_book()
+        member.remove_book(isbn)
+        print(f'  ✅ "{book.title}" has been returned by {member.name}.')
+
+    # --- Display ---
+
+    def display_catalog(self) -> None:
+        """Display the full library catalog."""
+        if not self._books:
+            print("  📭 No books in the catalog.")
+            return
+
+        print(f"\n  📚 {self.name} — Catalog ({len(self._books)} books)")
+        print(f"  {'='*65}")
+        for book in self._books.values():
+            print(f"  {book}")
+
+    def display_members(self) -> None:
+        """Display all members."""
+        if not self._members:
+            print("  📭 No registered members.")
+            return
+
+        print(f"\n  👥 Registered Members ({len(self._members)})")
+        print(f"  {'='*50}")
+        for member in self._members.values():
+            print(f"  {member}")
+
+
+# -----------------------------------------------------------------------------
+# Interactive Menu
+# -----------------------------------------------------------------------------
+
+def display_menu():
+    """Display the main menu."""
+    print("""
+╔══════════════════════════════════════════╗
+║    📚 LIBRARY MANAGEMENT SYSTEM 📚      ║
+╠══════════════════════════════════════════╣
+║  1. View Catalog                        ║
+║  2. Add Book                            ║
+║  3. Search Books                        ║
+║  4. Register Member                     ║
+║  5. Borrow Book                         ║
+║  6. Return Book                         ║
+║  7. View Member Info                    ║
+║  8. Exit                                ║
+╚══════════════════════════════════════════╝
+    """)
+
+
+def main():
+    """Main entry point."""
+    library = Library("City Public Library")
+
+    # Pre-load some sample data
+    library.add_book("The C Programming Language", "Kernighan & Ritchie", "978-0-13-110362-7")
+    library.add_book("Clean Code", "Robert C. Martin", "978-0-13-235088-4")
+    library.add_book("Python Crash Course", "Eric Matthes", "978-1-59327-603-4")
+    library.add_book("Design Patterns", "Gang of Four", "978-0-20-163361-0")
+    library.add_book("The Pragmatic Programmer", "Hunt & Thomas", "978-0-20-161622-4")
+
+    library.register_member("Alice", "M001")
+    library.register_member("Bob", "M002")
+
+    while True:
+        display_menu()
+        choice = input("  Choose an option (1-8): ").strip()
+
+        try:
+            if choice == "1":
+                library.display_catalog()
+
+            elif choice == "2":
+                title = input("  Enter title: ").strip()
+                author = input("  Enter author: ").strip()
+                isbn = input("  Enter ISBN: ").strip()
+                if title and author and isbn:
+                    library.add_book(title, author, isbn)
+                    print(f'  ✅ "{title}" added to the catalog.')
+                else:
+                    print("  ❌ All fields are required.")
+
+            elif choice == "3":
+                query = input("  Search (title or author): ").strip()
+                results = library.search_books(query)
+                if results:
+                    print(f"\n  🔍 Found {len(results)} result(s):")
+                    for book in results:
+                        print(f"  {book}")
+                else:
+                    print("  📭 No matching books found.")
+
+            elif choice == "4":
+                name = input("  Enter member name: ").strip()
+                member_id = input("  Enter member ID: ").strip()
+                if name and member_id:
+                    library.register_member(name, member_id)
+                    print(f"  ✅ {name} registered as member {member_id}.")
+                else:
+                    print("  ❌ All fields are required.")
+
+            elif choice == "5":
+                library.display_members()
+                member_id = input("\n  Enter Member ID: ").strip()
+                library.display_catalog()
+                isbn = input("\n  Enter Book ISBN: ").strip()
+                library.borrow_book(member_id, isbn)
+
+            elif choice == "6":
+                member_id = input("  Enter Member ID: ").strip()
+                isbn = input("  Enter Book ISBN: ").strip()
+                library.return_book(member_id, isbn)
+
+            elif choice == "7":
+                library.display_members()
+                member_id = input("\n  Enter Member ID for details: ").strip()
+                member = library.find_member(member_id)
+                print(f"\n  {member}")
+                if member.borrowed_books:
+                    print("  Borrowed books:")
+                    for isbn in member.borrowed_books:
+                        book = library.find_book(isbn)
+                        print(f"    📖 {book}")
+                else:
+                    print("  No books currently borrowed.")
+
+            elif choice == "8":
+                print("\n  👋 Thank you for using the Library Management System!")
+                break
+
+            else:
+                print("  ❌ Invalid option. Please choose 1-8.")
+
+        except LibraryError as e:
+            print(f"  ❌ {e}")
+
+        input("\n  Press Enter to continue...")
+
+
+if __name__ == "__main__":
+    main()
+```
